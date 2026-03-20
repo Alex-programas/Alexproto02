@@ -434,7 +434,15 @@ function goTo(id){
   var map=['hero','historia','momentos','jogo'];
   document.querySelectorAll('nav button').forEach(function(b,i){b.classList.toggle('active',map[i]===id);});
   window.scrollTo(0,0);
-  if(id==='historia'){setTimeout(function(){resizeBookCanvas();bookRender();},80);}
+  if(id==='historia'){
+    // Aguarda o section ficar visível para medir corretamente
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        resizeBookCanvas();
+        bookNeedsRender=true;
+      });
+    });
+  }
 }
 function carregarConfigs(){
   return db.collection('config').doc('settings').get().then(function(snap){
@@ -519,17 +527,24 @@ function initBookCanvas(){
 
 function resizeBookCanvas(){
   var outer=document.querySelector('.book-outer');
-  if(!outer)return;
-  var maxW=Math.min(outer.clientWidth||window.innerWidth-32,840);
-  var ratio=0.68; // altura/largura do livro inteiro
-  bookW=Math.max(maxW,220);
+  var availW=0;
+  if(outer&&outer.clientWidth>0){
+    availW=outer.clientWidth;
+  } else {
+    // Seção ainda não visível — estima pela viewport
+    availW=Math.min(window.innerWidth-32,840);
+  }
+  var maxW=Math.min(availW,840);
+  var ratio=0.58; // altura/largura do livro inteiro (menos alto = menos scroll no mobile)
+  bookW=Math.max(maxW,200);
   bookH=Math.round(bookW*ratio);
   bookPW=Math.floor(bookW/2);
   bookCanvas.width=bookW;
   bookCanvas.height=bookH;
-  bookCanvas.style.width=bookW+'px';
-  bookCanvas.style.height=bookH+'px';
-  bookPageCache={};// invalida cache ao redimensionar
+  bookCanvas.style.width='100%';
+  bookCanvas.style.maxWidth=bookW+'px';
+  bookCanvas.style.height='auto';
+  bookPageCache={};
 }
 
 /* ── Loop de animação ── */
@@ -908,48 +923,45 @@ function renderPageToCtx(c,pgIdx,w,h,side){
     roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);
     c.clip();
 
-    if(offset&&offset.scale){
-      // Usa posição/zoom salvo pelo crop
-      // O crop foi feito em um canvas com largura ~wrapW e mesma proporção
-      // Precisamos escalar o offset para as dimensões atuais da página
-      var cropW=offset.canvasW||photoPW;
-      var cropH=offset.canvasH||photoAreaH;
-      var scaleX2=photoPW/cropW;
-      var scaleY2=photoAreaH/cropH;
-      var imgW=img.width*(offset.scale*scaleX2);
-      var imgH=img.height*(offset.scale*scaleY2);
+    if(offset&&offset.scale&&offset.canvasW){
+      // Escala o offset do crop para a área da página atual
+      var scaleX2=photoPW/offset.canvasW;
+      var scaleY2=photoAreaH/offset.canvasH;
+      var imgW=img.width*offset.scale*scaleX2;
+      var imgH=img.height*offset.scale*scaleY2;
       var imgX=ix+offset.x*scaleX2;
       var imgY=photoAreaTop+offset.y*scaleY2;
       c.drawImage(img,imgX,imgY,imgW,imgH);
     } else {
-      // Sem crop: cover padrão
-      var ir=img.width/img.height;
+      // Sem crop salvo: cover padrão centralizado
+      var ir2=img.width/img.height;
       var dw=photoPW,dh=photoAreaH;
-      var sx=0,sy=0,sw=img.width,sh=img.height;
-      if(ir>dw/dh){sw=img.height*(dw/dh);sx=(img.width-sw)/2;}
-      else{sh=img.width/(dw/dh);sy=(img.height-sh)/2;}
-      c.drawImage(img,sx,sy,sw,sh,ix,photoAreaTop,dw,dh);
+      var sx2=0,sy2=0,sw2=img.width,sh2=img.height;
+      if(ir2>dw/dh){sw2=img.height*(dw/dh);sx2=(img.width-sw2)/2;}
+      else{sh2=img.width/(dw/dh);sy2=(img.height-sh2)/2;}
+      c.drawImage(img,sx2,sy2,sw2,sh2,ix,photoAreaTop,dw,dh);
     }
     c.restore();
     c.strokeStyle='rgba(201,130,100,.2)';c.lineWidth=1;
     roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);c.stroke();
-    // Frase sobre a foto (overlay escuro no rodapé da foto)
-    var quoteStr=ch.quote&&ch.quote!=='undefined'?('"'+ch.quote+'"'):'';
+
+    // Frase sobre a foto (overlay escuro no rodapé)
+    var quoteStr=ch.quote&&ch.quote!=='undefined'&&ch.quote!==''?('"'+ch.quote+'"'):'';
     if(quoteStr){
-      var overlayH=drawH*0.32;
-      var overlayGrad=c.createLinearGradient(0,photoAreaTop+drawH-overlayH,0,photoAreaTop+drawH);
-      overlayGrad.addColorStop(0,'rgba(30,10,15,0)');
-      overlayGrad.addColorStop(1,'rgba(30,10,15,0.72)');
+      var overlayH=photoAreaH*0.38;
+      var overlayGrad=c.createLinearGradient(0,photoAreaTop+photoAreaH-overlayH,0,photoAreaTop+photoAreaH);
+      overlayGrad.addColorStop(0,'rgba(20,6,12,0)');
+      overlayGrad.addColorStop(1,'rgba(20,6,12,0.78)');
       c.save();
-      roundRect(c,ix,photoAreaTop,drawW,drawH,7);
+      roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);
       c.clip();
       c.fillStyle=overlayGrad;
-      c.fillRect(ix,photoAreaTop,drawW,drawH);
+      c.fillRect(ix,photoAreaTop,photoPW,photoAreaH);
       c.restore();
-      c.font='italic '+(w*0.044)+'px Cormorant Garamond, serif';
-      c.fillStyle='rgba(253,240,230,0.9)';
+      c.font='italic '+(w*0.042)+'px Cormorant Garamond, serif';
+      c.fillStyle='rgba(253,240,230,0.92)';
       c.textAlign='center';c.textBaseline='alphabetic';
-      wrapText(c,quoteStr,ix+drawW/2,photoAreaTop+drawH-drawH*0.1,drawW-20,h*0.045,'center');
+      wrapText(c,quoteStr,ix+photoPW/2,photoAreaTop+photoAreaH-photoAreaH*0.07,photoPW-16,h*0.044,'center');
     }
   } else {
     // Sem foto: mostra placeholder e frase embaixo
