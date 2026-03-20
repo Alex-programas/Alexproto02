@@ -44,28 +44,62 @@ section.active{display:flex;}
 #date-inp{background:rgba(255,255,255,.07);border:1px solid var(--gold-soft);border-radius:7px;padding:6px 10px;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:11px;outline:none;}
 
 /* HISTÓRIA */
-#historia{background:linear-gradient(160deg,#0d0a0b 0%,#1a0d14 50%,#0d0a0b 100%);justify-content:flex-start;padding-top:88px;padding-bottom:60px;padding-left:12px;padding-right:12px;}
-.hist-header{text-align:center;margin-bottom:20px;width:100%;}
+#historia{background:linear-gradient(160deg,#0d0a0b 0%,#1a0d14 50%,#0d0a0b 100%);justify-content:flex-start;padding-top:80px;padding-bottom:50px;padding-left:0;padding-right:0;}
+.hist-header{text-align:center;margin-bottom:16px;width:100%;padding:0 12px;}
 .hist-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);opacity:.65;margin-bottom:6px;}
 .hist-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,8vw,64px);font-weight:300;color:var(--cream);line-height:.9;}
 .hist-title em{color:var(--rose);font-style:italic;}
 
-.book-outer{width:100%;max-width:840px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.book-outer{width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0;}
 
-.book-canvas-wrap{width:100%;position:relative;display:flex;align-items:center;}
-#book-canvas{display:block;border-radius:6px;cursor:default;box-shadow:0 20px 60px rgba(0,0,0,.7),0 4px 20px rgba(0,0,0,.5);max-width:100%;width:100%;}
-.book-arrow{background:rgba(13,10,11,.8);border:1px solid rgba(201,166,110,.22);color:rgba(201,166,110,.75);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .25s;flex-shrink:0;backdrop-filter:blur(8px);position:absolute;z-index:10;}
-.book-arrow:hover:not(:disabled),.book-arrow:active:not(:disabled){border-color:var(--rose);color:var(--rose);background:rgba(201,86,106,.2);}
-.book-arrow:disabled{opacity:.15;cursor:default;}
-.book-arrow-left{left:-20px;}
-.book-arrow-right{right:-20px;}
-@media(max-width:600px){.book-arrow-left{left:-16px;width:30px;height:30px;font-size:16px;}.book-arrow-right{right:-16px;width:30px;height:30px;font-size:16px;}}
-.book-dots{display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap;}
+/* Setas ficam DENTRO do wrapper, sobrepostas sobre o canvas */
+.book-canvas-wrap{
+  width:100%;
+  position:relative;
+  display:block; /* não flex — canvas ocupa 100% */
+}
+#book-canvas{
+  display:block;
+  cursor:default;
+  width:100%;
+  height:auto;
+  border-radius:0; /* sem border-radius no mobile — usa a largura total */
+  box-shadow:0 12px 40px rgba(0,0,0,.6);
+}
+@media(min-width:600px){
+  #book-canvas{border-radius:8px;}
+  .book-outer{padding:0 12px;}
+}
+
+/* Setas sobrepostas DENTRO do canvas, nos cantos verticalmente centrados */
+.book-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:10;
+  background:rgba(13,10,11,.72);
+  border:1px solid rgba(201,166,110,.2);
+  color:rgba(201,166,110,.8);
+  width:34px;height:34px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  backdrop-filter:blur(8px);
+  flex-shrink:0;
+}
+.book-arrow:hover:not(:disabled),.book-arrow:active:not(:disabled){border-color:var(--rose);color:var(--rose);background:rgba(201,86,106,.25);}
+.book-arrow:disabled{opacity:.12;cursor:default;}
+.book-arrow-left{left:8px;}
+.book-arrow-right{right:8px;}
+
+.book-dots{display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap;padding:0 12px;}
 .b-dot{width:5px;height:5px;border-radius:50%;background:rgba(201,166,110,.2);cursor:pointer;transition:all .3s;}
 .b-dot.active{background:var(--rose);width:14px;border-radius:3px;}
 .book-page-label{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.18);text-align:center;}
 
-.add-ch-btn{display:none;align-items:center;justify-content:center;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;width:100%;max-width:840px;transition:all .3s;}
+.add-ch-btn{display:none;align-items:center;justify-content:center;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;width:calc(100% - 24px);max-width:840px;margin:0 12px;transition:all .3s;}
 .add-ch-btn:hover{background:rgba(201,86,106,.14);}
 .admin-mode .add-ch-btn{display:flex;}
 
@@ -516,17 +550,17 @@ function initBookCanvas(){
 }
 
 function resizeBookCanvas(){
-  // Usa a viewport para calcular — funciona mesmo quando seção está oculta
-  var vw=Math.min(window.innerWidth,840+32);
-  var availW=Math.min(vw-32,840);
-  bookW=Math.max(Math.floor(availW),200);
-  bookH=Math.round(bookW*0.6);
+  // Sempre usa a largura da viewport — funciona em qualquer estado
+  var vw=window.innerWidth;
+  var maxW=Math.min(vw,860);
+  bookW=Math.max(Math.floor(maxW),200);
+  // Mais alto no mobile para texto e foto terem espaço
+  var ratio=vw<600?0.75:0.62;
+  bookH=Math.round(bookW*ratio);
   bookPW=Math.floor(bookW/2);
   bookCanvas.width=bookW;
   bookCanvas.height=bookH;
-  bookCanvas.style.width=bookW+'px';
-  bookCanvas.style.height=bookH+'px';
-  bookCanvas.style.maxWidth='100%';
+  // CSS width:100% cuida do responsive — canvas interno tem resolução full
   bookPageCache={};
 }
 
