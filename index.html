@@ -13,7 +13,6 @@
   --rose-soft:rgba(201,86,106,.15);--cream:#fdf6f0;--gold:#c9a96e;
   --gold-soft:rgba(201,166,110,.18);--text:#3d2030;--muted:#9b7080;
   --white:rgba(253,246,240,.88);
-  --page-bg:#f5ede4;--page-bg2:#ede0d4;--page-shadow:rgba(60,20,30,.18);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow-x:hidden;}
@@ -28,7 +27,6 @@ nav button:hover,nav button.active{color:var(--gold);background:var(--gold-soft)
 section{min-height:100vh;position:relative;z-index:1;display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 70px;}
 section.active{display:flex;}
 
-/* HERO */
 #hero{background:linear-gradient(160deg,#0d0a0b 0%,#2a1020 55%,#3d1a26 100%);text-align:center;}
 .hero-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;opacity:.7;animation:fadeUp .9s .2s both;}
 .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(46px,14vw,104px);color:var(--cream);font-weight:300;line-height:.88;animation:fadeUp .9s .4s both;}
@@ -45,214 +43,58 @@ section.active{display:flex;}
 #date-ed label{font-size:9px;letter-spacing:2px;color:var(--gold);display:block;margin-bottom:4px;opacity:.7;}
 #date-inp{background:rgba(255,255,255,.07);border:1px solid var(--gold-soft);border-radius:7px;padding:6px 10px;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:11px;outline:none;}
 
-/* ══════════════════════════
-   LIVRO — 2 PÁGINAS ABERTAS
-══════════════════════════ */
-#historia{
-  background:linear-gradient(160deg,#0d0a0b 0%,#1a0d14 50%,#0d0a0b 100%);
-  justify-content:flex-start;
-  padding-top:88px;padding-bottom:60px;
-  padding-left:12px;padding-right:12px;
-}
-.hist-header{text-align:center;margin-bottom:24px;width:100%;}
+/* HISTÓRIA */
+#historia{background:linear-gradient(160deg,#0d0a0b 0%,#1a0d14 50%,#0d0a0b 100%);justify-content:flex-start;padding-top:88px;padding-bottom:60px;padding-left:12px;padding-right:12px;}
+.hist-header{text-align:center;margin-bottom:20px;width:100%;}
 .hist-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);opacity:.65;margin-bottom:6px;}
 .hist-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,8vw,64px);font-weight:300;color:var(--cream);line-height:.9;}
 .hist-title em{color:var(--rose);font-style:italic;}
 
-/* Wrapper do livro */
-.book-outer{
-  width:100%;max-width:820px;
-  display:flex;flex-direction:column;align-items:center;
-  gap:16px;
-  user-select:none;
-}
+.book-outer{width:100%;max-width:840px;display:flex;flex-direction:column;align-items:center;gap:14px;}
 
-/* O livro em si — duas metades */
-.book-wrap{
-  width:100%;
-  position:relative;
-  display:flex;
-  perspective:2200px;
-  perspective-origin:50% 42%;
-  touch-action:none;
-}
-
-/* Sombra central (lombada) */
-.book-wrap::after{
-  content:'';
-  position:absolute;
-  left:50%;top:4%;bottom:4%;
-  width:18px;
-  transform:translateX(-50%);
-  background:linear-gradient(to right,rgba(30,8,16,.55),rgba(80,20,40,.2),rgba(30,8,16,.55));
-  z-index:20;
-  pointer-events:none;
-  border-radius:2px;
-}
-
-/* Página esquerda (par — estática, mostra conteúdo anterior) */
-.page-left{
-  flex:1;
-  min-height:440px;
-  background:var(--page-bg2);
-  border-radius:6px 0 0 6px;
-  box-shadow:-4px 6px 28px rgba(0,0,0,.45), inset 4px 0 18px rgba(0,0,0,.08);
-  overflow:hidden;
-  position:relative;
-  transform-origin:right center;
-  transform-style:preserve-3d;
-}
-
-/* Página direita (ímpar — virada) */
-.page-right{
-  flex:1;
-  min-height:440px;
-  background:var(--page-bg);
-  border-radius:0 6px 6px 0;
-  box-shadow:4px 6px 28px rgba(0,0,0,.45), inset -4px 0 18px rgba(0,0,0,.08);
-  overflow:hidden;
-  position:relative;
-  transform-origin:left center;
-  transform-style:preserve-3d;
+/* Canvas do livro */
+#book-canvas{
+  display:block;
+  border-radius:6px;
   cursor:grab;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 4px 20px rgba(0,0,0,.5);
+  touch-action:none;
+  max-width:100%;
 }
-.page-right.dragging{cursor:grabbing;}
+#book-canvas.grabbing{cursor:grabbing;}
 
-/* A "folha" que vira em cima da página direita */
-.flip-layer{
-  position:absolute;
-  inset:0;
-  transform-origin:left center;
-  transform-style:preserve-3d;
-  pointer-events:none;
-  z-index:10;
-}
-.flip-front,.flip-back{
-  position:absolute;
-  inset:0;
-  backface-visibility:hidden;
-  border-radius:0 6px 6px 0;
-  overflow:hidden;
-}
-.flip-back{
-  transform:rotateY(180deg);
-  border-radius:6px 0 0 6px;
-  /* sombra de dobra na frente esquerda */
-  box-shadow:inset -8px 0 22px rgba(0,0,0,.18);
-}
-
-/* Gradiente de dobra (sombra na borda durante arrasto) */
-.fold-shadow{
-  position:absolute;
-  top:0;bottom:0;right:0;
-  width:40px;
-  background:linear-gradient(to right,transparent,rgba(30,8,16,.22));
-  pointer-events:none;
-  z-index:15;
-  opacity:0;
-  transition:opacity .2s;
-  border-radius:0 6px 6px 0;
-}
-.page-right.folding .fold-shadow{opacity:1;}
-
-/* Conteúdo das páginas */
-.page-content{
-  position:absolute;
-  inset:0;
-  padding:28px 22px 36px 26px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-.page-left .page-content{padding:28px 26px 36px 22px;}
-
-/* Linhas de pauta */
-.page-content::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(to bottom,transparent,transparent 27px,rgba(180,130,120,.12) 27px,rgba(180,130,120,.12) 28px);
-  pointer-events:none;
-}
-/* Margem */
-.page-content::before{
-  content:'';
-  position:absolute;
-  left:52px;top:12px;bottom:12px;
-  width:1px;
-  background:linear-gradient(to bottom,transparent,rgba(201,86,106,.14),transparent);
-}
-.page-left .page-content::before{left:auto;right:52px;}
-
-.pg-num-label{
-  font-size:8px;letter-spacing:3px;text-transform:uppercase;
-  color:rgba(60,20,30,.3);margin-bottom:10px;padding-left:16px;
-}
-.page-left .pg-num-label{padding-left:0;padding-right:16px;text-align:right;}
-.pg-emoji{font-size:24px;margin-bottom:8px;padding-left:16px;display:block;}
-.page-left .pg-emoji{padding-left:0;padding-right:16px;text-align:right;}
-.pg-date{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);opacity:.7;margin-bottom:5px;padding-left:16px;}
-.page-left .pg-date{padding-left:0;padding-right:16px;text-align:right;}
-.pg-title{font-family:'Cormorant Garamond',serif;font-size:clamp(15px,3.8vw,22px);color:var(--text);font-weight:400;line-height:1.15;margin-bottom:10px;padding-left:16px;}
-.page-left .pg-title{padding-left:0;padding-right:16px;text-align:right;}
-.pg-divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,86,106,.22),transparent);margin:0 16px 10px;}
-.pg-photo{width:calc(100% - 16px);margin-left:16px;max-height:130px;object-fit:cover;border-radius:5px;border:1px solid rgba(201,130,100,.15);box-shadow:0 2px 10px rgba(0,0,0,.12);display:block;margin-bottom:10px;}
-.page-left .pg-photo{margin-left:0;margin-right:16px;}
-.pg-photo-placeholder{width:calc(100% - 16px);margin-left:16px;height:80px;background:rgba(201,130,100,.06);border:1px dashed rgba(201,130,100,.18);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px;opacity:.4;margin-bottom:10px;}
-.page-left .pg-photo-placeholder{margin-left:0;margin-right:16px;}
-.pg-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(11px,2.8vw,13.5px);font-style:italic;color:rgba(60,20,30,.65);line-height:1.75;padding-left:12px;border-left:2px solid rgba(201,86,106,.2);margin-left:16px;}
-.page-left .pg-quote{padding-left:0;padding-right:12px;border-left:none;border-right:2px solid rgba(201,86,106,.2);margin-left:0;margin-right:16px;text-align:right;}
-.pg-footer-label{position:absolute;bottom:14px;font-size:8px;letter-spacing:2px;color:rgba(60,20,30,.22);right:18px;}
-.page-left .pg-footer-label{right:auto;left:18px;}
-
-/* Capa */
-.cover-page-content{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100%;text-align:center;gap:10px;padding:28px;
-  background:linear-gradient(135deg,#f5e8e0 0%,#ede0d4 100%);
-}
-.cover-ornament{font-size:28px;opacity:.7;filter:drop-shadow(0 2px 8px rgba(201,86,106,.3));}
-.cover-book-title{font-family:'Dancing Script',cursive;font-size:clamp(22px,6vw,36px);font-weight:700;color:var(--text);line-height:1.2;}
-.cover-book-title span{color:var(--rose);}
-.cover-sep{width:40px;height:1px;background:linear-gradient(to right,transparent,var(--rose),transparent);}
-.cover-sub{font-family:'Cormorant Garamond',serif;font-size:11px;color:var(--muted);font-style:italic;}
-.cover-since{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(60,20,30,.35);}
-.cover-hint{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,86,106,.45);margin-top:6px;animation:pulseHint 2s ease-in-out infinite;}
-@keyframes pulseHint{0%,100%{opacity:.45}50%{opacity:.9}}
-
-/* Página em branco (lado esquerdo quando na capa) */
-.blank-page{background:linear-gradient(135deg,#ede0d4,#e8d5c8);display:flex;align-items:center;justify-content:center;}
-.blank-page-inner{font-family:'Dancing Script',cursive;font-size:clamp(18px,5vw,28px);color:rgba(60,20,30,.15);transform:rotate(-8deg);}
-
-/* Admin photo upload */
-.pg-photo-upload-wrap{display:none;padding-left:16px;margin-top:4px;}
-.page-left .pg-photo-upload-wrap{padding-left:0;padding-right:16px;}
-.admin-mode .pg-photo-upload-wrap{display:block;}
-.pg-photo-upload-btn{background:rgba(201,86,106,.08);border:1px dashed rgba(201,86,106,.3);color:var(--rose);padding:4px 10px;border-radius:6px;font-family:'Josefin Sans',sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;}
-.pg-del-btn-wrap{display:none;position:absolute;top:8px;right:8px;z-index:30;}
-.admin-mode .pg-del-btn-wrap{display:block;}
-.pg-del-btn{background:rgba(201,86,106,.12);border:1px solid rgba(201,86,106,.3);color:var(--rose);padding:3px 8px;border-radius:6px;font-size:8px;font-family:'Josefin Sans',sans-serif;cursor:pointer;text-transform:uppercase;}
-.admin-mode [contenteditable]{outline:none;border-bottom:1px dashed rgba(201,86,106,.4);cursor:text;}
-.admin-mode [contenteditable]:focus{background:rgba(201,86,106,.06);border-radius:2px;}
-
-/* Controles do livro */
-.book-controls{
-  display:flex;align-items:center;justify-content:space-between;
-  width:100%;gap:8px;
-}
+.book-controls{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:840px;gap:8px;}
 .book-arrow{background:rgba(255,255,255,.05);border:1px solid rgba(201,166,110,.18);color:rgba(201,166,110,.6);width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .25s;flex-shrink:0;}
 .book-arrow:hover:not(:disabled),.book-arrow:active:not(:disabled){border-color:var(--rose);color:var(--rose);background:var(--rose-soft);}
 .book-arrow:disabled{opacity:.2;cursor:default;}
 .book-dots{display:flex;gap:5px;align-items:center;justify-content:center;flex:1;flex-wrap:wrap;}
 .b-dot{width:5px;height:5px;border-radius:50%;background:rgba(201,166,110,.2);cursor:pointer;transition:all .3s;}
 .b-dot.active{background:var(--rose);width:14px;border-radius:3px;}
-.book-page-label{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.2);text-align:center;margin-top:2px;}
+.book-page-label{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.2);text-align:center;}
 
-.add-ch-btn{display:none;align-items:center;justify-content:center;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;width:100%;max-width:820px;transition:all .3s;}
+.add-ch-btn{display:none;align-items:center;justify-content:center;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;width:100%;max-width:840px;transition:all .3s;}
 .add-ch-btn:hover{background:rgba(201,86,106,.14);}
 .admin-mode .add-ch-btn{display:flex;}
 
-/* ══ MOMENTOS ══ */
+/* Painel de edição de capítulo (admin) */
+#chapter-editor{display:none;position:fixed;inset:0;background:rgba(13,10,11,.94);z-index:9000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px;backdrop-filter:blur(10px);}
+#chapter-editor.open{display:flex;}
+.ce-box{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px 20px;max-width:520px;width:100%;margin:auto;position:relative;}
+.ce-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);margin-bottom:20px;text-align:center;}
+.ce-close{position:absolute;top:12px;right:12px;background:none;border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.5);width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:13px;}
+.ce-field{margin-bottom:12px;}
+.ce-field label{display:block;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;opacity:.75;}
+.ce-inp{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:9px 12px;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:13px;outline:none;}
+.ce-inp:focus{border-color:var(--rose);}
+.ce-inp::placeholder{color:rgba(253,246,240,.2);}
+.ce-prev{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:none;margin-bottom:6px;}
+.ce-prev.show{display:block;}
+.ce-upload-btn{width:100%;background:rgba(255,255,255,.04);border:2px dashed rgba(255,255,255,.1);border-radius:9px;padding:14px;color:rgba(253,246,240,.3);font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-align:center;}
+.ce-hint{font-size:9px;color:rgba(253,246,240,.22);margin-top:3px;}
+.ce-hint.ok{color:#81c784;}
+.ce-actions{display:flex;gap:8px;justify-content:space-between;margin-top:18px;flex-wrap:wrap;}
+
+/* MOMENTOS */
 #momentos{background:var(--bg);padding-top:90px;padding-bottom:80px;}
 .m-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);text-align:center;opacity:.65;margin-bottom:10px;}
 .m-heading{font-family:'Dancing Script',cursive;font-size:clamp(28px,8vw,66px);font-weight:700;color:var(--cream);text-align:center;line-height:1.15;margin-bottom:36px;}
@@ -352,7 +194,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 .r-lbl{font-size:8px;letter-spacing:2px;color:var(--gold);margin:4px 0;opacity:.7;}
 .r-msg{font-size:11px;color:rgba(253,246,240,.42);margin:6px 0 18px;line-height:1.7;}
 
-/* MODAIS */
 .modal-bg{position:fixed;inset:0;background:rgba(13,10,11,.92);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);}
 .modal-bg.hidden{display:none;}
 .adm-box{background:var(--cream);border-radius:20px;padding:36px 28px;max-width:320px;width:90%;text-align:center;}
@@ -364,6 +205,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 .adm-btns{display:flex;gap:8px;justify-content:center;}
 .btn-ghost{background:none;border:2px solid rgba(201,166,110,.28);color:var(--muted);padding:9px 16px;border-radius:20px;font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
 .adm-err{font-size:10px;color:var(--rose);margin-top:5px;min-height:14px;}
+
 #moment-modal{position:fixed;inset:0;background:rgba(13,10,11,.94);z-index:9000;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px;backdrop-filter:blur(10px);}
 #moment-modal.open{display:flex;}
 .mm-box{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px 20px;max-width:540px;width:100%;margin:auto;position:relative;}
@@ -413,7 +255,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 <audio id="audio" preload="auto"></audio>
 <div id="loading"><div class="spin"></div><p class="load-txt" id="load-txt">Carregando...</p></div>
 
-<!-- MODAL LOGIN -->
 <div class="modal-bg hidden" id="login-modal">
   <div class="adm-box">
     <div class="adm-icon">🔐</div>
@@ -428,7 +269,33 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
   </div>
 </div>
 
-<!-- MODAL MOMENTO -->
+<!-- EDITOR DE CAPÍTULO (admin) -->
+<div id="chapter-editor">
+  <div class="ce-box">
+    <button class="ce-close" onclick="closeChapterEditor()">✕</button>
+    <h3 class="ce-title" id="ce-title-label">Editar Capítulo</h3>
+    <input type="hidden" id="ce-idx">
+    <div class="ce-field"><label>Emoji</label><input class="ce-inp" id="ce-emoji" placeholder="✨"></div>
+    <div class="ce-field"><label>Data / Período</label><input class="ce-inp" id="ce-date" placeholder="O começo..."></div>
+    <div class="ce-field"><label>Título</label><input class="ce-inp" id="ce-title-inp" placeholder="Primeiro Encontro"></div>
+    <div class="ce-field"><label>Frase especial</label><input class="ce-inp" id="ce-quote" placeholder="Edite para contar a história..."></div>
+    <div class="ce-field">
+      <label>📸 Foto</label>
+      <img class="ce-prev" id="ce-prev" src="" alt="">
+      <input type="file" id="ce-photo-file" accept="image/*" style="display:none" onchange="handleCEPhoto(event)">
+      <button class="ce-upload-btn" id="ce-photo-btn" onclick="document.getElementById('ce-photo-file').click()">+ Escolher foto</button>
+      <p class="ce-hint" id="ce-photo-hint"></p>
+    </div>
+    <div class="ce-actions">
+      <button class="btn-ghost" style="color:var(--rose);border-color:rgba(201,86,106,.3)" onclick="deleteChapterFromEditor()">✕ Remover</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="closeChapterEditor()">Cancelar</button>
+        <button class="btn-rose" onclick="saveChapterEditor()">Salvar ♡</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="moment-modal">
   <div class="mm-box">
     <button class="mm-close" onclick="closeMomentModal()">✕</button>
@@ -447,7 +314,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
   </div>
 </div>
 
-<!-- MODAL CARTA -->
 <div id="letter-modal">
   <div class="lm-box">
     <button class="lm-close" onclick="closeLetter()">✕</button>
@@ -465,7 +331,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 </div>
 <div id="now-playing"><span class="np-dot"></span><span class="np-txt">♫ <span class="np-song" id="np-song"></span></span></div>
 
-<!-- NAV -->
 <nav>
   <button class="active" onclick="goTo('hero')">🏠 Início</button>
   <span class="nl">♡</span>
@@ -476,7 +341,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
   <button onclick="abrirLogin()" style="color:rgba(201,166,110,.3);font-size:13px;padding:4px 8px" title="Admin">⚙</button>
 </nav>
 
-<!-- HERO -->
 <section id="hero" class="active">
   <p class="hero-eyebrow">✦ Para sempre ✦</p>
   <h1 class="hero-title">Nós<br><em>Dois</em></h1>
@@ -493,34 +357,29 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
   <div id="date-ed"><label>Data do relacionamento</label><input type="date" id="date-inp" value="2022-08-05" onchange="salvarConfigs()"></div>
 </section>
 
-<!-- HISTÓRIA -->
 <section id="historia">
   <div class="hist-header">
     <p class="hist-eyebrow">✦ Como tudo começou ✦</p>
     <h2 class="hist-title">Nossa <em>História</em></h2>
   </div>
   <div class="book-outer">
-    <div class="book-wrap" id="book-wrap">
-      <!-- gerado por JS -->
-    </div>
+    <canvas id="book-canvas"></canvas>
     <div class="book-controls">
-      <button class="book-arrow" id="btn-prev" onclick="flipPrev()" disabled>‹</button>
+      <button class="book-arrow" id="btn-prev" onclick="bookFlipPrev()" disabled>‹</button>
       <div class="book-dots" id="book-dots"></div>
-      <button class="book-arrow" id="btn-next" onclick="flipNext()">›</button>
+      <button class="book-arrow" id="btn-next" onclick="bookFlipNext()">›</button>
     </div>
     <p class="book-page-label" id="book-page-label"></p>
   </div>
   <button class="add-ch-btn" onclick="addChapter()">＋ Adicionar capítulo</button>
 </section>
 
-<!-- MOMENTOS -->
 <section id="momentos">
   <p class="m-eyebrow">✦ Escolha seu momento ✦</p>
   <h2 class="m-heading">O que seu coração<br>está <span>sentindo</span> agora?</h2>
   <div class="cards-grid" id="cards-grid"></div>
 </section>
 
-<!-- JOGUINHO -->
 <section id="jogo">
   <p class="s-eyebrow-dark">✦ Quanto vocês se conhecem? ✦</p>
   <h2 class="s-title-dark">O <em>Joguinho</em></h2>
@@ -542,17 +401,15 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 <div class="toast" id="toast"></div>
 
 <script>
+/* ═══════════════════════════════════════
+   CONFIG & FIREBASE
+═══════════════════════════════════════ */
 var ADMIN_PASSWORD="Alex0508.",CLOUDINARY_CLOUD="dnvg9f1pm",CLOUDINARY_PRESET="Nossoamor";
 var FIREBASE_CONFIG={apiKey:"AIzaSyCQ0tifzHR6NB5jYF3-Ylxz9-nA3AM5MhM",authDomain:"nossoamor-9b715.firebaseapp.com",projectId:"nossoamor-9b715",storageBucket:"nossoamor-9b715.firebasestorage.app",messagingSenderId:"384387510581",appId:"1:384387510581:web:d021a79652e12bdd9f5c7c"};
 firebase.initializeApp(FIREBASE_CONFIG);
 var db=firebase.firestore();
 var isAdmin=false,momentos_db=[],chapters_db=[],settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};
-var pendingPhoto=null,pendingAudio=null,editingId=null;
-
-// Estado do livro
-// Spread = par de páginas visíveis. spread 0 = capa+pg1, spread 1 = pg2+pg3, etc.
-var currentSpread=0; // índice do spread atual
-var isFlipping=false;
+var pendingPhoto=null,pendingAudio=null,editingId=null,cePendingPhoto=null,ceEditIdx=-1;
 
 function showLoad(t){document.getElementById('load-txt').textContent=t||'Carregando...';document.getElementById('loading').classList.add('show');}
 function hideLoad(){document.getElementById('loading').classList.remove('show');}
@@ -561,18 +418,17 @@ function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.c
 function init(){
   showLoad('Carregando...');
   Promise.all([carregarConfigs(),carregarMomentos(),carregarCapitulos()])
-    .then(function(){hideLoad();atualizarContador();setInterval(atualizarContador,30000);animPetals();})
-    .catch(function(e){hideLoad();console.error(e);showToast('Erro ao conectar.');atualizarContador();animPetals();});
+    .then(function(){hideLoad();atualizarContador();setInterval(atualizarContador,30000);initBookCanvas();animPetals();})
+    .catch(function(e){hideLoad();console.error(e);showToast('Erro ao conectar.');atualizarContador();initBookCanvas();animPetals();});
 }
-
 function goTo(id){
   document.querySelectorAll('section').forEach(function(s){s.classList.remove('active');});
   document.getElementById(id).classList.add('active');
   var map=['hero','historia','momentos','jogo'];
   document.querySelectorAll('nav button').forEach(function(b,i){b.classList.toggle('active',map[i]===id);});
   window.scrollTo(0,0);
+  if(id==='historia'){setTimeout(function(){resizeBookCanvas();bookRender();},80);}
 }
-
 function carregarConfigs(){
   return db.collection('config').doc('settings').get().then(function(snap){
     if(snap.exists)settings_db=snap.data();
@@ -597,315 +453,742 @@ function atualizarContador(){
   document.getElementById('since-txt').textContent=s.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
 }
 
-/* ════════════════════════════════════
-   LIVRO — 2 PÁGINAS + FLIP DRAG
-════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   CAPÍTULOS
+═══════════════════════════════════════ */
 function carregarCapitulos(){
   return db.collection('config').doc('chapters').get().then(function(snap){
     chapters_db=snap.exists?(snap.data().list||[]):capitulosDefault();
-    currentSpread=0;buildBook();
   });
 }
 function capitulosDefault(){
   return[
-    {emoji:'✨',date:'O começo',title:'Primeiro Encontro',quote:'Edite para contar como vocês se conheceram. Cada detalhe importa.',photoUrl:''},
-    {emoji:'💌',date:'O primeiro sentimento',title:'Quando percebi que te amava',quote:'Aquele momento em que você olha e sabe. O coração simplesmente sabe.',photoUrl:''},
-    {emoji:'🌹',date:'O pedido',title:'Nosso Primeiro Beijo',quote:'O nervosismo, o coração acelerado, e depois... a felicidade.',photoUrl:''},
+    {emoji:'✨',date:'O começo',title:'Primeiro Encontro',quote:'Edite para contar como vocês se conheceram.',photoUrl:''},
+    {emoji:'💌',date:'O primeiro sentimento',title:'Quando percebi que te amava',quote:'Aquele momento em que você olha e sabe.',photoUrl:''},
+    {emoji:'🌹',date:'O pedido',title:'Nosso Primeiro Beijo',quote:'O nervosismo, o coração acelerado, e depois a felicidade.',photoUrl:''},
     {emoji:'🎉',date:'Oficialmente juntos',title:'O Dia que Ficou Oficial',quote:'A melhor decisão de nossas vidas.',photoUrl:''},
-    {emoji:'♾️',date:'Hoje e sempre',title:'Para o Futuro',quote:'Ainda temos tantos capítulos para escrever juntos.',photoUrl:''},
+    {emoji:'♾️',date:'Hoje e sempre',title:'Para o Futuro',quote:'Ainda temos tantos capítulos para escrever.',photoUrl:''},
   ];
 }
-
-// Páginas lógicas: 0=capa, 1..N=capítulos, N+1=contracapa
-function totalPages(){return chapters_db.length+2;}
-function maxSpreads(){return Math.ceil(totalPages()/2)-1;} // 0-based
-
-// Qual página fica em cada lado do spread
-function spreadPages(s){
-  // spread 0: left=blank, right=capa(0)
-  // spread 1: left=pg1, right=pg2
-  // etc.
-  var left=(s===0)?-1:(s*2-1);  // -1 = página em branco antes da capa
-  var right=s*2;
-  return{left:left,right:right};
-}
-
-function getPageHTML(pgIdx,side){
-  if(pgIdx<0){
-    // Página em branco
-    return '<div class="page-content blank-page"><div class="blank-page-inner">♡</div></div>';
-  }
-  var total=totalPages();
-  if(pgIdx===0){
-    // Capa
-    var sd=settings_db.startDate||'2022-08-05';
-    var s=new Date(sd+'T12:00:00');
-    var sinceStr=s.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-    return '<div class="cover-page-content">'
-      +'<div class="cover-ornament">🌹</div>'
-      +'<div class="cover-book-title">Nossa<br><span>História</span></div>'
-      +'<div class="cover-sep"></div>'
-      +'<div class="cover-sub">Uma história escrita com amor</div>'
-      +'<div class="cover-since">Desde '+sinceStr+'</div>'
-      +'<div class="cover-hint">arraste para virar ›</div>'
-      +'</div>';
-  }
-  if(pgIdx>=total-1){
-    // Contracapa
-    return '<div class="cover-page-content" style="background:linear-gradient(135deg,#ede0d4,#e5d5c5)">'
-      +'<div class="cover-ornament" style="font-size:22px;opacity:.4">♡</div>'
-      +'<div class="cover-sub" style="font-size:12px;color:var(--muted)">Fim do capítulo de hoje.<br>Mas a história continua...</div>'
-      +'</div>';
-  }
-  var chIdx=pgIdx-1;
-  var ch=chapters_db[chIdx];
-  if(!ch)return '';
-  var ce=isAdmin?'contenteditable="true"':'';
-  var photoHtml=ch.photoUrl
-    ?'<img class="pg-photo" src="'+ch.photoUrl+'" alt="" data-ch="'+chIdx+'">'
-    :'<div class="pg-photo-placeholder">📷</div>';
-  var uploadHtml=isAdmin
-    ?'<div class="pg-photo-upload-wrap"><input type="file" id="pgf-'+chIdx+'" accept="image/*" style="display:none" onchange="handleChapterPhoto(event,'+chIdx+')"><button class="pg-photo-upload-btn" onclick="document.getElementById(\'pgf-'+chIdx+'\').click()">📸 '+(ch.photoUrl?'Trocar':'Adicionar')+'</button></div>'
-    :'';
-  var delHtml=isAdmin?'<div class="pg-del-btn-wrap"><button class="pg-del-btn" onclick="removeChapter('+chIdx+')">✕</button></div>':'';
-  return delHtml
-    +'<div class="page-content">'
-    +'<p class="pg-num-label">Capítulo '+(chIdx+1)+'</p>'
-    +'<span class="pg-emoji" '+ce+' data-field="emoji" data-ch="'+chIdx+'">'+ch.emoji+'</span>'
-    +'<p class="pg-date" '+ce+' data-field="date" data-ch="'+chIdx+'">'+ch.date+'</p>'
-    +'<h3 class="pg-title" '+ce+' data-field="title" data-ch="'+chIdx+'">'+ch.title+'</h3>'
-    +'<div class="pg-divider"></div>'
-    +photoHtml+uploadHtml
-    +'<p class="pg-quote" '+ce+' data-field="quote" data-ch="'+chIdx+'">'+ch.quote+'</p>'
-    +'<span class="pg-footer-label">'+pgIdx+' / '+(total-2)+'</span>'
-    +'</div>';
-}
-
-function buildBook(){
-  var wrap=document.getElementById('book-wrap');
-  wrap.innerHTML='';
-
-  var sp=spreadPages(currentSpread);
-
-  // Página esquerda
-  var left=document.createElement('div');
-  left.className='page-left';
-  left.id='page-left';
-  left.innerHTML=getPageHTML(sp.left,'left');
-  wrap.appendChild(left);
-
-  // Página direita (com flip layer)
-  var right=document.createElement('div');
-  right.className='page-right';
-  right.id='page-right';
-
-  // Conteúdo atual (frente)
-  var frontDiv=document.createElement('div');
-  frontDiv.className='flip-front';
-  frontDiv.id='flip-front';
-  frontDiv.innerHTML=getPageHTML(sp.right,'right');
-
-  // Conteúdo da próxima página (verso — aparece ao virar)
-  var backDiv=document.createElement('div');
-  backDiv.className='flip-back';
-  backDiv.id='flip-back';
-  // verso: próximo spread left
-  var nextSp=spreadPages(currentSpread+1);
-  backDiv.innerHTML=getPageHTML(nextSp?nextSp.left:-1,'left');
-
-  var flipLayer=document.createElement('div');
-  flipLayer.className='flip-layer';
-  flipLayer.id='flip-layer';
-  flipLayer.appendChild(frontDiv);
-  flipLayer.appendChild(backDiv);
-
-  var foldShadow=document.createElement('div');
-  foldShadow.className='fold-shadow';
-
-  right.appendChild(flipLayer);
-  right.appendChild(foldShadow);
-  wrap.appendChild(right);
-
-  updateBookUI();
-  setupDrag();
-}
-
-function updateBookUI(){
-  var total=maxSpreads();
-  var dots=document.getElementById('book-dots');
-  dots.innerHTML='';
-  for(var i=0;i<=total;i++){
-    var d=document.createElement('div');
-    d.className='b-dot'+(i===currentSpread?' active':'');
-    (function(idx){d.onclick=function(){if(!isFlipping)jumpToSpread(idx);};})(i);
-    dots.appendChild(d);
-  }
-  document.getElementById('btn-prev').disabled=(currentSpread===0);
-  document.getElementById('btn-next').disabled=(currentSpread>=maxSpreads());
-  var sp=spreadPages(currentSpread);
-  var r=sp.right,tot=totalPages()-2;
-  document.getElementById('book-page-label').textContent=
-    r===0?'Capa':r>=totalPages()-1?'Fim'
-    :'Capítulo '+(r)+' de '+tot;
-}
-
-/* ── DRAG FLIP ── */
-var dragState={active:false,startX:0,startY:0,dir:0,progress:0};
-
-function setupDrag(){
-  var right=document.getElementById('page-right');
-  if(!right)return;
-
-  function onStart(cx,cy){
-    if(isFlipping)return;
-    dragState.active=true;
-    dragState.startX=cx;
-    dragState.startY=cy;
-    dragState.dir=0;
-    dragState.progress=0;
-    right.classList.add('dragging');
-  }
-  function onMove(cx){
-    if(!dragState.active)return;
-    var dx=cx-dragState.startX;
-    var w=right.offsetWidth||1;
-    // normaliza -1..1
-    var p=Math.max(-1,Math.min(1,dx/w));
-    dragState.progress=p;
-    dragState.dir=p<0?1:-1; // 1=próxima, -1=anterior
-    applyDragTransform(p);
-  }
-  function onEnd(){
-    if(!dragState.active)return;
-    dragState.active=false;
-    right.classList.remove('dragging');
-    var p=dragState.progress;
-    var threshold=0.25;
-    if(p<-threshold&&currentSpread<maxSpreads()){
-      completeFlopForward();
-    } else if(p>threshold&&currentSpread>0){
-      completeFlopBack();
-    } else {
-      cancelFlip();
-    }
-  }
-
-  right.addEventListener('mousedown',function(e){onStart(e.clientX,e.clientY);});
-  window.addEventListener('mousemove',function(e){onMove(e.clientX);});
-  window.addEventListener('mouseup',onEnd);
-
-  right.addEventListener('touchstart',function(e){onStart(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
-  window.addEventListener('touchmove',function(e){if(dragState.active)onMove(e.touches[0].clientX);},{passive:true});
-  window.addEventListener('touchend',onEnd,{passive:true});
-}
-
-function applyDragTransform(p){
-  var layer=document.getElementById('flip-layer');
-  var right=document.getElementById('page-right');
-  var foldShadow=right?right.querySelector('.fold-shadow'):null;
-  if(!layer)return;
-  // p de 0 a -1: vira para frente (rotaciona de 0 a -180)
-  // p de 0 a +1: vira para trás (0 a +180 — volta)
-  var deg=p*180;
-  layer.style.transition='none';
-  layer.style.transform='rotateY('+deg+'deg)';
-  // Sombra de dobra proporcional
-  if(foldShadow){
-    var intensity=Math.abs(p);
-    foldShadow.style.opacity=intensity*0.6;
-  }
-  // Curva de perspectiva leve
-  var skew=p*4;
-  layer.style.perspective='900px';
-}
-
-function completeFlopForward(){
-  isFlipping=true;
-  var layer=document.getElementById('flip-layer');
-  var right=document.getElementById('page-right');
-  var foldShadow=right?right.querySelector('.fold-shadow'):null;
-  if(!layer){isFlipping=false;return;}
-  layer.style.transition='transform .52s cubic-bezier(.645,.045,.355,1)';
-  layer.style.transform='rotateY(-180deg)';
-  if(foldShadow){foldShadow.style.transition='opacity .52s';foldShadow.style.opacity='0';}
-  setTimeout(function(){
-    currentSpread++;
-    isFlipping=false;
-    buildBook();
-  },530);
-}
-
-function completeFlopBack(){
-  isFlipping=true;
-  var layer=document.getElementById('flip-layer');
-  var right=document.getElementById('page-right');
-  var foldShadow=right?right.querySelector('.fold-shadow'):null;
-  if(!layer){isFlipping=false;return;}
-  layer.style.transition='transform .52s cubic-bezier(.645,.045,.355,1)';
-  layer.style.transform='rotateY(180deg)';
-  if(foldShadow){foldShadow.style.transition='opacity .52s';foldShadow.style.opacity='0';}
-  setTimeout(function(){
-    currentSpread--;
-    isFlipping=false;
-    buildBook();
-  },530);
-}
-
-function cancelFlip(){
-  isFlipping=true;
-  var layer=document.getElementById('flip-layer');
-  if(!layer){isFlipping=false;return;}
-  layer.style.transition='transform .35s cubic-bezier(.25,.46,.45,.94)';
-  layer.style.transform='rotateY(0deg)';
-  var right=document.getElementById('page-right');
-  var foldShadow=right?right.querySelector('.fold-shadow'):null;
-  if(foldShadow){foldShadow.style.transition='opacity .35s';foldShadow.style.opacity='0';}
-  setTimeout(function(){isFlipping=false;},360);
-}
-
-function flipNext(){if(!isFlipping&&currentSpread<maxSpreads()){completeFlopForward();}}
-function flipPrev(){if(!isFlipping&&currentSpread>0){completeFlopBack();}}
-
-function jumpToSpread(idx){
-  if(isFlipping)return;
-  var dir=idx>currentSpread?1:-1;
-  if(idx===currentSpread)return;
-  currentSpread=idx;
-  buildBook();
-}
-
-function handleChapterPhoto(e,chIdx){
-  var file=e.target.files[0];if(!file)return;
-  showLoad('Enviando foto...');
-  uploadCloudinary(file,null).then(function(url){
-    chapters_db[chIdx].photoUrl=url;hideLoad();
-    buildBook();showToast('📸 Foto adicionada! Salve a história.');
-  }).catch(function(){hideLoad();showToast('Erro ao enviar foto.');});
-  e.target.value='';
-}
-
 function salvarHistoria(){
-  // Lê campos editáveis do DOM atual
-  document.querySelectorAll('[data-field]').forEach(function(el){
-    var ci=parseInt(el.dataset.ch);
-    var field=el.dataset.field;
-    if(!isNaN(ci)&&chapters_db[ci])chapters_db[ci][field]=el.textContent;
-  });
   db.collection('config').doc('chapters').set({list:chapters_db}).then(function(){showToast('💾 História salva!');});
 }
 function addChapter(){
   chapters_db.push({emoji:'🌟',date:'Nova data',title:'Novo Capítulo',quote:'Clique para editar...',photoUrl:''});
-  currentSpread=maxSpreads();
-  buildBook();showToast('✓ Capítulo adicionado!');
-}
-function removeChapter(i){
-  if(!confirm('Remover este capítulo?'))return;
-  chapters_db.splice(i,1);
-  if(currentSpread>maxSpreads())currentSpread=maxSpreads();
-  buildBook();
+  bookCurrentSpread=bookMaxSpreads();
+  bookRender();updateBookUI();
+  showToast('✓ Capítulo adicionado!');
 }
 
-/* ════ MOMENTOS ════ */
+/* ═══════════════════════════════════════
+   BOOK CANVAS ENGINE — flip realista
+═══════════════════════════════════════ */
+var bookCanvas=null,bookCtx=null;
+var bookW=0,bookH=0,bookPW=0; // bookPW = largura de UMA página
+var bookCurrentSpread=0;       // spread atual (par de páginas)
+var bookFlipState=null;        // null ou objeto de flip em andamento
+var bookDrag={active:false,startX:0,startY:0};
+var bookPageCache={};          // cache de offscreen canvases por página
+var bookImgCache={};           // cache de imagens carregadas
+var bookAnimFrame=null;
+var bookNeedsRender=true;
+
+// Páginas lógicas: 0=capa, 1..N=capítulos, N+1=contracapa
+function bookTotalPages(){return chapters_db.length+2;}
+function bookMaxSpreads(){return Math.floor((bookTotalPages()-1)/2);}
+// Para spread s: left = s*2-1 (ou -1 se s=0), right = s*2
+function bookSpreadPages(s){
+  return{left:s===0?-1:s*2-1, right:s*2};
+}
+
+function initBookCanvas(){
+  bookCanvas=document.getElementById('book-canvas');
+  bookCtx=bookCanvas.getContext('2d');
+  resizeBookCanvas();
+  window.addEventListener('resize',function(){resizeBookCanvas();bookRender();});
+  setupBookEvents();
+  bookLoop();
+}
+
+function resizeBookCanvas(){
+  var outer=document.querySelector('.book-outer');
+  if(!outer)return;
+  var maxW=Math.min(outer.clientWidth||window.innerWidth-32,840);
+  var ratio=0.68; // altura/largura do livro inteiro
+  bookW=Math.max(maxW,220);
+  bookH=Math.round(bookW*ratio);
+  bookPW=Math.floor(bookW/2);
+  bookCanvas.width=bookW;
+  bookCanvas.height=bookH;
+  bookCanvas.style.width=bookW+'px';
+  bookCanvas.style.height=bookH+'px';
+  bookPageCache={};// invalida cache ao redimensionar
+}
+
+/* ── Loop de animação ── */
+function bookLoop(){
+  if(bookNeedsRender||bookFlipState){
+    bookRender();
+    bookNeedsRender=false;
+  }
+  bookAnimFrame=requestAnimationFrame(bookLoop);
+}
+
+/* ── Renderização principal ── */
+function bookRender(){
+  if(!bookCtx)return;
+  var ctx=bookCtx;
+  ctx.clearRect(0,0,bookW,bookH);
+
+  // Fundo escuro atrás do livro
+  ctx.fillStyle='#120609';
+  roundRect(ctx,0,0,bookW,bookH,8);
+  ctx.fill();
+
+  var sp=bookSpreadPages(bookCurrentSpread);
+  var flip=bookFlipState;
+
+  // Determina quais páginas mostrar
+  var leftIdx=sp.left;
+  var rightIdx=sp.right;
+
+  // Se há flip em andamento, a página que vira é a direita atual (indo pra frente) ou a esquerda nova (indo pra trás)
+  if(flip){
+    if(flip.dir>0){
+      // Virando para frente: página direita vira, revelando próxima esquerda atrás
+      var nextSp=bookSpreadPages(bookCurrentSpread+1);
+      // 1. Desenha base: páginas do PRÓXIMO spread (ficam embaixo)
+      drawPage(ctx,nextSp.left,0,0,bookPW,bookH,'left',false);
+      drawPage(ctx,nextSp.right,bookPW,0,bookPW,bookH,'right',false);
+      // 2. Por cima: página esquerda atual (não se move)
+      drawPage(ctx,leftIdx,0,0,bookPW,bookH,'left',true);
+      // 3. A folha que vira (curvatura real)
+      drawFlippingPage(ctx,rightIdx,nextSp.left,flip.progress,1);
+    } else {
+      // Virando para trás
+      var prevSp=bookSpreadPages(bookCurrentSpread-1);
+      drawPage(ctx,prevSp.left,0,0,bookPW,bookH,'left',false);
+      drawPage(ctx,prevSp.right,bookPW,0,bookPW,bookH,'right',false);
+      drawPage(ctx,rightIdx,bookPW,0,bookPW,bookH,'right',true);
+      drawFlippingPage(ctx,prevSp.right,leftIdx,flip.progress,-1);
+    }
+  } else {
+    // Estático
+    drawPage(ctx,leftIdx,0,0,bookPW,bookH,'left',true);
+    drawPage(ctx,rightIdx,bookPW,0,bookPW,bookH,'right',true);
+  }
+
+  // Sombra central (lombada)
+  var spineGrad=ctx.createLinearGradient(bookPW-14,0,bookPW+14,0);
+  spineGrad.addColorStop(0,'rgba(10,3,6,.0)');
+  spineGrad.addColorStop(0.3,'rgba(10,3,6,.55)');
+  spineGrad.addColorStop(0.5,'rgba(10,3,6,.7)');
+  spineGrad.addColorStop(0.7,'rgba(10,3,6,.55)');
+  spineGrad.addColorStop(1,'rgba(10,3,6,.0)');
+  ctx.fillStyle=spineGrad;
+  ctx.fillRect(bookPW-14,0,28,bookH);
+
+  // Borda do livro
+  ctx.strokeStyle='rgba(201,166,110,.12)';
+  ctx.lineWidth=1;
+  roundRect(ctx,.5,.5,bookW-1,bookH-1,8);
+  ctx.stroke();
+
+  updateBookUI();
+}
+
+/* ── Renderiza uma página estática ── */
+function drawPage(ctx,pgIdx,x,y,w,h,side,withShadow){
+  ctx.save();
+  ctx.beginPath();
+  if(side==='left') roundRectPath(ctx,x,y,w,h,8,0,0,8);
+  else roundRectPath(ctx,x,y,w,h,0,8,8,0);
+  ctx.clip();
+
+  // Fundo da página
+  var pgCanvas=getPageCanvas(pgIdx,w,h,side);
+  ctx.drawImage(pgCanvas,x,y,w,h);
+
+  // Sombra interna (borda interior)
+  if(withShadow){
+    var sg;
+    if(side==='left'){
+      sg=ctx.createLinearGradient(x+w,y,x+w-30,y);
+    } else {
+      sg=ctx.createLinearGradient(x,y,x+30,y);
+    }
+    sg.addColorStop(0,'rgba(0,0,0,.22)');
+    sg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=sg;
+    ctx.fillRect(x,y,w,h);
+  }
+  ctx.restore();
+}
+
+/* ── Renderiza a folha virando com curvatura ── */
+function drawFlippingPage(ctx,frontIdx,backIdx,progress,dir){
+  // progress: 0=início, 1=fim da virada
+  // dir: 1=frente, -1=trás
+  var p=progress; // 0..1
+  // ângulo de dobra: 0 a PI
+  var angle=p*Math.PI;
+  var cosA=Math.cos(angle);
+  var sinA=Math.sin(angle);
+
+  // A folha começa na direita (bookPW..bookW) e termina na esquerda
+  // Ponto pivô: centro do livro
+  var pivotX=bookPW;
+
+  // Largura projetada da folha (perspectiva simples)
+  var projW=bookPW*Math.abs(cosA);
+  var isBack=angle>Math.PI/2; // já passou da metade
+
+  // Determina qual conteúdo mostrar (frente ou verso)
+  var showBack=isBack;
+  var pgIdx=showBack?backIdx:frontIdx;
+
+  if(projW<1)return; // invisível no ponto de dobra
+
+  ctx.save();
+
+  // Clip para não sair dos limites
+  roundRect(ctx,0,0,bookW,bookH,8);
+  ctx.clip();
+
+  // Posição X da folha
+  var foldX, foldW;
+  if(!isBack){
+    // Frente: começa em bookPW, encolhe para o centro
+    foldX=pivotX-projW*(dir>0?0:1);
+    if(dir>0) foldX=pivotX;
+    else foldX=pivotX-projW;
+  } else {
+    // Verso: expande do centro para o lado oposto
+    if(dir>0) foldX=pivotX-projW;
+    else foldX=pivotX;
+  }
+  foldW=projW;
+
+  // Clip da folha virando
+  ctx.beginPath();
+  if(dir>0){
+    if(!isBack){roundRectPath(ctx,pivotX,0,foldW,bookH,0,8,8,0);}
+    else{roundRectPath(ctx,pivotX-foldW,0,foldW,bookH,8,0,0,8);}
+  } else {
+    if(!isBack){roundRectPath(ctx,pivotX-foldW,0,foldW,bookH,8,0,0,8);}
+    else{roundRectPath(ctx,pivotX,0,foldW,bookH,0,8,8,0);}
+  }
+  ctx.clip();
+
+  // Desenha conteúdo da página com scale horizontal
+  var scaleX=Math.abs(cosA);
+  var side2=showBack?(dir>0?'left':'right'):(dir>0?'right':'left');
+  var pgCanvas=getPageCanvas(pgIdx,bookPW,bookH,side2);
+
+  ctx.save();
+  if(dir>0){
+    if(!isBack){
+      ctx.translate(pivotX+projW,0);
+      ctx.scale(-scaleX/(scaleX||.001)*Math.abs(cosA),1);
+      ctx.drawImage(pgCanvas,0,0,bookPW,bookH);
+    } else {
+      ctx.translate(pivotX,0);
+      ctx.scale(scaleX/(scaleX||.001)*Math.abs(cosA),1);
+      ctx.translate(-bookPW,0);
+      ctx.drawImage(pgCanvas,0,0,bookPW,bookH);
+    }
+  } else {
+    if(!isBack){
+      ctx.translate(pivotX,0);
+      ctx.scale(-scaleX/(scaleX||.001)*Math.abs(cosA),1);
+      ctx.translate(-bookPW,0);
+      ctx.drawImage(pgCanvas,0,0,bookPW,bookH);
+    } else {
+      ctx.translate(pivotX-projW+projW,0);
+      ctx.scale(scaleX/(scaleX||.001)*Math.abs(cosA),1);
+      ctx.drawImage(pgCanvas,0,0,bookPW,bookH);
+    }
+  }
+  ctx.restore();
+
+  // Sombra de curvatura realista
+  var shadowGrad;
+  var shadowIntensity=sinA*0.65; // máximo na metade da dobra
+  if(dir>0){
+    if(!isBack){
+      shadowGrad=ctx.createLinearGradient(pivotX,0,pivotX+projW,0);
+      shadowGrad.addColorStop(0,'rgba(0,0,0,'+shadowIntensity+')');
+      shadowGrad.addColorStop(0.3,'rgba(0,0,0,'+(shadowIntensity*.4)+')');
+      shadowGrad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=shadowGrad;
+      ctx.fillRect(pivotX,0,projW,bookH);
+    } else {
+      shadowGrad=ctx.createLinearGradient(pivotX-projW,0,pivotX,0);
+      shadowGrad.addColorStop(0,'rgba(0,0,0,0)');
+      shadowGrad.addColorStop(0.7,'rgba(0,0,0,'+(shadowIntensity*.4)+')');
+      shadowGrad.addColorStop(1,'rgba(0,0,0,'+shadowIntensity+')');
+      ctx.fillStyle=shadowGrad;
+      ctx.fillRect(pivotX-projW,0,projW,bookH);
+    }
+  } else {
+    if(!isBack){
+      shadowGrad=ctx.createLinearGradient(pivotX-projW,0,pivotX,0);
+      shadowGrad.addColorStop(0,'rgba(0,0,0,0)');
+      shadowGrad.addColorStop(0.7,'rgba(0,0,0,'+(shadowIntensity*.4)+')');
+      shadowGrad.addColorStop(1,'rgba(0,0,0,'+shadowIntensity+')');
+      ctx.fillStyle=shadowGrad;
+      ctx.fillRect(pivotX-projW,0,projW,bookH);
+    } else {
+      shadowGrad=ctx.createLinearGradient(pivotX,0,pivotX+projW,0);
+      shadowGrad.addColorStop(0,'rgba(0,0,0,'+shadowIntensity+')');
+      shadowGrad.addColorStop(0.3,'rgba(0,0,0,'+(shadowIntensity*.4)+')');
+      shadowGrad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=shadowGrad;
+      ctx.fillRect(pivotX,0,projW,bookH);
+    }
+  }
+
+  // Linha de dobra (brilho)
+  var lineX=dir>0?(isBack?pivotX-projW:pivotX):(isBack?pivotX:pivotX-projW);
+  if(isBack) lineX=dir>0?pivotX-projW:pivotX;
+  else lineX=dir>0?pivotX:pivotX-projW;
+  var lg=ctx.createLinearGradient(lineX-2,0,lineX+2,0);
+  lg.addColorStop(0,'rgba(255,240,230,0)');
+  lg.addColorStop(0.5,'rgba(255,240,230,'+(sinA*0.35)+')');
+  lg.addColorStop(1,'rgba(255,240,230,0)');
+  ctx.fillStyle=lg;
+  ctx.fillRect(lineX-2,0,4,bookH);
+
+  ctx.restore();
+}
+
+/* ── Cache de páginas como offscreen canvas ── */
+function getPageCanvas(pgIdx,w,h,side){
+  var key=pgIdx+'_'+w+'_'+h+'_'+side+'_'+(isAdmin?'a':'v');
+  if(bookPageCache[key])return bookPageCache[key];
+  var oc=document.createElement('canvas');
+  oc.width=w;oc.height=h;
+  var c=oc.getContext('2d');
+  renderPageToCtx(c,pgIdx,w,h,side);
+  bookPageCache[key]=oc;
+  return oc;
+}
+
+function invalidatePageCache(pgIdx){
+  Object.keys(bookPageCache).forEach(function(k){
+    if(k.startsWith(pgIdx+'_'))delete bookPageCache[k];
+  });
+}
+
+function renderPageToCtx(c,pgIdx,w,h,side){
+  var total=bookTotalPages();
+  // Fundo
+  if(pgIdx<0){
+    // Blank
+    var bg=c.createLinearGradient(0,0,w,h);
+    bg.addColorStop(0,'#e8d5c5');bg.addColorStop(1,'#dcc8b6');
+    c.fillStyle=bg;c.fillRect(0,0,w,h);
+    c.font='italic 28px Cormorant Garamond, serif';
+    c.fillStyle='rgba(60,20,30,.12)';c.textAlign='center';c.textBaseline='middle';
+    c.fillText('♡',w/2,h/2);
+    return;
+  }
+  if(pgIdx===0){
+    // Capa
+    var cg=c.createLinearGradient(0,0,w,h);
+    cg.addColorStop(0,'#f5e5d8');cg.addColorStop(1,'#e8d0c0');
+    c.fillStyle=cg;c.fillRect(0,0,w,h);
+    // Ornamento
+    c.font='36px serif';c.textAlign='center';c.textBaseline='middle';
+    c.globalAlpha=0.55;c.fillText('🌹',w/2,h*0.28);c.globalAlpha=1;
+    // Título
+    c.font='bold '+(w*0.1)+'px Dancing Script, cursive';
+    c.fillStyle='#3d2030';c.textAlign='center';c.textBaseline='alphabetic';
+    c.fillText('Nossa',w/2,h*0.46);
+    c.fillStyle='#c9566a';
+    c.fillText('História',w/2,h*0.58);
+    // Linha
+    c.beginPath();c.moveTo(w*0.25,h*0.64);c.lineTo(w*0.75,h*0.64);
+    c.strokeStyle='rgba(201,86,106,.35)';c.lineWidth=1;c.stroke();
+    // Data
+    var sd=settings_db.startDate||'2022-08-05';
+    var s=new Date(sd+'T12:00:00');
+    var sinceStr='Desde '+s.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+    c.font=(w*0.042)+'px Josefin Sans, sans-serif';
+    c.fillStyle='rgba(60,20,30,.4)';c.textAlign='center';
+    c.fillText(sinceStr.toUpperCase(),w/2,h*0.74);
+    // Dica
+    c.font=(w*0.038)+'px Josefin Sans, sans-serif';
+    c.fillStyle='rgba(201,86,106,.5)';
+    c.fillText('ARRASTE PARA VIRAR ›',w/2,h*0.88);
+    addPageLines(c,w,h,side);
+    return;
+  }
+  if(pgIdx>=total-1){
+    // Contracapa
+    var eg=c.createLinearGradient(0,0,w,h);
+    eg.addColorStop(0,'#e8d0c0');eg.addColorStop(1,'#dcc3af');
+    c.fillStyle=eg;c.fillRect(0,0,w,h);
+    c.font='22px serif';c.textAlign='center';c.textBaseline='middle';
+    c.globalAlpha=0.3;c.fillText('♡',w/2,h*0.42);c.globalAlpha=1;
+    c.font='italic '+(w*0.055)+'px Cormorant Garamond, serif';
+    c.fillStyle='rgba(60,20,30,.4)';c.textAlign='center';c.textBaseline='alphabetic';
+    c.fillText('Fim do capítulo de hoje.',w/2,h*0.54);
+    c.fillText('Mas a história continua...',w/2,h*0.64);
+    addPageLines(c,w,h,side);
+    return;
+  }
+
+  // Capítulo
+  var chIdx=pgIdx-1;
+  var ch=chapters_db[chIdx];
+  if(!ch)return;
+
+  // Fundo página
+  var parity=(pgIdx%2===0)?0:1;
+  var pb=c.createLinearGradient(0,0,w,h);
+  if(parity){pb.addColorStop(0,'#f5ede4');pb.addColorStop(1,'#eee0d2');}
+  else{pb.addColorStop(0,'#ede0d4');pb.addColorStop(1,'#e5d3c4');}
+  c.fillStyle=pb;c.fillRect(0,0,w,h);
+
+  addPageLines(c,w,h,side);
+
+  var pad=w*0.1;
+  var tx=side==='right'?pad:pad*0.6;
+  var ty=h*0.08;
+
+  // Número do capítulo
+  c.font=(w*0.038)+'px Josefin Sans, sans-serif';
+  c.fillStyle='rgba(60,20,30,.28)';
+  c.textAlign=side==='right'?'left':'right';
+  c.textBaseline='alphabetic';
+  c.fillText('CAPÍTULO '+(chIdx+1),side==='right'?tx:w-tx,ty);
+
+  // Emoji
+  c.font=(w*0.1)+'px serif';
+  c.textAlign=side==='right'?'left':'right';
+  c.textBaseline='alphabetic';
+  c.fillText(ch.emoji||'✨',side==='right'?tx:w-tx,ty+h*0.12);
+
+  // Data
+  c.font=(w*0.038)+'px Josefin Sans, sans-serif';
+  c.fillStyle='rgba(201,86,106,.75)';
+  c.fillText((ch.date||'').toUpperCase(),side==='right'?tx:w-tx,ty+h*0.22);
+
+  // Título (wrap)
+  c.font=(w*0.072)+'px Cormorant Garamond, serif';
+  c.fillStyle='#3d2030';
+  wrapText(c,ch.title||'',side==='right'?tx:w-tx,ty+h*0.32,w-pad*1.8,h*0.075,side);
+
+  // Linha divisória
+  var lx1=tx,lx2=w-tx;
+  c.beginPath();c.moveTo(lx1,ty+h*0.46);c.lineTo(lx2,ty+h*0.46);
+  c.strokeStyle='rgba(201,86,106,.2)';c.lineWidth=.8;c.stroke();
+
+  // Foto
+  var photoY=ty+h*0.49;
+  var photoH=h*0.22;
+  if(ch.photoUrl&&bookImgCache[ch.photoUrl]){
+    var img=bookImgCache[ch.photoUrl];
+    var ir=img.width/img.height;
+    var pw2=w-pad*1.4,ph2=photoH;
+    if(ir>pw2/ph2){ph2=pw2/ir;}else{pw2=ph2*ir;}
+    var ix=side==='right'?tx:(w-tx-pw2);
+    c.save();
+    roundRect(c,ix,photoY,pw2,ph2,5);
+    c.clip();
+    c.drawImage(img,ix,photoY,pw2,ph2);
+    c.restore();
+    // Borda foto
+    c.strokeStyle='rgba(201,130,100,.18)';c.lineWidth=1;
+    roundRect(c,ix,photoY,pw2,ph2,5);c.stroke();
+    photoY+=ph2+h*0.03;
+  } else if(ch.photoUrl){
+    loadImgForCanvas(ch.photoUrl);
+    // Placeholder
+    c.fillStyle='rgba(201,130,100,.07)';
+    c.beginPath();
+    roundRect(c,tx,photoY,w-pad*1.4,photoH,5);
+    c.fill();
+    c.font=(w*0.06)+'px serif';c.textAlign='center';c.textBaseline='middle';
+    c.fillStyle='rgba(60,20,30,.2)';
+    c.fillText('📷',w/2,photoY+photoH/2);
+    photoY+=photoH+h*0.03;
+  }
+
+  // Frase/quote
+  c.font='italic '+(w*0.048)+'px Cormorant Garamond, serif';
+  c.fillStyle='rgba(60,20,30,.6)';
+  c.textAlign=side==='right'?'left':'right';
+  wrapText(c,'"'+(ch.quote||'')+'"',side==='right'?tx+8:w-tx-8,photoY,w-pad*1.8-8,h*0.048,side);
+
+  // Rodapé
+  c.font=(w*0.034)+'px Josefin Sans, sans-serif';
+  c.fillStyle='rgba(60,20,30,.2)';
+  c.textAlign=side==='right'?'right':'left';
+  c.fillText(pgIdx+' / '+(bookTotalPages()-2),side==='right'?w-tx:tx,h-h*0.05);
+
+  // Admin: indicador de editável
+  if(isAdmin){
+    c.strokeStyle='rgba(201,86,106,.3)';c.lineWidth=1;c.setLineDash([3,3]);
+    roundRect(c,4,4,w-8,h-8,6);c.stroke();
+    c.setLineDash([]);
+    c.font=(w*0.036)+'px Josefin Sans, sans-serif';
+    c.fillStyle='rgba(201,86,106,.6)';c.textAlign='center';
+    c.fillText('✎ clique para editar',w/2,h-h*0.025);
+  }
+}
+
+function addPageLines(c,w,h,side){
+  // Linhas de pauta
+  c.strokeStyle='rgba(180,130,120,.1)';c.lineWidth=.6;
+  for(var y=h*0.12;y<h;y+=h*0.055){
+    c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke();
+  }
+  // Margem
+  var mx=side==='right'?w*0.13:w*0.87;
+  c.beginPath();c.moveTo(mx,0);c.lineTo(mx,h);
+  c.strokeStyle='rgba(201,86,106,.08)';c.lineWidth=.8;c.stroke();
+}
+
+function wrapText(c,text,x,y,maxW,lineH,side){
+  if(!text)return;
+  var words=text.split(' ');
+  var line='';
+  var lines=[];
+  for(var i=0;i<words.length;i++){
+    var test=line+(line?' ':'')+words[i];
+    if(c.measureText(test).width>maxW&&line){
+      lines.push(line);line=words[i];
+    } else {line=test;}
+  }
+  if(line)lines.push(line);
+  lines.forEach(function(l,i){c.fillText(l,x,y+i*lineH);});
+}
+
+function loadImgForCanvas(url){
+  if(bookImgCache[url])return;
+  bookImgCache[url]=null; // marca como carregando
+  var img=new Image();
+  img.crossOrigin='anonymous';
+  img.onload=function(){
+    bookImgCache[url]=img;
+    bookPageCache={};// invalida cache
+    bookNeedsRender=true;
+  };
+  img.src=url;
+}
+
+/* ── Helpers de arredondamento ── */
+function roundRect(c,x,y,w,h,r){c.beginPath();roundRectPath(c,x,y,w,h,r,r,r,r);}
+function roundRectPath(c,x,y,w,h,tl,tr,br,bl){
+  c.beginPath();
+  c.moveTo(x+tl,y);
+  c.lineTo(x+w-tr,y);c.arcTo(x+w,y,x+w,y+tr,tr);
+  c.lineTo(x+w,y+h-br);c.arcTo(x+w,y+h,x+w-br,y+h,br);
+  c.lineTo(x+bl,y+h);c.arcTo(x,y+h,x,y+h-bl,bl);
+  c.lineTo(x,y+tl);c.arcTo(x,y,x+tl,y,tl);
+  c.closePath();
+}
+
+/* ── Eventos de drag ── */
+function setupBookEvents(){
+  var c=bookCanvas;
+  c.addEventListener('mousedown',function(e){startDrag(e.offsetX,e.offsetY);});
+  window.addEventListener('mousemove',function(e){
+    if(!bookDrag.active)return;
+    var rect=bookCanvas.getBoundingClientRect();
+    moveDrag(e.clientX-rect.left);
+  });
+  window.addEventListener('mouseup',function(){endDrag();});
+
+  c.addEventListener('touchstart',function(e){
+    var r=c.getBoundingClientRect();
+    startDrag(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);
+  },{passive:true});
+  window.addEventListener('touchmove',function(e){
+    if(!bookDrag.active)return;
+    var r=c.getBoundingClientRect();
+    moveDrag(e.touches[0].clientX-r.left);
+  },{passive:true});
+  window.addEventListener('touchend',function(){endDrag();},{passive:true});
+
+  // Click para editar (admin)
+  c.addEventListener('click',function(e){
+    if(!isAdmin||bookDrag.wasDrag)return;
+    var sp=bookSpreadPages(bookCurrentSpread);
+    var x=e.offsetX;
+    if(x>bookPW){
+      var pgIdx=sp.right;
+      if(pgIdx>0&&pgIdx<bookTotalPages()-1)openChapterEditor(pgIdx-1);
+    } else {
+      var pgIdx2=sp.left;
+      if(pgIdx2>0&&pgIdx2<bookTotalPages()-1)openChapterEditor(pgIdx2-1);
+    }
+  });
+}
+
+function startDrag(x,y){
+  if(bookFlipState)return;
+  bookDrag.active=true;bookDrag.startX=x;bookDrag.wasDrag=false;
+  bookCanvas.classList.add('grabbing');
+}
+function moveDrag(x){
+  if(!bookDrag.active||bookFlipState)return;
+  var dx=x-bookDrag.startX;
+  if(Math.abs(dx)>6)bookDrag.wasDrag=true;
+  var progress=Math.max(0,Math.min(1,Math.abs(dx)/bookPW));
+  var dir=dx<0?1:-1;
+  // Verifica se pode virar nessa direção
+  if(dir>0&&bookCurrentSpread>=bookMaxSpreads()){return;}
+  if(dir<0&&bookCurrentSpread<=0){return;}
+  bookFlipState={progress:progress,dir:dir,auto:false};
+  bookNeedsRender=true;
+}
+function endDrag(){
+  if(!bookDrag.active)return;
+  bookDrag.active=false;
+  bookCanvas.classList.remove('grabbing');
+  if(!bookFlipState)return;
+  var threshold=0.22;
+  if(bookFlipState.progress>threshold){
+    animateFlip(bookFlipState.dir,bookFlipState.progress);
+  } else {
+    animateFlipCancel(bookFlipState.progress,bookFlipState.dir);
+  }
+}
+
+/* ── Animação de flip ── */
+function animateFlip(dir,startProgress){
+  var start=null;
+  var fromP=startProgress;
+  var duration=Math.max(180,(1-fromP)*480);
+  function step(ts){
+    if(!start)start=ts;
+    var elapsed=ts-start;
+    var t=Math.min(1,elapsed/duration);
+    // easing out
+    var ease=1-(1-t)*(1-t);
+    bookFlipState={progress:fromP+(1-fromP)*ease,dir:dir,auto:true};
+    bookNeedsRender=true;
+    if(t<1){requestAnimationFrame(step);}
+    else{
+      if(dir>0)bookCurrentSpread=Math.min(bookCurrentSpread+1,bookMaxSpreads());
+      else bookCurrentSpread=Math.max(bookCurrentSpread-1,0);
+      bookFlipState=null;
+      bookPageCache={};
+      bookNeedsRender=true;
+    }
+  }
+  requestAnimationFrame(step);
+}
+function animateFlipCancel(startProgress,dir){
+  var start=null;
+  var fromP=startProgress;
+  var duration=fromP*300;
+  function step(ts){
+    if(!start)start=ts;
+    var elapsed=ts-start;
+    var t=Math.min(1,elapsed/Math.max(duration,80));
+    var ease=t*t;
+    bookFlipState={progress:fromP*(1-ease),dir:dir,auto:true};
+    bookNeedsRender=true;
+    if(t<1){requestAnimationFrame(step);}
+    else{bookFlipState=null;bookNeedsRender=true;}
+  }
+  requestAnimationFrame(step);
+}
+
+function bookFlipNext(){
+  if(bookFlipState||bookCurrentSpread>=bookMaxSpreads())return;
+  animateFlip(1,0);
+}
+function bookFlipPrev(){
+  if(bookFlipState||bookCurrentSpread<=0)return;
+  animateFlip(-1,0);
+}
+
+function updateBookUI(){
+  var total=bookMaxSpreads()+1;
+  var dots=document.getElementById('book-dots');
+  if(!dots)return;
+  dots.innerHTML='';
+  for(var i=0;i<total;i++){
+    var d=document.createElement('div');
+    d.className='b-dot'+(i===bookCurrentSpread?' active':'');
+    (function(idx){d.onclick=function(){if(!bookFlipState){var dir=idx>bookCurrentSpread?1:-1;var diff=Math.abs(idx-bookCurrentSpread);if(diff>0){bookCurrentSpread=idx;bookPageCache={};bookNeedsRender=true;}}};})(i);
+    dots.appendChild(d);
+  }
+  document.getElementById('btn-prev').disabled=(bookCurrentSpread===0||!!bookFlipState);
+  document.getElementById('btn-next').disabled=(bookCurrentSpread>=bookMaxSpreads()||!!bookFlipState);
+  var sp=bookSpreadPages(bookCurrentSpread);
+  var r=sp.right,tot=bookTotalPages()-2;
+  document.getElementById('book-page-label').textContent=
+    r===0?'Capa · '+chapters_db.length+' capítulos'
+    :r>=bookTotalPages()-1?'Fim'
+    :'Capítulo '+(r)+' de '+tot;
+}
+
+/* ── Editor de capítulo (admin) ── */
+function openChapterEditor(chIdx){
+  if(!isAdmin)return;
+  ceEditIdx=chIdx;cePendingPhoto=null;
+  var ch=chapters_db[chIdx];
+  document.getElementById('ce-title-label').textContent='Capítulo '+(chIdx+1);
+  document.getElementById('ce-idx').value=chIdx;
+  document.getElementById('ce-emoji').value=ch.emoji||'';
+  document.getElementById('ce-date').value=ch.date||'';
+  document.getElementById('ce-title-inp').value=ch.title||'';
+  document.getElementById('ce-quote').value=ch.quote||'';
+  var prev=document.getElementById('ce-prev');
+  if(ch.photoUrl){prev.src=ch.photoUrl;prev.classList.add('show');}
+  else{prev.src='';prev.classList.remove('show');}
+  document.getElementById('ce-photo-hint').textContent=ch.photoUrl?'✓ Foto atual':'';
+  document.getElementById('ce-photo-btn').textContent=ch.photoUrl?'+ Trocar foto':'+ Adicionar foto';
+  document.getElementById('chapter-editor').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeChapterEditor(){document.getElementById('chapter-editor').classList.remove('open');document.body.style.overflow='';}
+function handleCEPhoto(e){
+  var file=e.target.files[0];if(!file)return;
+  cePendingPhoto=file;
+  var prev=document.getElementById('ce-prev');
+  prev.src=URL.createObjectURL(file);prev.classList.add('show');
+  document.getElementById('ce-photo-hint').textContent='✓ '+file.name;
+  document.getElementById('ce-photo-hint').className='ce-hint ok';
+  e.target.value='';
+}
+function saveChapterEditor(){
+  var chIdx=parseInt(document.getElementById('ce-idx').value);
+  if(isNaN(chIdx)||!chapters_db[chIdx])return;
+  chapters_db[chIdx].emoji=document.getElementById('ce-emoji').value||'✨';
+  chapters_db[chIdx].date=document.getElementById('ce-date').value||'';
+  chapters_db[chIdx].title=document.getElementById('ce-title-inp').value||'';
+  chapters_db[chIdx].quote=document.getElementById('ce-quote').value||'';
+  if(cePendingPhoto){
+    showLoad('Enviando foto...');
+    uploadCloudinary(cePendingPhoto,null).then(function(url){
+      chapters_db[chIdx].photoUrl=url;
+      hideLoad();invalidatePageCache(chIdx+1);bookPageCache={};bookNeedsRender=true;
+      closeChapterEditor();showToast('📸 Foto salva! Clique em Salvar história.');
+    }).catch(function(){hideLoad();showToast('Erro ao enviar foto.');});
+  } else {
+    invalidatePageCache(chIdx+1);bookPageCache={};bookNeedsRender=true;
+    closeChapterEditor();showToast('✓ Capítulo atualizado! Clique em Salvar história.');
+  }
+}
+function deleteChapterFromEditor(){
+  var chIdx=parseInt(document.getElementById('ce-idx').value);
+  if(!confirm('Remover capítulo '+(chIdx+1)+'?'))return;
+  chapters_db.splice(chIdx,1);
+  if(bookCurrentSpread>bookMaxSpreads())bookCurrentSpread=bookMaxSpreads();
+  bookPageCache={};bookNeedsRender=true;
+  closeChapterEditor();showToast('Capítulo removido. Salve a história!');
+}
+
+/* ═══════════════════════════════════════
+   MOMENTOS
+═══════════════════════════════════════ */
 function carregarMomentos(){
   return db.collection('momentos').orderBy('ordem').get().then(function(snap){
     momentos_db=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});renderMomentos();
@@ -992,7 +1275,7 @@ function openMomentModal(id){
   document.getElementById('mm-edit-id').value=id||'';
   ['mm-cat','mm-sub','mm-title','mm-quote','mm-letter','mm-sign','mm-song','mm-artist','mm-url'].forEach(function(x){document.getElementById(x).value='';});
   var prev=document.getElementById('mm-prev');prev.className='mm-prev';prev.src='';
-  ['mm-photo-hint','mm-audio-hint'].forEach(function(x){document.getElementById(x).textContent='';document.getElementById(x).className='mm-hint';});
+  ['mm-photo-hint','mm-audio-hint'].forEach(function(x){var el=document.getElementById(x);if(el){el.textContent='';el.className='mm-hint';}});
   document.getElementById('mm-photo-btn').textContent='+ Escolher foto';
   document.getElementById('mm-audio-btn').textContent='+ Escolher MP3';
   document.getElementById('mm-prog-wrap').classList.remove('show');
@@ -1005,7 +1288,7 @@ function openMomentModal(id){
     document.getElementById('mm-song').value=m.songName||'';document.getElementById('mm-artist').value=m.songArtist||'';
     document.getElementById('mm-url').value=m.songUrl||'';
     if(m.photoUrl){prev.src=m.photoUrl;prev.classList.add('show');document.getElementById('mm-photo-hint').textContent='✓ Foto atual';document.getElementById('mm-photo-hint').className='mm-hint ok';}
-    if(m.audioUrl){document.getElementById('mm-audio-hint').textContent='✓ Áudio na nuvem';document.getElementById('mm-audio-hint').className='mm-hint ok';document.getElementById('mm-audio-btn').textContent='+ Trocar áudio';}
+    if(m.audioUrl){document.getElementById('mm-audio-hint').textContent='✓ Áudio na nuvem';document.getElementById('mm-audio-hint').className='mm-hint ok';document.getElementById('mm-audio-btn').textContent='+ Trocar';}
   }
   document.getElementById('moment-modal').classList.add('open');document.body.style.overflow='hidden';
 }
@@ -1018,7 +1301,7 @@ function saveMoment(){
   var data={category:document.getElementById('mm-cat').value||'AMOR',subcategory:document.getElementById('mm-sub').value||'',title:document.getElementById('mm-title').value||'Sem título',quote:document.getElementById('mm-quote').value||'',letter:document.getElementById('mm-letter').value||'',signature:document.getElementById('mm-sign').value||'',songName:document.getElementById('mm-song').value||'',songArtist:document.getElementById('mm-artist').value||'',songUrl:document.getElementById('mm-url').value||'',ordem:m?(m.ordem||0):momentos_db.length,photoUrl:m?(m.photoUrl||''):'',audioUrl:m?(m.audioUrl||''):''};
   var chain=Promise.resolve();
   if(pendingPhoto){chain=chain.then(function(){showLoad('Enviando foto...');return uploadCloudinary(pendingPhoto,function(p){document.getElementById('load-txt').textContent='Foto... '+p+'%';});}).then(function(url){data.photoUrl=url;hideLoad();});}
-  if(pendingAudio){chain=chain.then(function(){showLoad('Enviando áudio...');document.getElementById('mm-prog-wrap').classList.add('show');return uploadCloudinary(pendingAudio,function(p){document.getElementById('mm-prog-fill').style.width=p+'%';document.getElementById('mm-prog-lbl').textContent=p+'%';document.getElementById('load-txt').textContent='Áudio... '+p+'%';});}).then(function(url){data.audioUrl=url;hideLoad();});}
+  if(pendingAudio){chain=chain.then(function(){showLoad('Enviando áudio...');document.getElementById('mm-prog-wrap').classList.add('show');return uploadCloudinary(pendingAudio,function(p){document.getElementById('mm-prog-fill').style.width=p+'%';document.getElementById('load-txt').textContent='Áudio... '+p+'%';});}).then(function(url){data.audioUrl=url;hideLoad();});}
   chain.then(function(){if(editingId){return db.collection('momentos').doc(editingId).update(data).then(function(){var i=momentos_db.findIndex(function(x){return x.id===editingId;});if(i>=0)momentos_db[i]=Object.assign({id:editingId},data);});}else{return db.collection('momentos').add(data).then(function(ref){momentos_db.push(Object.assign({id:ref.id},data));});}}).then(function(){renderMomentos();closeMomentModal();showToast('💕 Momento salvo!');}).catch(function(err){hideLoad();showToast('Erro: '+err.message);}).finally(function(){btn.disabled=false;btn.textContent='Salvar ♡';});
 }
 function deleteMoment(id){if(!confirm('Excluir?'))return;db.collection('momentos').doc(id).delete().then(function(){momentos_db=momentos_db.filter(function(m){return m.id!==id;});renderMomentos();showToast('Excluído');});}
@@ -1026,18 +1309,18 @@ function deleteMoment(id){if(!confirm('Excluir?'))return;db.collection('momentos
 function abrirLogin(){document.getElementById('login-modal').classList.remove('hidden');document.getElementById('pwd-inp').value='';document.getElementById('pwd-err').textContent='';setTimeout(function(){document.getElementById('pwd-inp').focus();},120);}
 function fecharLogin(){document.getElementById('login-modal').classList.add('hidden');}
 function checkPwd(){if(document.getElementById('pwd-inp').value===ADMIN_PASSWORD){fecharLogin();entrarAdmin();}else{document.getElementById('pwd-err').textContent='Senha incorreta.';document.getElementById('pwd-inp').value='';}}
-function entrarAdmin(){isAdmin=true;document.body.classList.add('admin-mode');document.getElementById('hero-names').contentEditable='true';document.getElementById('date-ed').style.display='block';buildBook();renderMomentos();showToast('🔓 Admin ativado!');}
-function sairAdmin(){isAdmin=false;document.body.classList.remove('admin-mode');document.getElementById('hero-names').contentEditable='false';document.getElementById('date-ed').style.display='none';salvarConfigs();salvarHistoria();buildBook();renderMomentos();showToast('✓ Saiu do admin.');}
+function entrarAdmin(){isAdmin=true;document.body.classList.add('admin-mode');document.getElementById('hero-names').contentEditable='true';document.getElementById('date-ed').style.display='block';bookPageCache={};bookNeedsRender=true;renderMomentos();showToast('🔓 Admin — clique nas páginas para editar!');}
+function sairAdmin(){isAdmin=false;document.body.classList.remove('admin-mode');document.getElementById('hero-names').contentEditable='false';document.getElementById('date-ed').style.display='none';salvarConfigs();salvarHistoria();bookPageCache={};bookNeedsRender=true;renderMomentos();showToast('✓ Saiu do admin.');}
 function limparTudo(){
   showLoad('Apagando...');
   db.collection('momentos').get().then(function(snap){return Promise.all(snap.docs.map(function(d){return d.ref.delete();}));})
   .then(function(){return db.collection('config').doc('settings').set({names:'Alex & Seu Amor ♡',startDate:'2022-08-05'});})
   .then(function(){return db.collection('config').doc('chapters').set({list:capitulosDefault()});})
-  .then(function(){momentos_db=[];chapters_db=capitulosDefault();settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';document.getElementById('date-inp').value='2022-08-05';currentSpread=0;buildBook();renderMomentos();atualizarContador();hideLoad();showToast('🗑 Limpo');});
+  .then(function(){momentos_db=[];chapters_db=capitulosDefault();settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';document.getElementById('date-inp').value='2022-08-05';bookCurrentSpread=0;bookPageCache={};bookNeedsRender=true;renderMomentos();atualizarContador();hideLoad();showToast('🗑 Limpo');});
 }
 
 /* JOGUINHO */
-var PERGUNTAS=[{q:"Qual a cor favorita da sua parceira?",who:"💙 Ele responde sobre ela",opts:["Azul","Rosa","Roxo","Verde"],ans:0},{q:"Qual o prato favorito do seu parceiro?",who:"🍽️ Ela responde sobre ele",opts:["Pizza","Churrasco","Macarrão","Sushi"],ans:1},{q:"O que ele/ela faria num sábado perfeito?",who:"🛋️ Respondam juntos",opts:["Ficar em casa","Sair p/ aventura","Viagem rápida","Parque"],ans:0},{q:"Como foi o primeiro olhar de vocês?",who:"👀 Respondam juntos",opts:["Tímido e doce","Intenso e direto","Sem querer","Com um sorriso"],ans:3},{q:"Qual filme assistiriam juntos hoje?",who:"🎬 Respondam juntos",opts:["Comédia romântica","Terror","Animação","Ação"],ans:0},{q:"Onde gostariam de se casar?",who:"💍 Sonhem juntos",opts:["Praia ao pôr do sol","Campo florido","Cidade histórica","Em casa"],ans:1},{q:"Qual qualidade mais ama no parceiro?",who:"🥰 Cada um responde",opts:["O sorriso","A lealdade","O jeito de cuidar","O humor"],ans:2},{q:"Qual viagem dos sonhos de vocês?",who:"✈️ Respondam juntos",opts:["Europa romântica","Ásia exótica","América do Sul","Ilhas tropicais"],ans:0},{q:"Maior defeito (com carinho 😂)?",who:"😄 Com honestidade",opts:["Teimoso(a)","Esquecido(a)","Dramático(a)","Perfeccionista"],ans:0},{q:"Qual frase resume o amor de vocês?",who:"💬 Última pergunta!",opts:["'Você é meu lar'","'Melhores amigos'","'Para sempre e mais um dia'","'Você me completa'"],ans:2}];
+var PERGUNTAS=[{q:"Qual a cor favorita da sua parceira?",who:"💙 Ele responde",opts:["Azul","Rosa","Roxo","Verde"],ans:0},{q:"Qual o prato favorito do seu parceiro?",who:"🍽️ Ela responde",opts:["Pizza","Churrasco","Macarrão","Sushi"],ans:1},{q:"O que faria num sábado perfeito?",who:"🛋️ Respondam juntos",opts:["Ficar em casa","Sair p/ aventura","Viagem rápida","Parque"],ans:0},{q:"Como foi o primeiro olhar?",who:"👀 Respondam juntos",opts:["Tímido e doce","Intenso e direto","Sem querer","Com um sorriso"],ans:3},{q:"Qual filme assistiriam hoje?",who:"🎬 Respondam juntos",opts:["Comédia romântica","Terror","Animação","Ação"],ans:0},{q:"Onde gostariam de se casar?",who:"💍 Sonhem juntos",opts:["Praia ao pôr do sol","Campo florido","Cidade histórica","Em casa"],ans:1},{q:"Qual qualidade mais ama?",who:"🥰 Cada um responde",opts:["O sorriso","A lealdade","O jeito de cuidar","O humor"],ans:2},{q:"Qual viagem dos sonhos?",who:"✈️ Respondam juntos",opts:["Europa romântica","Ásia exótica","América do Sul","Ilhas tropicais"],ans:0},{q:"Maior defeito (com carinho)?",who:"😄 Com honestidade",opts:["Teimoso(a)","Esquecido(a)","Dramático(a)","Perfeccionista"],ans:0},{q:"Qual frase resume o amor?",who:"💬 Última!",opts:["'Você é meu lar'","'Melhores amigos'","'Para sempre e mais um dia'","'Você me completa'"],ans:2}];
 var qi=0,score=0,respondido=false;
 function showScreen(id){document.querySelectorAll('.gs').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
 function startGame(){qi=0;score=0;showScreen('gs-q');renderPergunta();}
@@ -1047,12 +1330,12 @@ function mostrarResultado(){showScreen('gs-res');document.getElementById('r-scor
 function resetGame(){showScreen('gs-start');}
 
 /* PÉTALAS */
-var canvas=document.getElementById('petals'),ctx=canvas.getContext('2d');
+var canvas=document.getElementById('petals'),ctx2=canvas.getContext('2d');
 function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
-function Petal(){this.reset=function(){this.x=Math.random()*canvas.width;this.y=-20;this.sz=Math.random()*7+3;this.sp=Math.random()*.8+0.3;this.dr=Math.random()*.5-.25;this.al=Math.random()*.3+0.1;this.rot=Math.random()*Math.PI*2;this.rs=Math.random()*.02-.01;this.col=['#f7dde6','#e8b4c0','#c9566a','#f2c4d0'][Math.floor(Math.random()*4)];};this.reset();this.y=Math.random()*canvas.height;this.update=function(){this.y+=this.sp;this.x+=this.dr;this.rot+=this.rs;if(this.y>canvas.height+30)this.reset();};this.draw=function(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.rot);ctx.globalAlpha=this.al;ctx.fillStyle=this.col;ctx.beginPath();ctx.ellipse(0,0,this.sz*.55,this.sz,0,0,Math.PI*2);ctx.fill();ctx.restore();};}
+function Petal(){this.reset=function(){this.x=Math.random()*canvas.width;this.y=-20;this.sz=Math.random()*7+3;this.sp=Math.random()*.8+0.3;this.dr=Math.random()*.5-.25;this.al=Math.random()*.3+0.1;this.rot=Math.random()*Math.PI*2;this.rs=Math.random()*.02-.01;this.col=['#f7dde6','#e8b4c0','#c9566a','#f2c4d0'][Math.floor(Math.random()*4)];};this.reset();this.y=Math.random()*canvas.height;this.update=function(){this.y+=this.sp;this.x+=this.dr;this.rot+=this.rs;if(this.y>canvas.height+30)this.reset();};this.draw=function(){ctx2.save();ctx2.translate(this.x,this.y);ctx2.rotate(this.rot);ctx2.globalAlpha=this.al;ctx2.fillStyle=this.col;ctx2.beginPath();ctx2.ellipse(0,0,this.sz*.55,this.sz,0,0,Math.PI*2);ctx2.fill();ctx2.restore();};}
 var petalArr=[];for(var i=0;i<20;i++)petalArr.push(new Petal());
-function animPetals(){ctx.clearRect(0,0,canvas.width,canvas.height);petalArr.forEach(function(p){p.update();p.draw();});requestAnimationFrame(animPetals);}
+function animPetals(){ctx2.clearRect(0,0,canvas.width,canvas.height);petalArr.forEach(function(p){p.update();p.draw();});requestAnimationFrame(animPetals);}
 
 init();
 </script>
