@@ -7,28 +7,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0d0a0b; --card:#1c1214; --card2:#221518;
-  --rose:#c9566a; --rose-deep:#8b2e42; --rose-soft:rgba(201,86,106,.15);
-  --cream:#fdf6f0; --gold:#c9a96e; --gold-soft:rgba(201,166,110,.18);
-  --text:#3d2030; --muted:#9b7080; --white:rgba(253,246,240,.88);
+  --bg:#0d0a0b;--card:#1c1214;--rose:#c9566a;--rose-deep:#8b2e42;
+  --rose-soft:rgba(201,86,106,.15);--cream:#fdf6f0;--gold:#c9a96e;
+  --gold-soft:rgba(201,166,110,.18);--text:#3d2030;--muted:#9b7080;
+  --white:rgba(253,246,240,.88);
 }
-*{margin:0;padding:0;box-sizing:border-box} html{scroll-behavior:smooth}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
 body{font-family:'Josefin Sans',sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden}
 
-/* ─── PETALS ─── */
+/* PETALS */
 #petals{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3}
 
-/* ─── NAV ─── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:2px;padding:11px 20px;background:rgba(13,10,11,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,166,110,.14)}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:2px;padding:11px 20px;background:rgba(13,10,11,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,166,110,.14)}
 nav button{background:none;border:none;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(253,246,240,.38);padding:6px 13px;border-radius:20px;transition:all .3s}
 nav button:hover,nav button.active{color:var(--gold);background:var(--gold-soft)}
 .nl{font-size:14px;color:var(--rose);opacity:.4;margin:0 3px}
 
-/* ─── SECTIONS ─── */
+/* SECTIONS */
 section{min-height:100vh;position:relative;z-index:1;display:none;flex-direction:column;align-items:center;justify-content:center;padding:100px 40px 70px}
 section.active{display:flex}
 
-/* ══════════════════════ HERO ══════════════════════ */
+/* HERO */
 #hero{background:linear-gradient(160deg,#0d0a0b 0%,#2a1020 55%,#3d1a26 100%);text-align:center}
 .hero-eyebrow{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:22px;opacity:.7;animation:fadeUp .9s .2s both}
 .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(50px,9.5vw,104px);color:var(--cream);font-weight:300;line-height:.88;animation:fadeUp .9s .4s both}
@@ -45,7 +45,7 @@ section.active{display:flex}
 #date-ed label{font-size:9px;letter-spacing:2px;color:var(--gold);display:block;margin-bottom:4px;opacity:.7}
 #date-inp{background:rgba(255,255,255,.07);border:1px solid var(--gold-soft);border-radius:7px;padding:6px 10px;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:11px;outline:none}
 
-/* ══════════════════════ HISTÓRIA ══════════════════════ */
+/* HISTÓRIA */
 #historia{background:var(--cream);color:var(--text)}
 .s-eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:8px;opacity:.8}
 .s-title-light{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,62px);font-weight:300;color:var(--rose-deep);text-align:center;line-height:1;margin-bottom:46px}
@@ -56,34 +56,30 @@ section.active{display:flex}
 .tl-item:nth-child(even){flex-direction:row-reverse}
 .tl-box{flex:1;background:white;border-radius:14px;padding:20px;box-shadow:0 4px 20px rgba(139,46,66,.07);border:1px solid rgba(201,166,110,.14)}
 .tl-item:nth-child(odd) .tl-box{text-align:right}
-.tl-dot{width:11px;height:11px;border-radius:50%;background:var(--rose);border:3px solid var(--cream);box-shadow:0 0 0 3px var(--rose);position:absolute;left:50%;transform:translateX(-50%);top:18px;flex-shrink:0}
+.tl-dot{width:11px;height:11px;border-radius:50%;background:var(--rose);border:3px solid var(--cream);box-shadow:0 0 0 3px var(--rose);position:absolute;left:50%;transform:translateX(-50%);top:20px}
 .tl-sp{flex:1}
 .tl-date{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
 .tl-ttl{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--rose-deep);margin-bottom:4px}
 .tl-txt{font-size:12px;line-height:1.8;color:var(--muted)}
 .tl-emoji{font-size:20px;margin-bottom:5px;display:block}
 .admin-mode .tl-box{border:1.5px dashed rgba(201,86,106,.35)!important;position:relative}
-.admin-mode .tl-box::after{content:'✎';position:absolute;top:8px;right:10px;font-size:12px;color:rgba(201,86,106,.5)}
-.admin-mode .tl-box [contenteditable]{outline:none;border-bottom:1px dashed rgba(201,86,106,.4);cursor:text;border-radius:2px;transition:background .2s}
-.admin-mode .tl-box [contenteditable]:focus{background:rgba(201,86,106,.07);border-bottom-color:var(--rose)}
-.tl-del{display:none;margin-top:8px;background:none;border:1px solid var(--rose);color:var(--rose);padding:3px 10px;border-radius:7px;cursor:pointer;font-size:9px;letter-spacing:1px;font-family:'Josefin Sans',sans-serif}
+.admin-mode .tl-box [contenteditable]{outline:none;border-bottom:1px dashed rgba(201,86,106,.4);cursor:text;border-radius:2px}
+.admin-mode .tl-box [contenteditable]:focus{background:rgba(201,86,106,.07)}
+.tl-del{display:none;margin-top:8px;background:none;border:1px solid var(--rose);color:var(--rose);padding:3px 10px;border-radius:7px;cursor:pointer;font-size:10px;font-family:'Josefin Sans',sans-serif}
 .admin-mode .tl-del{display:inline-block}
 .add-ch-btn{display:none;align-items:center;justify-content:center;gap:7px;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:11px;padding:12px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-top:8px;width:100%;max-width:620px;transition:all .3s}
 .add-ch-btn:hover{background:rgba(201,86,106,.14)}
 .admin-mode .add-ch-btn{display:flex}
 
-/* ══════════════════════ MOMENTOS (new!) ══════════════════════ */
-#momentos{background:var(--bg);padding-top:110px;padding-bottom:90px;align-items:center}
+/* MOMENTOS */
+#momentos{background:var(--bg);padding-top:110px;padding-bottom:90px}
 .momentos-eyebrow{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);text-align:center;opacity:.65;margin-bottom:12px}
 .momentos-heading{font-family:'Dancing Script',cursive;font-size:clamp(34px,5.5vw,66px);font-weight:700;color:var(--cream);text-align:center;line-height:1.15;margin-bottom:50px}
 .momentos-heading span{color:var(--rose)}
-
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1060px;width:100%}
 @media(max-width:900px){.cards-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.cards-grid{grid-template-columns:1fr}}
-
-/* ─── MOMENT CARD ─── */
-.m-card{background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s, box-shadow .3s;border:1px solid rgba(255,255,255,.05);position:relative}
+.m-card{background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;border:1px solid rgba(255,255,255,.05);position:relative}
 .m-card:hover{transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .m-card-photo{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
 .m-card-photo-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(160deg,#2a1020,#1a0f14);display:flex;align-items:center;justify-content:center;font-size:36px;color:rgba(201,166,110,.2)}
@@ -100,20 +96,17 @@ section.active{display:flex}
 .m-song-artist{font-size:9px;color:rgba(253,246,240,.38);letter-spacing:1px}
 .m-read-btn{width:100%;background:none;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px;color:rgba(253,246,240,.6);font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:7px}
 .m-read-btn:hover{border-color:var(--rose);color:var(--rose);background:var(--rose-soft)}
-/* admin controls on card */
 .m-card-admin{display:none;position:absolute;top:8px;right:8px;gap:6px;z-index:10}
 .admin-mode .m-card-admin{display:flex}
 .m-card-admin button{background:rgba(13,10,11,.85);border:1px solid rgba(255,255,255,.15);color:var(--cream);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .2s}
 .m-card-admin button:hover{border-color:var(--rose);color:var(--rose)}
-
-/* add card slot (admin) */
 .m-add-slot{background:rgba(255,255,255,.03);border:2px dashed rgba(201,86,106,.3);border-radius:16px;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;cursor:pointer;min-height:300px;transition:all .3s}
 .m-add-slot:hover{border-color:var(--rose);background:var(--rose-soft)}
 .admin-mode .m-add-slot{display:flex}
 .m-add-slot span:first-child{font-size:32px;color:rgba(201,86,106,.5)}
 .m-add-slot span:last-child{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,86,106,.5)}
 
-/* ─── LETTER MODAL ─── */
+/* LETTER MODAL */
 #letter-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(13,10,11,.92);backdrop-filter:blur(14px)}
 #letter-modal.open{display:flex}
 .lm-box{background:var(--cream);border-radius:20px;max-width:580px;width:100%;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.6)}
@@ -129,52 +122,39 @@ section.active{display:flex}
 .lm-divider span{color:var(--gold);font-size:12px}
 .lm-letter{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--muted);line-height:1.85;margin-bottom:22px}
 .lm-letter p{margin-bottom:14px}
-.lm-letter p:last-child{margin-bottom:0}
 .lm-signature{font-family:'Dancing Script',cursive;font-size:22px;color:var(--rose);text-align:center;margin-bottom:22px;font-weight:600}
-.lm-music-bar{display:flex;align-items:center;gap:12px;background:rgba(201,86,106,.08);border:1px solid rgba(201,86,106,.2);border-radius:12px;padding:12px 16px}
-/* youtube player — escondido mas com pixels reais para autoplay funcionar */
-.lm-embed-wrap{position:fixed;bottom:1px;right:1px;width:1px;height:1px;overflow:hidden;opacity:0.01;pointer-events:none;display:none;z-index:1}
-.lm-embed-wrap.show{display:block}
-.lm-embed-label{display:none}
-.lm-embed-label.show{display:none}
-.lm-embed-wrap iframe{width:1px;height:1px;border:none;display:block}
-.lm-embed-wrap.spotify iframe{width:1px;height:1px}
-/* fallback button when embed is blocked (arquivo local) */
-.lm-play-fallback{display:none;align-items:center;gap:12px;background:rgba(201,86,106,.08);border:1px solid rgba(201,86,106,.22);border-radius:12px;padding:13px 16px;margin-top:14px;cursor:pointer;transition:all .3s;width:100%;text-align:left}
-.lm-play-fallback:hover{background:rgba(201,86,106,.16);border-color:var(--rose)}
-.lm-play-fallback.show{display:flex}
-.lm-play-fallback-icon{width:36px;height:36px;border-radius:50%;background:var(--rose);display:flex;align-items:center;justify-content:center;font-size:16px;color:white;flex-shrink:0;box-shadow:0 4px 14px rgba(201,86,106,.4)}
-.lm-play-fallback-info{flex:1}
-.lm-play-fallback-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:2px}
-.lm-play-fallback-name{font-size:13px;color:var(--text)}
-.lm-play-fallback-artist{font-size:10px;color:var(--muted)}
-.lm-play-fallback-arrow{font-size:12px;color:var(--rose);opacity:.7}
-.lm-music-icon{width:34px;height:34px;border-radius:50%;background:var(--rose);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.lm-music-info{flex:1;min-width:0}
-.lm-music-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:2px}
-.lm-music-name{font-size:13px;color:var(--text);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lm-music-artist{font-size:10px;color:var(--muted)}
-.lm-open-btn{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);background:none;border:none;cursor:pointer;white-space:nowrap;font-family:'Josefin Sans',sans-serif}
-.lm-open-btn:hover{text-decoration:underline}
-/* audio progress inside modal */
-.lm-progress{width:100%;height:2px;background:rgba(201,86,106,.2);border-radius:2px;margin-top:8px;cursor:pointer}
-.lm-progress-fill{height:100%;background:var(--rose);border-radius:2px;width:0%;transition:width .4s}
+/* music bar inside letter */
+.lm-music-now{display:none;align-items:center;gap:12px;background:rgba(201,86,106,.08);border:1px solid rgba(201,86,106,.22);border-radius:12px;padding:13px 16px;margin-top:14px}
+.lm-music-now.show{display:flex}
+.lm-music-dot{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:pulse 1.2s ease-in-out infinite;flex-shrink:0}
+.lm-music-info2{flex:1;min-width:0}
+.lm-music-label2{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:2px}
+.lm-music-name2{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lm-music-artist2{font-size:10px;color:var(--muted)}
+.lm-open-ext{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);background:none;border:none;cursor:pointer;white-space:nowrap;font-family:'Josefin Sans',sans-serif;flex-shrink:0}
+.lm-open-ext:hover{text-decoration:underline}
+/* youtube embed cover */
+.lm-yt-wrap{position:relative;height:56px;border-radius:12px;overflow:hidden;display:none;margin-top:14px}
+.lm-yt-wrap.show{display:block}
+.lm-yt-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;opacity:.001;pointer-events:none}
+.lm-yt-cover{position:absolute;inset:0;z-index:2;background:rgba(201,86,106,.09);border:1px solid rgba(201,86,106,.22);border-radius:12px;display:flex;align-items:center;gap:12px;padding:0 16px}
+.lm-yt-dot{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:pulse 1.2s ease-in-out infinite;flex-shrink:0}
+.lm-yt-info{flex:1;min-width:0}
+.lm-yt-label{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);margin-bottom:1px}
+.lm-yt-name{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lm-yt-artist{font-size:10px;color:var(--muted)}
 
-
-/* ─── FLOATING "TOCANDO AGORA" ─── */
+/* FLOATING NOW PLAYING */
 #now-playing{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(13,10,11,.95);border:1px solid rgba(201,86,106,.3);border-radius:30px;padding:9px 16px;display:flex;align-items:center;gap:10px;z-index:999;transition:transform .4s;backdrop-filter:blur(10px);pointer-events:none}
 #now-playing.show{transform:translateX(-50%) translateY(0)}
 .np-dot{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:pulse 1.2s ease-in-out infinite}
 .np-text{font-size:11px;color:var(--cream)}
-.np-song{color:var(--rose);font-weight:400}
+.np-song{color:var(--rose)}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-
-/* hidden audio */
 audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
 
-/* ══════════════════════ JOGO ══════════════════════ */
+/* JOGO */
 #jogo{background:linear-gradient(145deg,#0d0a0b 0%,#1c0e16 100%)}
-.s-eyebrow-dark{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:8px;opacity:.65}
 .s-title-dark{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,5vw,60px);font-weight:300;color:var(--cream);text-align:center;line-height:1;margin-bottom:46px}
 .s-title-dark em{font-style:italic;color:var(--rose)}
 .game-wrap{max-width:520px;width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:38px;text-align:center}
@@ -199,8 +179,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
 .r-lbl{font-size:9px;letter-spacing:2px;color:var(--gold);margin:4px 0;opacity:.7}
 .r-msg{font-size:12px;color:rgba(253,246,240,.42);margin:8px 0 22px;line-height:1.7}
 
-/* ══════════════════════ ADMIN ══════════════════════ */
-/* Login modal */
+/* ADMIN MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(13,10,11,.92);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
 .modal-bg.hidden{display:none}
 .adm-box{background:var(--cream);border-radius:20px;padding:42px 34px;max-width:330px;width:90%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4)}
@@ -214,7 +193,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
 .btn-ghost:hover{border-color:var(--muted)}
 .adm-err{font-size:10px;color:var(--rose);margin-top:5px;min-height:14px}
 
-/* Add/Edit moment modal */
+/* MOMENT FORM MODAL */
 #moment-modal{position:fixed;inset:0;background:rgba(13,10,11,.94);z-index:9000;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px;backdrop-filter:blur(10px)}
 #moment-modal.open{display:flex}
 .mm-box{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px;max-width:580px;width:100%;margin:auto;position:relative}
@@ -230,13 +209,20 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
 .mm-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .mm-photo-preview{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:9px;display:none;margin-bottom:8px}
 .mm-photo-preview.show{display:block}
-.mm-upload-btn{width:100%;background:rgba(255,255,255,.04);border:2px dashed rgba(255,255,255,.1);border-radius:9px;padding:18px;color:rgba(253,246,240,.35);font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-align:center}
+.mm-upload-btn{width:100%;background:rgba(255,255,255,.04);border:2px dashed rgba(255,255,255,.1);border-radius:9px;padding:16px;color:rgba(253,246,240,.35);font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-align:center}
 .mm-upload-btn:hover{border-color:var(--rose);color:var(--rose);background:var(--rose-soft)}
-.mm-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
-#mm-photo-input{display:none}
 .mm-hint{font-size:10px;color:rgba(253,246,240,.25);margin-top:4px}
+.mm-hint.ok{color:#81c784}
+.mm-hint.err{color:#f48fb1}
+.mm-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+/* upload progress */
+.mm-progress-wrap{display:none;margin-top:6px}
+.mm-progress-wrap.show{display:block}
+.mm-progress-bar{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.mm-progress-fill{height:100%;background:var(--rose);border-radius:2px;transition:width .3s;width:0%}
+.mm-progress-label{font-size:9px;color:rgba(253,246,240,.4);margin-top:3px}
 
-/* Admin bottom bar */
+/* ADMIN BAR */
 #admin-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(13,10,11,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(201,166,110,.14);padding:8px 18px;align-items:center;gap:8px;flex-wrap:wrap}
 .admin-mode #admin-bar{display:flex}
 .a-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.7}
@@ -245,7 +231,13 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
 .a-btn.danger{border-color:rgba(201,86,106,.3)}
 .a-btn.exit{margin-left:auto;color:rgba(253,246,240,.38)}.a-btn.exit:hover{color:var(--rose)}
 
-/* hero names editable */
+/* LOADING OVERLAY */
+#loading{position:fixed;inset:0;background:rgba(13,10,11,.8);z-index:8000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(6px)}
+#loading.show{display:flex}
+.loading-spinner{width:40px;height:40px;border:3px solid rgba(201,86,106,.2);border-top-color:var(--rose);border-radius:50%;animation:spin 1s linear infinite}
+.loading-text{font-size:11px;letter-spacing:2px;color:rgba(253,246,240,.5);text-transform:uppercase}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 .admin-mode #hero-names{outline:none;border-bottom:1px dashed rgba(201,166,110,.5);cursor:text;padding-bottom:2px}
 
 /* TOAST */
@@ -270,7 +262,13 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
 <canvas id="petals"></canvas>
 <audio id="audio" preload="auto"></audio>
 
-<!-- ─── ADMIN LOGIN ─── -->
+<!-- LOADING -->
+<div id="loading">
+  <div class="loading-spinner"></div>
+  <p class="loading-text" id="loading-text">Carregando...</p>
+</div>
+
+<!-- ADMIN LOGIN -->
 <div class="modal-bg hidden" id="login-modal">
   <div class="adm-box">
     <div class="adm-icon">🔐</div>
@@ -285,18 +283,19 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
   </div>
 </div>
 
-<!-- ─── ADD/EDIT MOMENT MODAL ─── -->
+<!-- ADD/EDIT MOMENT MODAL -->
 <div id="moment-modal">
   <div class="mm-box">
     <button class="mm-close" onclick="closeMomentModal()">✕</button>
     <h3 class="mm-title" id="mm-modal-title">Novo Momento</h3>
     <input type="hidden" id="mm-edit-id">
-    <input type="file" id="mm-photo-input" accept="image/*" onchange="previewPhoto(event)">
 
     <div class="mm-field">
       <label>📸 Foto do momento</label>
       <img class="mm-photo-preview" id="mm-preview" src="">
-      <button class="mm-upload-btn" onclick="document.getElementById('mm-photo-input').click()">+ Clique para escolher uma foto</button>
+      <input type="file" id="mm-photo-file" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
+      <button class="mm-upload-btn" id="mm-photo-btn" onclick="document.getElementById('mm-photo-file').click()">+ Escolher foto</button>
+      <p class="mm-hint" id="mm-photo-hint"></p>
     </div>
 
     <div class="mm-row">
@@ -311,23 +310,22 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
     </div>
 
     <div class="mm-field">
-      <label>Título (estilo manuscrito)</label>
+      <label>Título</label>
       <input class="mm-inp" id="mm-title" placeholder="Quando a distância aperta...">
     </div>
 
     <div class="mm-field">
       <label>Frase curta (aparece no cartão)</label>
-      <input class="mm-inp" id="mm-quote" placeholder="Às vezes a saudade chega antes mesmo de você ir embora.">
+      <input class="mm-inp" id="mm-quote" placeholder="Às vezes a saudade chega antes mesmo...">
     </div>
 
     <div class="mm-field">
-      <label>Carta completa (cada linha = novo parágrafo)</label>
-      <textarea class="mm-inp mm-ta" id="mm-letter" placeholder="Eu penso em você nas horas mais inesperadas...&#10;&#10;Saudade não é só falta...&#10;&#10;Fechar os olhos e te imaginar perto..."></textarea>
-      <p class="mm-hint">💡 Deixe uma linha em branco entre os parágrafos</p>
+      <label>Carta completa (linha em branco = novo parágrafo)</label>
+      <textarea class="mm-inp mm-ta" id="mm-letter" placeholder="Eu penso em você nas horas mais inesperadas..."></textarea>
     </div>
 
     <div class="mm-field">
-      <label>Assinatura (ex: com toda a saudade do mundo)</label>
+      <label>Assinatura</label>
       <input class="mm-inp" id="mm-sign" placeholder="com todo meu amor ♡">
     </div>
 
@@ -343,26 +341,30 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
     </div>
 
     <div class="mm-field">
-      <label>🎵 Arquivo de áudio (MP3, MPEG, M4A, OGG — sem precisar de internet)</label>
-      <input type="file" id="mm-audio-input" accept="audio/*,video/mpeg,.mpeg,.mpg,.mp3,.m4a,.ogg,.wav,.aac" onchange="previewAudio(event)" style="display:none">
-      <button class="mm-upload-btn" id="mm-audio-btn" onclick="document.getElementById('mm-audio-input').click()">+ Clique para carregar o arquivo de áudio</button>
+      <label>🎵 Arquivo de áudio (MP3, MPEG, M4A — fica na nuvem)</label>
+      <input type="file" id="mm-audio-file" accept="audio/*,.mpeg,.mpg" style="display:none" onchange="handleAudioSelect(event)">
+      <button class="mm-upload-btn" id="mm-audio-btn" onclick="document.getElementById('mm-audio-file').click()">+ Escolher arquivo de áudio</button>
       <p class="mm-hint" id="mm-audio-hint"></p>
+      <div class="mm-progress-wrap" id="mm-audio-progress">
+        <div class="mm-progress-bar"><div class="mm-progress-fill" id="mm-audio-fill"></div></div>
+        <p class="mm-progress-label" id="mm-audio-prog-label">Enviando...</p>
+      </div>
     </div>
 
     <div class="mm-field">
-      <label>Ou link externo (YouTube / Spotify) — abre em nova aba + toca automaticamente</label>
-      <input class="mm-inp" id="mm-url" placeholder="https://youtube.com/...">
-      <p class="mm-hint">💡 Se um MP3 foi carregado acima, ele tem prioridade.</p>
+      <label>Ou link do YouTube (abre junto com a carta)</label>
+      <input class="mm-inp" id="mm-url" placeholder="https://youtube.com/watch?v=...">
+      <p class="mm-hint">💡 Se subir um MP3 acima, ele tem prioridade sobre o YouTube.</p>
     </div>
 
     <div class="mm-actions">
       <button class="btn-ghost" onclick="closeMomentModal()">Cancelar</button>
-      <button class="btn-rose" onclick="saveMoment()">Salvar momento ♡</button>
+      <button class="btn-rose" id="mm-save-btn" onclick="saveMoment()">Salvar momento ♡</button>
     </div>
   </div>
 </div>
 
-<!-- ─── LETTER MODAL ─── -->
+<!-- LETTER MODAL -->
 <div id="letter-modal">
   <div class="lm-box">
     <button class="lm-close" onclick="closeLetter()">✕</button>
@@ -373,29 +375,39 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
       <div class="lm-divider"><span>✦</span></div>
       <div class="lm-letter" id="lm-letter"></div>
       <p class="lm-signature" id="lm-sign"></p>
-      <p class="lm-embed-label" id="lm-embed-label">♫ tocando agora</p>
-      <div class="lm-embed-wrap" id="lm-embed-wrap"></div>
-      <button class="lm-play-fallback" id="lm-play-fallback" onclick="openSongUrl()">
-        <div class="lm-play-fallback-icon">▶</div>
-        <div class="lm-play-fallback-info">
-          <p class="lm-play-fallback-label">▶ toque para ouvir</p>
-          <p class="lm-play-fallback-name" id="lm-fb-name"></p>
-          <p class="lm-play-fallback-artist" id="lm-fb-artist"></p>
+      <!-- audio player direto -->
+      <div class="lm-music-now" id="lm-music-now">
+        <span class="lm-music-dot"></span>
+        <div class="lm-music-info2">
+          <p class="lm-music-label2">♫ tocando agora</p>
+          <p class="lm-music-name2" id="lm-m-name"></p>
+          <p class="lm-music-artist2" id="lm-m-artist"></p>
         </div>
-        <span class="lm-play-fallback-arrow">↗</span>
-      </button>
-
+      </div>
+      <!-- youtube embed coberto -->
+      <div class="lm-yt-wrap" id="lm-yt-wrap">
+        <iframe id="lm-yt-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="lm-yt-cover">
+          <span class="lm-yt-dot"></span>
+          <div class="lm-yt-info">
+            <p class="lm-yt-label">♫ tocando agora</p>
+            <p class="lm-yt-name" id="lm-yt-name"></p>
+            <p class="lm-yt-artist" id="lm-yt-artist"></p>
+          </div>
+          <button class="lm-open-ext" id="lm-yt-open">ABRIR ↗</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ─── FLOATING NOW PLAYING ─── -->
+<!-- FLOATING NOW PLAYING -->
 <div id="now-playing">
   <span class="np-dot"></span>
-  <span class="np-text">Tocando agora — <span class="np-song" id="np-song-name"></span></span>
+  <span class="np-text">Tocando agora — <span class="np-song" id="np-song"></span></span>
 </div>
 
-<!-- ─── NAV ─── -->
+<!-- NAV -->
 <nav>
   <button class="active" onclick="goTo('hero')">🏠 Início</button>
   <span class="nl">♡</span>
@@ -403,10 +415,10 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
   <button onclick="goTo('momentos')">Momentos</button>
   <button onclick="goTo('jogo')">Joguinho</button>
   <span class="nl">♡</span>
-  <button onclick="document.getElementById('login-modal').classList.remove('hidden');document.getElementById('pwd-inp').value='';document.getElementById('pwd-err').textContent='';setTimeout(()=>document.getElementById('pwd-inp').focus(),120)" title="Admin" style="color:rgba(201,166,110,.3);font-size:13px;padding:4px 8px">⚙</button>
+  <button onclick="document.getElementById('login-modal').classList.remove('hidden');document.getElementById('pwd-inp').value='';document.getElementById('pwd-err').textContent='';setTimeout(()=>document.getElementById('pwd-inp').focus(),120)" style="color:rgba(201,166,110,.3);font-size:13px;padding:4px 8px">⚙</button>
 </nav>
 
-<!-- ══════ HERO ══════ -->
+<!-- HERO -->
 <section id="hero" class="active">
   <p class="hero-eyebrow">✦ Para sempre ✦</p>
   <h1 class="hero-title">Nós<br><em>Dois</em></h1>
@@ -422,11 +434,11 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
   <p class="since">JUNTOS DESDE <span id="since-txt">05 de agosto de 2022</span></p>
   <div id="date-ed">
     <label>Data do relacionamento</label>
-    <input type="date" id="date-inp" value="2022-08-05" onchange="saveDate()">
+    <input type="date" id="date-inp" value="2022-08-05" onchange="saveSettings()">
   </div>
 </section>
 
-<!-- ══════ HISTÓRIA ══════ -->
+<!-- HISTÓRIA -->
 <section id="historia">
   <p class="s-eyebrow">✦ Como tudo começou ✦</p>
   <h2 class="s-title-light">Nossa<br><em>História</em></h2>
@@ -434,28 +446,22 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
   <button class="add-ch-btn" onclick="addChapter()">＋ Adicionar capítulo</button>
 </section>
 
-<!-- ══════ MOMENTOS ══════ -->
+<!-- MOMENTOS -->
 <section id="momentos">
   <p class="momentos-eyebrow">✦ Escolha seu momento ✦</p>
   <h2 class="momentos-heading">O que seu coração<br>está <span>sentindo</span> agora?</h2>
-  <div class="cards-grid" id="cards-grid">
-    <!-- cards rendered by JS -->
-    <div class="m-add-slot" onclick="openMomentModal(null)">
-      <span>＋</span>
-      <span>Novo momento</span>
-    </div>
-  </div>
+  <div class="cards-grid" id="cards-grid"></div>
 </section>
 
-<!-- ══════ JOGO ══════ -->
+<!-- JOGO -->
 <section id="jogo">
-  <p class="s-eyebrow-dark">✦ Quanto vocês se conhecem? ✦</p>
+  <p class="s-eyebrow" style="color:rgba(201,166,110,.65)">✦ Quanto vocês se conhecem? ✦</p>
   <h2 class="s-title-dark">O<br><em>Joguinho</em></h2>
   <div class="game-wrap">
     <div class="gs active" id="gs-start">
       <div class="g-icon">💑</div>
       <h3 class="g-ttl">Quem conhece mais?</h3>
-      <p class="g-desc">Respondam juntos e descubram o quanto vocês sabem um sobre o outro nesse quiz especial de casal.</p>
+      <p class="g-desc">Respondam juntos e descubram o quanto vocês sabem um sobre o outro.</p>
       <button class="btn-rose" onclick="startGame()">Começar o Quiz ♡</button>
     </div>
     <div class="gs" id="gs-q">
@@ -475,134 +481,129 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
   </div>
 </section>
 
-<!-- ─── ADMIN BAR ─── -->
+<!-- ADMIN BAR -->
 <div id="admin-bar">
   <span class="a-lbl">⚙ Admin</span>
-  <button class="a-btn" onclick="saveAll()">💾 Salvar tudo</button>
+  <button class="a-btn" onclick="saveChapters()">💾 Salvar história</button>
+  <button class="a-btn" onclick="saveSettings()">💾 Salvar config</button>
   <button class="a-btn" onclick="openMomentModal(null)">＋ Novo momento</button>
-  <button class="a-btn danger" onclick="if(confirm('Apagar todos os dados?'))clearAll()">🗑 Limpar</button>
+  <button class="a-btn danger" onclick="if(confirm('Apagar TUDO do banco de dados?'))clearAll()">🗑 Limpar tudo</button>
   <button class="a-btn exit" onclick="exitAdmin()">✕ Sair</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
-// ══════════════════════════════════════
-const ADMIN_PASSWORD = "Alex0508.";
-const DEFAULT_DATE   = "2022-08-05";
-// ══════════════════════════════════════
+<!-- FIREBASE SDK -->
+<script type="module">
+// ═══════════════════════════════════════════════════════
+//  CONFIGURAÇÕES — NÃO EDITE ABAIXO DESTA LINHA
+// ═══════════════════════════════════════════════════════
+const ADMIN_PASSWORD     = "Alex0508.";
+const CLOUDINARY_CLOUD   = "dnvg9f1pm";
+const CLOUDINARY_PRESET  = "Nossoamor";
 
-const LS  = k=>{ try{ return localStorage.getItem('casal_'+k); }catch(e){ return null; } };
-const LSS = (k,v)=>{ try{ localStorage.setItem('casal_'+k,v); }catch(e){ showToast('⚠ Armazenamento cheio — fotos podem ser grandes demais'); } };
+// Firebase config
+import { initializeApp }              from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, updateDoc, onSnapshot }
+                                      from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-let isAdmin    = false;
-let moments    = JSON.parse(LS('moments')  || 'null') || defaultMoments();
-let chapters   = JSON.parse(LS('chapters') || 'null') || defaultChapters();
-let startDate  = LS('startDate') || DEFAULT_DATE;
-let editingPhotoData = null; // base64 for current edit
-let editingAudioData  = null; // base64 for current audio
+const firebaseConfig = {
+  apiKey:            "AIzaSyCQ0tifzHR6NB5jYF3-Ylxz9-nA3AM5MhM",
+  authDomain:        "nossoamor-9b715.firebaseapp.com",
+  projectId:         "nossoamor-9b715",
+  storageBucket:     "nossoamor-9b715.firebasestorage.app",
+  messagingSenderId: "384387510581",
+  appId:             "1:384387510581:web:d021a79652e12bdd9f5c7c"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
 
-// ─── DEFAULT DATA ───────────────────────────────
-function defaultMoments(){
-  return [
-    {id:'1',photo:'',category:'AMOR',subcategory:'SAUDADE',title:'Quando a distância aperta',quote:'Às vezes a saudade chega antes mesmo de você ir embora.',letter:'Eu penso em você nas horas mais inesperadas. No cheiro do café pela manhã, no silêncio que acontece depois do riso.\n\nSaudade não é só falta. É amor que não cabe dentro do peito e transborda nos lugares onde você já esteve.\n\nFechar os olhos e te imaginar perto é quase tão bom quanto ter você aqui. Quase.',signature:'com toda a saudade do mundo',songName:'Those Eyes',songArtist:'New West',songUrl:''},
-    {id:'2',photo:'',category:'AMOR PURO',subcategory:'INTENSIDADE',title:'Um amor que vai além',quote:'O mais bonito não é a paixão que queima — é a que aquece.',letter:'Tem momentos em que te olho e simplesmente não consigo acreditar que você existe. Que você é real. Que você é meu.\n\nEu nunca soube que amar alguém poderia ser tão fácil. Tão natural. Como respirar.\n\nObrigado por ser exatamente quem você é — e por me deixar ser quem eu sou ao seu lado.',signature:'de quem te ama mais que tudo',songName:'Amor Puro',songArtist:'Djavan',songUrl:''},
-    {id:'3',photo:'',category:'PAIXÃO',subcategory:'INTENSIDADE',title:'Aquele olhar que desequilibra',quote:'Você tem o poder ridículo de me deixar sem palavras.',letter:'Tem uma coisa que você faz — um olhar, um sorriso de lado — que me desequilibra completamente.\n\nNão importa quantas vezes eu já vi. Meu coração ainda perde o ritmo.\n\nIsso é o que eles chamam de amor, eu acho. Essa coisa permanente que não passa.',signature:'perdido(a) em você',songName:'Quero ser feliz também',songArtist:'Natiruts',songUrl:''},
-  ];
+// ─── STATE ───────────────────────────────────────
+let isAdmin        = false;
+let moments        = [];
+let chapters       = [];
+let settings       = {};
+let pendingPhotoFile = null;
+let pendingAudioFile = null;
+let currentEditId    = null;
+let currentSongUrl   = '';
+
+// ─── LOADING ─────────────────────────────────────
+function showLoading(txt='Carregando...'){
+  document.getElementById('loading-text').textContent=txt;
+  document.getElementById('loading').classList.add('show');
 }
-function defaultChapters(){
-  return [
-    {emoji:'✨',date:'O começo',title:'Primeiro Encontro',text:'Edite para contar como vocês se conheceram. Cada detalhe importa — o lugar, o sorriso, a sensação de que algo especial começava.'},
-    {emoji:'💌',date:'O primeiro sentimento',title:'Quando percebi que te amava',text:'Aquele momento em que você olha e sabe. Não precisa de palavras. O coração simplesmente sabe.'},
-    {emoji:'🌹',date:'O pedido',title:'Nosso Primeiro Beijo',text:'O nervosismo, o coração acelerado, e depois... a felicidade. Aquele momento inesquecível.'},
-    {emoji:'🎉',date:'Oficialmente juntos',title:'O Dia que Ficou Oficial',text:'O dia em que ficou oficial para o mundo inteiro. A melhor decisão de nossas vidas.'},
-    {emoji:'♾️',date:'Hoje e sempre',title:'Para o Futuro',text:'Ainda temos tantos capítulos para escrever juntos. E eu não me imagino com mais ninguém.'},
-  ];
-}
+function hideLoading(){ document.getElementById('loading').classList.remove('show'); }
 
-// ─── INIT ─────────────────────────────────────
-function init(){
-  document.getElementById('hero-names').textContent = LS('names') || 'Alex & Seu Amor ♡';
-  document.getElementById('date-inp').value = startDate;
-  renderTimeline();
-  renderMoments();
+// ─── INIT ─────────────────────────────────────────
+async function init(){
+  showLoading('Carregando o site...');
+  try{
+    await loadSettings();
+    await loadMoments();
+    await loadChapters();
+  }catch(e){ console.error(e); showToast('Erro ao conectar. Verifique a internet.'); }
+  hideLoading();
   updateCounter();
   setInterval(updateCounter, 30000);
   animPetals();
 }
 
-// ─── NAV ──────────────────────────────────────
-function goTo(id){
-  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  const map=['hero','historia','momentos','jogo'];
-  document.querySelectorAll('nav button').forEach((b,i)=>b.classList.toggle('active', map[i]===id));
-  window.scrollTo(0,0);
+// ─── SETTINGS ────────────────────────────────────
+async function loadSettings(){
+  const snap = await getDoc(doc(db,'config','settings'));
+  settings   = snap.exists() ? snap.data() : {names:'Alex & Seu Amor ♡', startDate:'2022-08-05'};
+  document.getElementById('hero-names').textContent = settings.names||'Alex & Seu Amor ♡';
+  document.getElementById('date-inp').value         = settings.startDate||'2022-08-05';
+}
+window.saveSettings = async function(){
+  settings.names     = document.getElementById('hero-names').textContent;
+  settings.startDate = document.getElementById('date-inp').value;
+  await setDoc(doc(db,'config','settings'), settings);
+  updateCounter();
+  showToast('💾 Configurações salvas!');
+};
+
+// ─── COUNTER ─────────────────────────────────────
+function updateCounter(){
+  const sd = settings.startDate || document.getElementById('date-inp').value || '2022-08-05';
+  const s  = new Date(sd+'T12:00:00'), n = new Date();
+  if(isNaN(s)||n<s) return;
+  const td = Math.floor((n-s)/86400000);
+  document.getElementById('cy').textContent   = Math.floor(td/365);
+  document.getElementById('cm').textContent   = Math.floor((td%365)/30);
+  document.getElementById('cd').textContent   = td%30;
+  document.getElementById('ch').textContent   = String(n.getHours()).padStart(2,'0');
+  document.getElementById('cmin').textContent = String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('since-txt').textContent = s.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
 }
 
-// ─── ADMIN ────────────────────────────────────
-function checkPwd(){
-  if(document.getElementById('pwd-inp').value === ADMIN_PASSWORD){
-    document.getElementById('login-modal').classList.add('hidden');
-    enterAdmin();
-  } else {
-    document.getElementById('pwd-err').textContent='Senha incorreta.';
-    document.getElementById('pwd-inp').value='';
-  }
+// ─── CHAPTERS ────────────────────────────────────
+async function loadChapters(){
+  const snap = await getDoc(doc(db,'config','chapters'));
+  chapters   = snap.exists() ? (snap.data().list||[]) : defaultChapters();
+  renderTimeline();
 }
-function enterAdmin(){
-  isAdmin=true;
-  document.body.classList.add('admin-mode');
-  document.getElementById('hero-names').contentEditable='true';
-  document.getElementById('date-ed').style.display='block';
-  renderTimeline(); renderMoments();
-  showToast('🔓 Admin ativado — edite à vontade!');
-}
-function exitAdmin(){
-  isAdmin=false;
-  document.body.classList.remove('admin-mode');
-  document.getElementById('hero-names').contentEditable='false';
-  document.getElementById('date-ed').style.display='none';
-  saveAll(); renderTimeline(); renderMoments();
-  showToast('✓ Saiu do admin. Tudo salvo!');
-}
-function saveAll(){
-  LSS('names', document.getElementById('hero-names').textContent);
-  chapters=[...document.querySelectorAll('.tl-box')].map(el=>({
+window.saveChapters = async function(){
+  const items=[...document.querySelectorAll('.tl-box')];
+  chapters = items.map(el=>({
     emoji:el.querySelector('.tl-emoji')?.textContent||'♡',
     date: el.querySelector('.tl-date')?.textContent||'',
     title:el.querySelector('.tl-ttl')?.textContent||'',
     text: el.querySelector('.tl-txt')?.textContent||'',
   }));
-  LSS('chapters',JSON.stringify(chapters));
-  LSS('moments', JSON.stringify(moments));
-  showToast('💾 Tudo salvo!');
+  await setDoc(doc(db,'config','chapters'),{list:chapters});
+  showToast('💾 História salva!');
+};
+function defaultChapters(){
+  return [
+    {emoji:'✨',date:'O começo',title:'Primeiro Encontro',text:'Edite para contar como vocês se conheceram. Cada detalhe importa.'},
+    {emoji:'💌',date:'O primeiro sentimento',title:'Quando percebi que te amava',text:'Aquele momento em que você olha e sabe. O coração simplesmente sabe.'},
+    {emoji:'🌹',date:'O pedido',title:'Nosso Primeiro Beijo',text:'O nervosismo, o coração acelerado, e depois... a felicidade.'},
+    {emoji:'🎉',date:'Oficialmente juntos',title:'O Dia que Ficou Oficial',text:'A melhor decisão de nossas vidas.'},
+    {emoji:'♾️',date:'Hoje e sempre',title:'Para o Futuro',text:'Ainda temos tantos capítulos para escrever juntos.'},
+  ];
 }
-function clearAll(){
-  ['moments','chapters','startDate','names'].forEach(k=>{try{localStorage.removeItem('casal_'+k);}catch(e){}});
-  moments=defaultMoments(); chapters=defaultChapters(); startDate=DEFAULT_DATE;
-  document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';
-  document.getElementById('date-inp').value=DEFAULT_DATE;
-  renderTimeline(); renderMoments(); updateCounter();
-  showToast('🗑 Dados apagados');
-}
-
-// ─── COUNTER ──────────────────────────────────
-function updateCounter(){
-  const s=new Date(startDate+'T12:00:00'), n=new Date();
-  if(isNaN(s))return;
-  const diff=n-s; if(diff<0)return;
-  const td=Math.floor(diff/86400000);
-  document.getElementById('cy').textContent=Math.floor(td/365);
-  document.getElementById('cm').textContent=Math.floor((td%365)/30);
-  document.getElementById('cd').textContent=td%30;
-  document.getElementById('ch').textContent=String(n.getHours()).padStart(2,'0');
-  document.getElementById('cmin').textContent=String(n.getMinutes()).padStart(2,'0');
-  document.getElementById('since-txt').textContent=s.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-}
-function saveDate(){ startDate=document.getElementById('date-inp').value; LSS('startDate',startDate); updateCounter(); showToast('📅 Data atualizada!'); }
-
-// ─── TIMELINE ─────────────────────────────────
 function renderTimeline(){
   const tl=document.getElementById('timeline'); tl.innerHTML='';
   chapters.forEach((ch,i)=>{
@@ -619,19 +620,26 @@ function renderTimeline(){
     tl.appendChild(item);
   });
 }
-function addChapter(){ chapters.push({emoji:'🌟',date:'Nova data',title:'Novo Capítulo',text:'Clique para editar...'}); renderTimeline(); showToast('✓ Capítulo adicionado!'); }
-function removeChapter(i){ if(!confirm('Remover?'))return; chapters.splice(i,1); renderTimeline(); }
+window.addChapter = function(){
+  chapters.push({emoji:'🌟',date:'Nova data',title:'Novo Capítulo',text:'Clique para editar...'});
+  renderTimeline(); showToast('✓ Capítulo adicionado!');
+};
+window.removeChapter = function(i){
+  if(!confirm('Remover?'))return; chapters.splice(i,1); renderTimeline();
+};
 
-// ─── MOMENTS ──────────────────────────────────
+// ─── MOMENTS ─────────────────────────────────────
+async function loadMoments(){
+  const snap = await getDocs(collection(db,'moments'));
+  moments    = snap.docs.map(d=>({id:d.id,...d.data()}));
+  moments.sort((a,b)=>(a.order||0)-(b.order||0));
+  renderMoments();
+}
 function renderMoments(){
-  const grid=document.getElementById('cards-grid');
-  grid.innerHTML='';
-  moments.forEach((m,i)=>{
-    const card=document.createElement('div');
-    card.className='m-card';
-    const photoHtml = m.photo
-      ? `<img class="m-card-photo" src="${m.photo}" alt="${m.title}">`
-      : `<div class="m-card-photo-placeholder">💕</div>`;
+  const grid=document.getElementById('cards-grid'); grid.innerHTML='';
+  moments.forEach(m=>{
+    const card=document.createElement('div'); card.className='m-card';
+    const photoHtml=m.photoUrl?`<img class="m-card-photo" src="${m.photoUrl}" alt="${m.title}">`:`<div class="m-card-photo-placeholder">💕</div>`;
     card.innerHTML=`
       <div class="m-card-admin">
         <button onclick="openMomentModal('${m.id}')" title="Editar">✎</button>
@@ -640,225 +648,312 @@ function renderMoments(){
       ${photoHtml}
       <div class="m-card-body">
         <div class="m-card-tags">
-          <span class="m-cat">${m.category}</span>
+          <span class="m-cat">${m.category||'AMOR'}</span>
           ${m.subcategory?`<span class="m-sub-tag">${m.subcategory}</span>`:''}
         </div>
-        <h3 class="m-card-title">${m.title}</h3>
-        <p class="m-card-quote">${m.quote}</p>
-        ${m.songName?`<div class="m-card-song">
-          <div class="m-song-icon">♪</div>
-          <div class="m-song-info">
-            <div class="m-song-name">${m.songName}</div>
-            <div class="m-song-artist">${m.songArtist||''}</div>
-          </div>
-        </div>`:''}
+        <h3 class="m-card-title">${m.title||''}</h3>
+        <p class="m-card-quote">${m.quote||''}</p>
+        ${m.songName?`<div class="m-card-song"><div class="m-song-icon">♪</div><div class="m-song-info"><div class="m-song-name">${m.songName}</div><div class="m-song-artist">${m.songArtist||''}</div></div></div>`:''}
         <button class="m-read-btn" onclick="openLetter('${m.id}')">Ler a carta →</button>
       </div>`;
     grid.appendChild(card);
   });
-  // add slot (admin only)
-  const addSlot=document.createElement('div');
-  addSlot.className='m-add-slot';
-  addSlot.onclick=()=>openMomentModal(null);
-  addSlot.innerHTML='<span>＋</span><span>Novo momento</span>';
-  grid.appendChild(addSlot);
+  // add slot
+  const add=document.createElement('div'); add.className='m-add-slot';
+  add.onclick=()=>openMomentModal(null);
+  add.innerHTML='<span>＋</span><span>Novo momento</span>';
+  grid.appendChild(add);
 }
 
-function openLetter(id){
+// ─── LETTER ──────────────────────────────────────
+window.openLetter = function(id){
   const m=moments.find(x=>x.id===id); if(!m)return;
-  // photo
   const pw=document.getElementById('lm-photo-wrap');
-  pw.innerHTML=m.photo
-    ?`<img class="lm-photo" src="${m.photo}" alt="${m.title}">`
-    :`<div class="lm-photo-placeholder">💕</div>`;
-  // tags, title
+  pw.innerHTML=m.photoUrl?`<img class="lm-photo" src="${m.photoUrl}">`:`<div class="lm-photo-placeholder">💕</div>`;
   document.getElementById('lm-tags').textContent=[m.category,m.subcategory].filter(Boolean).join(' · ');
-  document.getElementById('lm-title').textContent=m.title;
-  // letter paragraphs
-  const paras=m.letter.split('\n').filter(p=>p.trim()!=='');
+  document.getElementById('lm-title').textContent=m.title||'';
+  const paras=(m.letter||'').split('\n').filter(p=>p.trim());
   document.getElementById('lm-letter').innerHTML=paras.map(p=>`<p>${p}</p>`).join('');
   document.getElementById('lm-sign').textContent=m.signature||'';
-  // controla embed e fallback
-  const embedWrap  = document.getElementById('lm-embed-wrap');
-  const embedLabel = document.getElementById('lm-embed-label');
-  const fbBtn      = document.getElementById('lm-play-fallback');
-  embedWrap.innerHTML=''; embedWrap.classList.remove('show','spotify');
-  embedLabel.classList.remove('show'); fbBtn.classList.remove('show');
-  currentSongUrl = m.songUrl||'';
-  document.getElementById('lm-fb-name').textContent   = m.songName||'';
-  document.getElementById('lm-fb-artist').textContent = m.songArtist||'';
 
-  if(m.songUrl){
-    const ytMatch = m.songUrl.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-    const spMatch = m.songUrl.match(/spotify\.com\/(?:track|embed\/track)\/([A-Za-z0-9]+)/);
+  // reset players
+  const aud=document.getElementById('audio');
+  aud.pause(); aud.src='';
+  document.getElementById('lm-music-now').classList.remove('show');
+  document.getElementById('lm-yt-wrap').classList.remove('show');
+  document.getElementById('lm-yt-iframe').src='';
+  document.getElementById('now-playing').classList.remove('show');
 
-    // Detecta se está rodando como arquivo local (file://) ou hospedado (https://)
-    const isHosted = location.protocol === 'https:' || location.protocol === 'http:';
-
-    let src = ''; let isSpotify = false;
-    if(ytMatch){
-      src = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0&modestbranding=1&controls=1`;
-    } else if(spMatch){
-      src = `https://open.spotify.com/embed/track/${spMatch[1]}?autoplay=1&theme=0`;
-      isSpotify = true;
-    }
-
-    if(src && isHosted){
-      // Hospedado: embed funciona normalmente
-      const iframe = document.createElement('iframe');
-      iframe.src   = src;
-      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-      iframe.setAttribute('allowfullscreen','');
-      // Se o iframe falhar de carregar, esconde e mostra botão
-      iframe.onerror = () => { showMusicFallback(); };
-      embedWrap.appendChild(iframe);
-      if(isSpotify) embedWrap.classList.add('spotify');
-      embedWrap.classList.add('show');
-      embedLabel.classList.add('show');
+  // play audio
+  if(m.audioUrl){
+    // MP3 hospedado no Cloudinary — toca direto
+    aud.src=m.audioUrl; aud.load();
+    aud.play().then(()=>{
+      document.getElementById('lm-m-name').textContent=m.songName||'';
+      document.getElementById('lm-m-artist').textContent=m.songArtist||'';
+      document.getElementById('lm-music-now').classList.add('show');
       showNowPlaying(m.songName||'');
-      // Timeout de segurança: se em 4s não houve interação, nada muda (embed funcionou)
-    } else if(src && !isHosted){
-      // Arquivo local: embed é bloqueado pelo browser — mostra botão bonito
-      showMusicFallback();
-    }
+    }).catch(()=>{
+      // fallback: tenta YouTube se tiver
+      playYoutube(m);
+    });
+  } else if(m.songUrl){
+    playYoutube(m);
   }
-  // open modal
+
   document.getElementById('letter-modal').classList.add('open');
   document.body.style.overflow='hidden';
+};
+
+function playYoutube(m){
+  const ytMatch=(m.songUrl||'').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if(ytMatch){
+    const iframe=document.getElementById('lm-yt-iframe');
+    iframe.src=`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0&modestbranding=1&controls=1`;
+    document.getElementById('lm-yt-name').textContent=m.songName||'';
+    document.getElementById('lm-yt-artist').textContent=m.songArtist||'';
+    document.getElementById('lm-yt-open').onclick=()=>window.open(m.songUrl,'_blank');
+    document.getElementById('lm-yt-wrap').classList.add('show');
+    showNowPlaying(m.songName||'');
+  } else if(m.songUrl){
+    window.open(m.songUrl,'_blank');
+    showNowPlaying(m.songName||'');
+  }
 }
 
-function closeLetter(){
+window.closeLetter = function(){
   document.getElementById('letter-modal').classList.remove('open');
   document.body.style.overflow='';
-  const aud=document.getElementById('audio');
-  aud.pause(); aud.currentTime=0;
+  const aud=document.getElementById('audio'); aud.pause(); aud.src='';
+  document.getElementById('lm-yt-iframe').src='';
+  document.getElementById('lm-yt-wrap').classList.remove('show');
+  document.getElementById('lm-music-now').classList.remove('show');
   document.getElementById('now-playing').classList.remove('show');
-  // stop embed player
-  const ew=document.getElementById('lm-embed-wrap');
-  const el=document.getElementById('lm-embed-label');
-  ew.innerHTML=''; ew.classList.remove('show','spotify');
-  el.classList.remove('show');
-  document.getElementById('lm-play-fallback').classList.remove('show');
-  currentSongUrl='';
-}
+};
 
-
-let currentSongUrl = '';
-function showMusicFallback(){
-  document.getElementById('lm-embed-wrap').innerHTML='';
-  document.getElementById('lm-embed-wrap').classList.remove('show','spotify');
-  document.getElementById('lm-embed-label').classList.remove('show');
-  document.getElementById('lm-play-fallback').classList.add('show');
-}
-function openSongUrl(){
-  if(currentSongUrl) window.open(currentSongUrl,'_blank');
-}
 function showNowPlaying(name){
-  document.getElementById('np-song-name').textContent=name;
+  document.getElementById('np-song').textContent=name;
   document.getElementById('now-playing').classList.add('show');
 }
 
-// audio element kept for future use
-const aud=document.getElementById('audio');
+// ─── CLOUDINARY UPLOAD ───────────────────────────
+async function uploadToCloudinary(file, onProgress){
+  const resourceType = file.type.startsWith('image/') ? 'image' : 'video'; // cloudinary usa 'video' pra áudio
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`;
+  const fd  = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
 
-// ─── MOMENT FORM ──────────────────────────────
-function openMomentModal(id){
-  editingPhotoData=null;
-  editingAudioData=null;
-  const isEdit=id!==null;
-  document.getElementById('mm-modal-title').textContent=isEdit?'Editar Momento':'Novo Momento';
+  return new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.open('POST',url);
+    xhr.upload.onprogress=e=>{ if(e.lengthComputable&&onProgress) onProgress(Math.round(e.loaded/e.total*100)); };
+    xhr.onload=()=>{
+      if(xhr.status===200){
+        const res=JSON.parse(xhr.responseText);
+        resolve(res.secure_url);
+      } else { reject(new Error('Upload falhou: '+xhr.status)); }
+    };
+    xhr.onerror=()=>reject(new Error('Erro de rede'));
+    xhr.send(fd);
+  });
+}
+
+// ─── MOMENT FORM ─────────────────────────────────
+window.openMomentModal = function(id){
+  currentEditId=id; pendingPhotoFile=null; pendingAudioFile=null;
+  document.getElementById('mm-modal-title').textContent=id?'Editar Momento':'Novo Momento';
   document.getElementById('mm-edit-id').value=id||'';
-  document.getElementById('mm-photo-input').value='';
-  const preview=document.getElementById('mm-preview');
-  preview.className='mm-photo-preview';
-  if(isEdit){
-    const m=moments.find(x=>x.id===id);
-    if(!m)return;
-    document.getElementById('mm-cat').value=m.category||'';
-    document.getElementById('mm-sub').value=m.subcategory||'';
-    document.getElementById('mm-title').value=m.title||'';
-    document.getElementById('mm-quote').value=m.quote||'';
-    document.getElementById('mm-letter').value=m.letter||'';
-    document.getElementById('mm-sign').value=m.signature||'';
-    document.getElementById('mm-song').value=m.songName||'';
-    document.getElementById('mm-artist').value=m.songArtist||'';
-    document.getElementById('mm-url').value=m.songUrl||'';
-    if(m.photo){ preview.src=m.photo; preview.classList.add('show'); editingPhotoData=m.photo; }
-    if(m.audioData){ editingAudioData=m.audioData; document.getElementById('mm-audio-hint').textContent='✓ Arquivo carregado'; document.getElementById('mm-audio-hint').style.color='#81c784'; document.getElementById('mm-audio-btn').textContent='✓ Áudio carregado — clique para trocar'; } else { document.getElementById('mm-audio-hint').textContent=''; document.getElementById('mm-audio-btn').textContent='+ Clique para carregar o arquivo de áudio'; }
-  } else {
-    ['mm-cat','mm-sub','mm-title','mm-quote','mm-letter','mm-sign','mm-song','mm-artist','mm-url'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('mm-audio-hint').textContent='';
-    document.getElementById('mm-audio-btn').textContent='+ Clique para carregar o arquivo de áudio';
+  // reset fields
+  ['mm-cat','mm-sub','mm-title','mm-quote','mm-letter','mm-sign','mm-song','mm-artist','mm-url']
+    .forEach(i=>document.getElementById(i).value='');
+  document.getElementById('mm-preview').className='mm-photo-preview';
+  document.getElementById('mm-photo-hint').textContent='';
+  document.getElementById('mm-photo-hint').className='mm-hint';
+  document.getElementById('mm-audio-hint').textContent='';
+  document.getElementById('mm-audio-hint').className='mm-hint';
+  document.getElementById('mm-photo-btn').textContent='+ Escolher foto';
+  document.getElementById('mm-audio-btn').textContent='+ Escolher arquivo de áudio';
+  document.getElementById('mm-audio-progress').classList.remove('show');
+  document.getElementById('mm-save-btn').disabled=false;
+
+  if(id){
+    const m=moments.find(x=>x.id===id); if(!m)return;
+    document.getElementById('mm-cat').value    =m.category||'';
+    document.getElementById('mm-sub').value    =m.subcategory||'';
+    document.getElementById('mm-title').value  =m.title||'';
+    document.getElementById('mm-quote').value  =m.quote||'';
+    document.getElementById('mm-letter').value =m.letter||'';
+    document.getElementById('mm-sign').value   =m.signature||'';
+    document.getElementById('mm-song').value   =m.songName||'';
+    document.getElementById('mm-artist').value =m.songArtist||'';
+    document.getElementById('mm-url').value    =m.songUrl||'';
+    if(m.photoUrl){
+      const pr=document.getElementById('mm-preview');
+      pr.src=m.photoUrl; pr.classList.add('show');
+      document.getElementById('mm-photo-hint').textContent='✓ Foto atual carregada';
+      document.getElementById('mm-photo-hint').className='mm-hint ok';
+    }
+    if(m.audioUrl){
+      document.getElementById('mm-audio-hint').textContent='✓ Áudio atual na nuvem';
+      document.getElementById('mm-audio-hint').className='mm-hint ok';
+      document.getElementById('mm-audio-btn').textContent='+ Trocar arquivo de áudio';
+    }
   }
   document.getElementById('moment-modal').classList.add('open');
   document.body.style.overflow='hidden';
-}
-function previewAudio(e){
-  const file=e.target.files[0]; if(!file)return;
-  const hint=document.getElementById('mm-audio-hint');
-  const btn=document.getElementById('mm-audio-btn');
-  // warn if file too large (>8MB for localStorage)
-  if(file.size > 15*1024*1024){
-    hint.textContent='⚠ Arquivo muito grande (>15MB). Comprima o arquivo ou use um link externo.';
-    hint.style.color='#f48fb1'; return;
-  }
-  hint.textContent='Carregando...'; hint.style.color='rgba(201,166,110,.6)';
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    editingAudioData=ev.target.result;
-    hint.textContent='✓ '+file.name+' ('+Math.round(file.size/1024)+'KB)';
-    hint.style.color='#81c784';
-    btn.textContent='✓ Áudio carregado — clique para trocar';
-  };
-  reader.onerror=()=>{ hint.textContent='Erro ao ler o arquivo.'; hint.style.color='#f48fb1'; };
-  reader.readAsDataURL(file);
-}
-function closeMomentModal(){
+};
+
+window.closeMomentModal = function(){
   document.getElementById('moment-modal').classList.remove('open');
   document.body.style.overflow='';
-}
-function previewPhoto(e){
-  const file=e.target.files[0]; if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    editingPhotoData=ev.target.result;
-    const pr=document.getElementById('mm-preview');
-    pr.src=editingPhotoData; pr.classList.add('show');
-  };
-  reader.readAsDataURL(file);
-}
-function saveMoment(){
-  const editId=document.getElementById('mm-edit-id').value;
-  const data={
-    id:editId||Date.now().toString(),
-    photo:editingPhotoData||'',
-    audioData:editingAudioData||'',
-    category:document.getElementById('mm-cat').value||'AMOR',
-    subcategory:document.getElementById('mm-sub').value||'',
-    title:document.getElementById('mm-title').value||'Sem título',
-    quote:document.getElementById('mm-quote').value||'',
-    letter:document.getElementById('mm-letter').value||'',
-    signature:document.getElementById('mm-sign').value||'',
-    songName:document.getElementById('mm-song').value||'',
-    songArtist:document.getElementById('mm-artist').value||'',
-    songUrl:document.getElementById('mm-url').value||'',
-  };
-  if(editId){ const i=moments.findIndex(x=>x.id===editId); if(i>=0) moments[i]=data; else moments.push(data); }
-  else { moments.push(data); }
-  LSS('moments',JSON.stringify(moments));
-  renderMoments();
-  closeMomentModal();
-  showToast('💕 Momento salvo!');
-}
-function deleteMoment(id){
-  if(!confirm('Excluir este momento?'))return;
-  moments=moments.filter(m=>m.id!==id);
-  LSS('moments',JSON.stringify(moments));
-  renderMoments();
-  showToast('Momento excluído');
-}
+};
 
-// ─── GAME ─────────────────────────────────────
+window.handlePhotoSelect = function(e){
+  const file=e.target.files[0]; if(!file)return;
+  pendingPhotoFile=file;
+  const pr=document.getElementById('mm-preview');
+  pr.src=URL.createObjectURL(file); pr.classList.add('show');
+  document.getElementById('mm-photo-hint').textContent='✓ '+file.name;
+  document.getElementById('mm-photo-hint').className='mm-hint ok';
+  document.getElementById('mm-photo-btn').textContent='+ Trocar foto';
+  e.target.value='';
+};
+
+window.handleAudioSelect = function(e){
+  const file=e.target.files[0]; if(!file)return;
+  pendingAudioFile=file;
+  document.getElementById('mm-audio-hint').textContent='✓ '+file.name+' ('+Math.round(file.size/1024)+'KB) — será enviado ao salvar';
+  document.getElementById('mm-audio-hint').className='mm-hint ok';
+  document.getElementById('mm-audio-btn').textContent='+ Trocar arquivo';
+  e.target.value='';
+};
+
+window.saveMoment = async function(){
+  const btn=document.getElementById('mm-save-btn');
+  btn.disabled=true; btn.textContent='Salvando...';
+
+  try{
+    const data={
+      category:   document.getElementById('mm-cat').value||'AMOR',
+      subcategory:document.getElementById('mm-sub').value||'',
+      title:      document.getElementById('mm-title').value||'Sem título',
+      quote:      document.getElementById('mm-quote').value||'',
+      letter:     document.getElementById('mm-letter').value||'',
+      signature:  document.getElementById('mm-sign').value||'',
+      songName:   document.getElementById('mm-song').value||'',
+      songArtist: document.getElementById('mm-artist').value||'',
+      songUrl:    document.getElementById('mm-url').value||'',
+      order:      currentEditId ? (moments.find(x=>x.id===currentEditId)?.order||0) : moments.length,
+    };
+
+    // upload foto se tiver nova
+    if(pendingPhotoFile){
+      showLoading('Enviando foto...');
+      data.photoUrl = await uploadToCloudinary(pendingPhotoFile, p=>{
+        document.getElementById('loading-text').textContent='Enviando foto... '+p+'%';
+      });
+      hideLoading();
+    } else if(currentEditId){
+      data.photoUrl = moments.find(x=>x.id===currentEditId)?.photoUrl||'';
+    }
+
+    // upload áudio se tiver novo
+    if(pendingAudioFile){
+      showLoading('Enviando áudio...');
+      const prog=document.getElementById('mm-audio-progress');
+      const fill=document.getElementById('mm-audio-fill');
+      const lbl =document.getElementById('mm-audio-prog-label');
+      prog.classList.add('show');
+      data.audioUrl = await uploadToCloudinary(pendingAudioFile, p=>{
+        fill.style.width=p+'%'; lbl.textContent='Enviando áudio... '+p+'%';
+        document.getElementById('loading-text').textContent='Enviando áudio... '+p+'%';
+      });
+      hideLoading();
+    } else if(currentEditId){
+      data.audioUrl = moments.find(x=>x.id===currentEditId)?.audioUrl||'';
+    }
+
+    // save to Firestore
+    if(currentEditId){
+      await updateDoc(doc(db,'moments',currentEditId),data);
+      const i=moments.findIndex(x=>x.id===currentEditId);
+      if(i>=0) moments[i]={id:currentEditId,...data};
+    } else {
+      const ref=await addDoc(collection(db,'moments'),data);
+      moments.push({id:ref.id,...data});
+    }
+
+    renderMoments();
+    closeMomentModal();
+    showToast('💕 Momento salvo na nuvem!');
+  }catch(err){
+    hideLoading();
+    console.error(err);
+    showToast('Erro ao salvar: '+err.message);
+  }finally{
+    btn.disabled=false; btn.textContent='Salvar momento ♡';
+  }
+};
+
+window.deleteMoment = async function(id){
+  if(!confirm('Excluir este momento?'))return;
+  await deleteDoc(doc(db,'moments',id));
+  moments=moments.filter(m=>m.id!==id);
+  renderMoments(); showToast('Momento excluído');
+};
+
+// ─── ADMIN ───────────────────────────────────────
+window.checkPwd = function(){
+  if(document.getElementById('pwd-inp').value===ADMIN_PASSWORD){
+    document.getElementById('login-modal').classList.add('hidden');
+    enterAdmin();
+  } else {
+    document.getElementById('pwd-err').textContent='Senha incorreta.';
+    document.getElementById('pwd-inp').value='';
+  }
+};
+function enterAdmin(){
+  isAdmin=true;
+  document.body.classList.add('admin-mode');
+  document.getElementById('hero-names').contentEditable='true';
+  document.getElementById('date-ed').style.display='block';
+  renderTimeline(); renderMoments();
+  showToast('🔓 Admin ativado!');
+}
+window.exitAdmin = async function(){
+  isAdmin=false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('hero-names').contentEditable='false';
+  document.getElementById('date-ed').style.display='none';
+  await window.saveSettings();
+  await window.saveChapters();
+  renderTimeline(); renderMoments();
+  showToast('✓ Saiu do admin. Tudo salvo!');
+};
+window.clearAll = async function(){
+  showLoading('Apagando dados...');
+  const snap=await getDocs(collection(db,'moments'));
+  for(const d of snap.docs) await deleteDoc(d.ref);
+  await setDoc(doc(db,'config','settings'),{names:'Alex & Seu Amor ♡',startDate:'2022-08-05'});
+  await setDoc(doc(db,'config','chapters'),{list:defaultChapters()});
+  moments=[]; chapters=defaultChapters(); settings={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};
+  document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';
+  document.getElementById('date-inp').value='2022-08-05';
+  renderTimeline(); renderMoments(); updateCounter();
+  hideLoading(); showToast('🗑 Dados apagados');
+};
+
+// ─── NAV ─────────────────────────────────────────
+window.goTo = function(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const map=['hero','historia','momentos','jogo'];
+  document.querySelectorAll('nav button').forEach((b,i)=>b.classList.toggle('active',map[i]===id));
+  window.scrollTo(0,0);
+};
+
+// ─── GAME ────────────────────────────────────────
 const Qs=[
   {q:"Qual a cor favorita da sua parceira?",who:"💙 Ele responde sobre ela",opts:["Azul","Rosa","Roxo","Verde"],ans:0},
   {q:"Qual o prato favorito do seu parceiro?",who:"🍽️ Ela responde sobre ele",opts:["Pizza","Churrasco","Macarrão","Sushi"],ans:1},
@@ -871,11 +966,11 @@ const Qs=[
   {q:"Maior defeito (com carinho 😂)?",who:"😄 Com honestidade",opts:["Teimoso(a)","Esquecido(a)","Dramático(a)","Perfeccionista"],ans:0},
   {q:"Qual frase resume o amor de vocês?",who:"💬 Última!",opts:["'Você é meu lar'","'Melhores amigos'","'Para sempre e mais um dia'","'Você me completa'"],ans:2},
 ];
-let qi=0,sc=0,ans=false;
+let qi=0,sc=0,answered=false;
 function showScreen(id){document.querySelectorAll('.gs').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function startGame(){qi=0;sc=0;showScreen('gs-q');renderQ();}
+window.startGame=function(){qi=0;sc=0;showScreen('gs-q');renderQ();};
 function renderQ(){
-  ans=false; const q=Qs[qi];
+  answered=false; const q=Qs[qi];
   document.getElementById('q-prog').textContent=`Pergunta ${qi+1} de ${Qs.length}`;
   document.getElementById('q-fill').style.width=`${((qi+1)/Qs.length)*100}%`;
   document.getElementById('q-who').textContent=q.who;
@@ -884,22 +979,22 @@ function renderQ(){
   q.opts.forEach((opt,i)=>{const b=document.createElement('button');b.className='q-btn';b.textContent=opt;b.onclick=()=>ansQ(i,b);o.appendChild(b);});
 }
 function ansQ(idx,btn){
-  if(ans)return; ans=true; const q=Qs[qi];
+  if(answered)return; answered=true; const q=Qs[qi];
   document.querySelectorAll('.q-btn')[q.ans].classList.add('correct');
-  if(idx===q.ans){sc++;showToast('✓ Acertaram! +1 💕');}else{btn.classList.add('wrong');showToast('Quase! Era outra resposta 😄');}
+  if(idx===q.ans){sc++;showToast('✓ Acertaram! +1 💕');}else{btn.classList.add('wrong');showToast('Quase! 😄');}
   setTimeout(()=>{qi++;qi<Qs.length?renderQ():showResult();},1500);
 }
 function showResult(){
   showScreen('gs-res');
   document.getElementById('r-score').textContent=`${sc}/${Qs.length}`;
-  const M=[[0,3,'💔','Hmm, que tal se conhecerem melhor? Mais conversas, mais abraços!'],[4,6,'😊','Bom começo! Vocês têm muito para descobrir ainda.'],[7,8,'🥰','Uau! Vocês se conhecem muito bem. O amor está florescendo!'],[9,10,'🏆','Perfeitos! Vocês foram feitos um para o outro!']];
+  const M=[[0,3,'💔','Hmm, mais conversas, mais abraços!'],[4,6,'😊','Bom começo! Vocês têm muito para descobrir.'],[7,8,'🥰','Vocês se conhecem muito bem!'],[9,10,'🏆','Perfeitos um para o outro!']];
   const [,,icon,msg]=M.find(([mn,mx])=>sc>=mn&&sc<=mx);
   document.getElementById('r-icon').textContent=icon;
   document.getElementById('r-msg').textContent=msg;
 }
-function resetGame(){showScreen('gs-start');}
+window.resetGame=function(){showScreen('gs-start');};
 
-// ─── PETALS ───────────────────────────────────
+// ─── PETALS ──────────────────────────────────────
 const canvas=document.getElementById('petals');
 const ctx=canvas.getContext('2d');
 function resizeC(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
@@ -914,10 +1009,10 @@ const petals=[];
 for(let i=0;i<25;i++)petals.push(new Petal());
 function animPetals(){ctx.clearRect(0,0,canvas.width,canvas.height);petals.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animPetals);}
 
-// ─── TOAST ────────────────────────────────────
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+// ─── TOAST ───────────────────────────────────────
+window.showToast=function(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);};
 
-// ─── START ────────────────────────────────────
+// ─── START ───────────────────────────────────────
 init();
 </script>
 </body>
