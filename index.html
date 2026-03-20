@@ -56,7 +56,7 @@ section.active{display:flex;}
 #book-canvas{
   display:block;
   border-radius:6px;
-  cursor:grab;
+  cursor:default;
   box-shadow:0 20px 60px rgba(0,0,0,.7),0 4px 20px rgba(0,0,0,.5);
   touch-action:none;
   max-width:100%;
@@ -435,12 +435,9 @@ function goTo(id){
   document.querySelectorAll('nav button').forEach(function(b,i){b.classList.toggle('active',map[i]===id);});
   window.scrollTo(0,0);
   if(id==='historia'){
-    // Aguarda o section ficar visível para medir corretamente
     requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        resizeBookCanvas();
-        bookNeedsRender=true;
-      });
+      resizeBookCanvas();
+      bookNeedsRender=true;
     });
   }
 }
@@ -502,7 +499,6 @@ var bookCanvas=null,bookCtx=null;
 var bookW=0,bookH=0,bookPW=0; // bookPW = largura de UMA página
 var bookCurrentSpread=0;       // spread atual (par de páginas)
 var bookFlipState=null;        // null ou objeto de flip em andamento
-var bookDrag={active:false,startX:0,startY:0};
 var bookPageCache={};          // cache de offscreen canvases por página
 var bookImgCache={};           // cache de imagens carregadas
 var bookAnimFrame=null;
@@ -526,24 +522,17 @@ function initBookCanvas(){
 }
 
 function resizeBookCanvas(){
-  var outer=document.querySelector('.book-outer');
-  var availW=0;
-  if(outer&&outer.clientWidth>0){
-    availW=outer.clientWidth;
-  } else {
-    // Seção ainda não visível — estima pela viewport
-    availW=Math.min(window.innerWidth-32,840);
-  }
-  var maxW=Math.min(availW,840);
-  var ratio=0.58; // altura/largura do livro inteiro (menos alto = menos scroll no mobile)
-  bookW=Math.max(maxW,200);
-  bookH=Math.round(bookW*ratio);
+  // Usa a viewport para calcular — funciona mesmo quando seção está oculta
+  var vw=Math.min(window.innerWidth,840+32);
+  var availW=Math.min(vw-32,840);
+  bookW=Math.max(Math.floor(availW),200);
+  bookH=Math.round(bookW*0.6);
   bookPW=Math.floor(bookW/2);
   bookCanvas.width=bookW;
   bookCanvas.height=bookH;
-  bookCanvas.style.width='100%';
-  bookCanvas.style.maxWidth=bookW+'px';
-  bookCanvas.style.height='auto';
+  bookCanvas.style.width=bookW+'px';
+  bookCanvas.style.height=bookH+'px';
+  bookCanvas.style.maxWidth='100%';
   bookPageCache={};
 }
 
@@ -1056,39 +1045,15 @@ function roundRectPath(c,x,y,w,h,tl,tr,br,bl){
   c.closePath();
 }
 
-/* ── Eventos de drag ── */
+/* ── Eventos — só click para editar (admin), sem drag ── */
 function setupBookEvents(){
   var c=bookCanvas;
-
-  c.addEventListener('mousedown',function(e){
-    e.preventDefault();
-    var r=c.getBoundingClientRect();
-    startDrag(e.clientX-r.left,e.clientY-r.top);
-  });
-  window.addEventListener('mousemove',function(e){
-    if(!bookDrag.active)return;
-    var r=bookCanvas.getBoundingClientRect();
-    moveDrag(e.clientX-r.left);
-  });
-  window.addEventListener('mouseup',function(){endDrag();});
-
-  c.addEventListener('touchstart',function(e){
-    var r=c.getBoundingClientRect();
-    startDrag(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);
-  },{passive:true});
-  window.addEventListener('touchmove',function(e){
-    if(!bookDrag.active)return;
-    e.preventDefault();
-    var r=bookCanvas.getBoundingClientRect();
-    moveDrag(e.touches[0].clientX-r.left);
-  },{passive:false});
-  window.addEventListener('touchend',function(){endDrag();},{passive:true});
-
-  // Click para editar (admin)
   c.addEventListener('click',function(e){
-    if(!isAdmin||bookDrag.wasDrag)return;
+    if(!isAdmin)return;
+    var r=c.getBoundingClientRect();
+    var scaleX=bookW/r.width;
+    var x=(e.clientX-r.left)*scaleX;
     var sp=bookSpreadPages(bookCurrentSpread);
-    var x=e.offsetX;
     if(x>bookPW){
       var pgIdx=sp.right;
       if(pgIdx>0&&pgIdx<bookTotalPages()-1)openChapterEditor(pgIdx-1);
@@ -1097,36 +1062,6 @@ function setupBookEvents(){
       if(pgIdx2>0&&pgIdx2<bookTotalPages()-1)openChapterEditor(pgIdx2-1);
     }
   });
-}
-
-function startDrag(x,y){
-  if(bookFlipState)return;
-  bookDrag.active=true;bookDrag.startX=x;bookDrag.wasDrag=false;
-  bookCanvas.classList.add('grabbing');
-}
-function moveDrag(x){
-  if(!bookDrag.active||bookFlipState)return;
-  var dx=x-bookDrag.startX;
-  if(Math.abs(dx)>6)bookDrag.wasDrag=true;
-  var progress=Math.max(0,Math.min(1,Math.abs(dx)/bookPW));
-  var dir=dx<0?1:-1;
-  // Verifica se pode virar nessa direção
-  if(dir>0&&bookCurrentSpread>=bookMaxSpreads()){return;}
-  if(dir<0&&bookCurrentSpread<=0){return;}
-  bookFlipState={progress:progress,dir:dir,auto:false};
-  bookNeedsRender=true;
-}
-function endDrag(){
-  if(!bookDrag.active)return;
-  bookDrag.active=false;
-  bookCanvas.classList.remove('grabbing');
-  if(!bookFlipState)return;
-  var threshold=0.22;
-  if(bookFlipState.progress>threshold){
-    animateFlip(bookFlipState.dir,bookFlipState.progress);
-  } else {
-    animateFlipCancel(bookFlipState.progress,bookFlipState.dir);
-  }
 }
 
 /* ── Animação de flip ── */
