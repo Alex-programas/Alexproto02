@@ -50,27 +50,20 @@ section.active{display:flex;}
 .hist-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,8vw,64px);font-weight:300;color:var(--cream);line-height:.9;}
 .hist-title em{color:var(--rose);font-style:italic;}
 
-.book-outer{width:100%;max-width:840px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.book-outer{width:100%;max-width:840px;display:flex;flex-direction:column;align-items:center;gap:10px;}
 
-/* Canvas do livro */
-#book-canvas{
-  display:block;
-  border-radius:6px;
-  cursor:default;
-  box-shadow:0 20px 60px rgba(0,0,0,.7),0 4px 20px rgba(0,0,0,.5);
-  touch-action:none;
-  max-width:100%;
-}
-#book-canvas.grabbing{cursor:grabbing;}
-
-.book-controls{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:840px;gap:8px;}
-.book-arrow{background:rgba(255,255,255,.05);border:1px solid rgba(201,166,110,.18);color:rgba(201,166,110,.6);width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .25s;flex-shrink:0;}
-.book-arrow:hover:not(:disabled),.book-arrow:active:not(:disabled){border-color:var(--rose);color:var(--rose);background:var(--rose-soft);}
-.book-arrow:disabled{opacity:.2;cursor:default;}
-.book-dots{display:flex;gap:5px;align-items:center;justify-content:center;flex:1;flex-wrap:wrap;}
+.book-canvas-wrap{width:100%;position:relative;display:flex;align-items:center;}
+#book-canvas{display:block;border-radius:6px;cursor:default;box-shadow:0 20px 60px rgba(0,0,0,.7),0 4px 20px rgba(0,0,0,.5);max-width:100%;width:100%;}
+.book-arrow{background:rgba(13,10,11,.8);border:1px solid rgba(201,166,110,.22);color:rgba(201,166,110,.75);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .25s;flex-shrink:0;backdrop-filter:blur(8px);position:absolute;z-index:10;}
+.book-arrow:hover:not(:disabled),.book-arrow:active:not(:disabled){border-color:var(--rose);color:var(--rose);background:rgba(201,86,106,.2);}
+.book-arrow:disabled{opacity:.15;cursor:default;}
+.book-arrow-left{left:-20px;}
+.book-arrow-right{right:-20px;}
+@media(max-width:600px){.book-arrow-left{left:-16px;width:30px;height:30px;font-size:16px;}.book-arrow-right{right:-16px;width:30px;height:30px;font-size:16px;}}
+.book-dots{display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap;}
 .b-dot{width:5px;height:5px;border-radius:50%;background:rgba(201,166,110,.2);cursor:pointer;transition:all .3s;}
 .b-dot.active{background:var(--rose);width:14px;border-radius:3px;}
-.book-page-label{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.2);text-align:center;}
+.book-page-label{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.18);text-align:center;}
 
 .add-ch-btn{display:none;align-items:center;justify-content:center;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;width:100%;max-width:840px;transition:all .3s;}
 .add-ch-btn:hover{background:rgba(201,86,106,.14);}
@@ -370,12 +363,13 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
     <h2 class="hist-title">Nossa <em>História</em></h2>
   </div>
   <div class="book-outer">
-    <canvas id="book-canvas"></canvas>
-    <div class="book-controls">
-      <button class="book-arrow" id="btn-prev" onclick="bookFlipPrev()" disabled>‹</button>
-      <div class="book-dots" id="book-dots"></div>
-      <button class="book-arrow" id="btn-next" onclick="bookFlipNext()">›</button>
+    <!-- Wrapper com setas sobrepostas nos cantos -->
+    <div class="book-canvas-wrap">
+      <canvas id="book-canvas"></canvas>
+      <button class="book-arrow book-arrow-left" id="btn-prev" onclick="bookFlipPrev()" disabled>‹</button>
+      <button class="book-arrow book-arrow-right" id="btn-next" onclick="bookFlipNext()">›</button>
     </div>
+    <div class="book-dots" id="book-dots"></div>
     <p class="book-page-label" id="book-page-label"></p>
   </div>
   <button class="add-ch-btn" onclick="addChapter()">＋ Adicionar capítulo</button>
@@ -904,24 +898,30 @@ function renderPageToCtx(c,pgIdx,w,h,side){
   c.beginPath();c.moveTo(lx1,ty+h*0.44);c.lineTo(lx2,ty+h*0.44);
   c.strokeStyle='rgba(201,86,106,.18)';c.lineWidth=.8;c.stroke();
 
-  // Foto — ocupa a metade inferior da página
+  // Foto — ocupa toda a metade inferior, de borda a borda
   var photoAreaTop=ty+h*0.45;
-  var photoAreaBot=h-h*0.14; // deixa espaço só pro rodapé
+  var photoAreaBot=h; // vai até o fundo da página
   var photoAreaH=photoAreaBot-photoAreaTop;
-  var photoPadX=pad*0.7;
-  var photoPW=w-photoPadX*2;
+  var photoPadX=0; // sem padding lateral
+  var photoPW=w;   // largura total da página
+  var photoRounding=side==='right'?[0,0,6,0]:[0,0,0,6]; // arredonda só o canto externo inferior
 
   if(ch.photoUrl&&bookImgCache[ch.photoUrl]){
     var img=bookImgCache[ch.photoUrl];
     var offset=ch.photoOffset;
-    var ix=side==='right'?photoPadX:(w-photoPadX-photoPW);
+    var ix=0; // sempre começa no canto esquerdo da página
 
     c.save();
-    roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);
+    // Clip arredondado só nos cantos inferiores externos
+    c.beginPath();
+    if(side==='right'){
+      roundRectPath(c,ix,photoAreaTop,photoPW,photoAreaH,0,0,6,0);
+    } else {
+      roundRectPath(c,ix,photoAreaTop,photoPW,photoAreaH,0,0,0,6);
+    }
     c.clip();
 
     if(offset&&offset.scale&&offset.canvasW){
-      // Escala o offset do crop para a área da página atual
       var scaleX2=photoPW/offset.canvasW;
       var scaleY2=photoAreaH/offset.canvasH;
       var imgW=img.width*offset.scale*scaleX2;
@@ -930,7 +930,7 @@ function renderPageToCtx(c,pgIdx,w,h,side){
       var imgY=photoAreaTop+offset.y*scaleY2;
       c.drawImage(img,imgX,imgY,imgW,imgH);
     } else {
-      // Sem crop salvo: cover padrão centralizado
+      // Cover padrão centralizado
       var ir2=img.width/img.height;
       var dw=photoPW,dh=photoAreaH;
       var sx2=0,sy2=0,sw2=img.width,sh2=img.height;
@@ -939,8 +939,6 @@ function renderPageToCtx(c,pgIdx,w,h,side){
       c.drawImage(img,sx2,sy2,sw2,sh2,ix,photoAreaTop,dw,dh);
     }
     c.restore();
-    c.strokeStyle='rgba(201,130,100,.2)';c.lineWidth=1;
-    roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);c.stroke();
 
     // Frase sobre a foto (overlay escuro no rodapé)
     var quoteStr=ch.quote&&ch.quote!=='undefined'&&ch.quote!==''?('"'+ch.quote+'"'):'';
@@ -948,45 +946,45 @@ function renderPageToCtx(c,pgIdx,w,h,side){
       var overlayH=photoAreaH*0.38;
       var overlayGrad=c.createLinearGradient(0,photoAreaTop+photoAreaH-overlayH,0,photoAreaTop+photoAreaH);
       overlayGrad.addColorStop(0,'rgba(20,6,12,0)');
-      overlayGrad.addColorStop(1,'rgba(20,6,12,0.78)');
+      overlayGrad.addColorStop(1,'rgba(20,6,12,0.82)');
       c.save();
-      roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);
+      c.beginPath();
+      if(side==='right'){roundRectPath(c,0,photoAreaTop,photoPW,photoAreaH,0,0,6,0);}
+      else{roundRectPath(c,0,photoAreaTop,photoPW,photoAreaH,0,0,0,6);}
       c.clip();
       c.fillStyle=overlayGrad;
-      c.fillRect(ix,photoAreaTop,photoPW,photoAreaH);
+      c.fillRect(0,photoAreaTop,photoPW,photoAreaH);
       c.restore();
       c.font='italic '+(w*0.042)+'px Cormorant Garamond, serif';
       c.fillStyle='rgba(253,240,230,0.92)';
       c.textAlign='center';c.textBaseline='alphabetic';
-      wrapText(c,quoteStr,ix+photoPW/2,photoAreaTop+photoAreaH-photoAreaH*0.07,photoPW-16,h*0.044,'center');
+      wrapText(c,quoteStr,w/2,photoAreaTop+photoAreaH-photoAreaH*0.06,photoPW-pad*1.2,h*0.044,'center');
     }
   } else {
     // Sem foto: placeholder escuro
-    var ix2=side==='right'?photoPadX:(w-photoPadX-photoPW);
+    var ix2=0;
     c.fillStyle='rgba(255,255,255,.04)';
     c.beginPath();
-    roundRect(c,ix2,photoAreaTop,photoPW,photoAreaH,7);
+    if(side==='right'){roundRectPath(c,ix2,photoAreaTop,photoPW,photoAreaH,0,0,6,0);}
+    else{roundRectPath(c,ix2,photoAreaTop,photoPW,photoAreaH,0,0,0,6);}
     c.fill();
-    c.strokeStyle='rgba(201,86,106,.12)';c.lineWidth=1;
-    roundRect(c,ix2,photoAreaTop,photoPW,photoAreaH,7);c.stroke();
+    c.strokeStyle='rgba(201,86,106,.1)';c.lineWidth=1;
+    c.beginPath();
+    if(side==='right'){roundRectPath(c,ix2,photoAreaTop,photoPW,photoAreaH,0,0,6,0);}
+    else{roundRectPath(c,ix2,photoAreaTop,photoPW,photoAreaH,0,0,0,6);}
+    c.stroke();
     c.font=(w*0.07)+'px serif';c.textAlign='center';c.textBaseline='middle';
-    c.fillStyle='rgba(201,166,110,.2)';
+    c.fillStyle='rgba(201,166,110,.18)';
     c.fillText('📷',w/2,photoAreaTop+photoAreaH*0.4);
     if(ch.photoUrl){loadImgForCanvas(ch.photoUrl);}
     var quoteStr2=ch.quote&&ch.quote!=='undefined'&&ch.quote!==''?('"'+ch.quote+'"'):'';
     if(quoteStr2){
       c.font='italic '+(w*0.042)+'px Cormorant Garamond, serif';
-      c.fillStyle='rgba(253,240,230,.38)';
-      c.textAlign=side==='right'?'left':'right';c.textBaseline='alphabetic';
-      wrapText(c,quoteStr2,side==='right'?tx+8:w-tx-8,photoAreaTop+photoAreaH*0.78,maxTxtW-8,h*0.046,side);
+      c.fillStyle='rgba(253,240,230,.35)';
+      c.textAlign='center';c.textBaseline='alphabetic';
+      wrapText(c,quoteStr2,w/2,photoAreaTop+photoAreaH*0.78,photoPW-pad*1.6,h*0.046,'center');
     }
   }
-
-  // Rodapé
-  c.font=(w*0.034)+'px Josefin Sans, sans-serif';
-  c.fillStyle='rgba(201,166,110,.25)';
-  c.textAlign=side==='right'?'right':'left';
-  c.fillText(pgIdx+' / '+(bookTotalPages()-2),side==='right'?w-tx:tx,h-h*0.05);
 
   // Admin: indicador de editável
   if(isAdmin){
