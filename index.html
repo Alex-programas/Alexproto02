@@ -132,13 +132,13 @@ section.active{display:flex}
 .lm-letter p:last-child{margin-bottom:0}
 .lm-signature{font-family:'Dancing Script',cursive;font-size:22px;color:var(--rose);text-align:center;margin-bottom:22px;font-weight:600}
 .lm-music-bar{display:flex;align-items:center;gap:12px;background:rgba(201,86,106,.08);border:1px solid rgba(201,86,106,.2);border-radius:12px;padding:12px 16px}
-/* mini youtube embed player */
-.lm-embed-wrap{margin-top:14px;border-radius:14px;overflow:hidden;background:#000;display:none}
+/* youtube player — escondido mas com pixels reais para autoplay funcionar */
+.lm-embed-wrap{position:fixed;bottom:1px;right:1px;width:1px;height:1px;overflow:hidden;opacity:0.01;pointer-events:none;display:none;z-index:1}
 .lm-embed-wrap.show{display:block}
-.lm-embed-label{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);padding:8px 14px 0;background:rgba(201,86,106,.08);border:1px solid rgba(201,86,106,.2);border-bottom:none;border-radius:14px 14px 0 0;display:none}
-.lm-embed-label.show{display:block}
-.lm-embed-wrap iframe{width:100%;height:80px;border:none;display:block;border-radius:0 0 14px 14px}
-.lm-embed-wrap.spotify iframe{height:152px}
+.lm-embed-label{display:none}
+.lm-embed-label.show{display:none}
+.lm-embed-wrap iframe{width:1px;height:1px;border:none;display:block}
+.lm-embed-wrap.spotify iframe{width:1px;height:1px}
 /* fallback button when embed is blocked (arquivo local) */
 .lm-play-fallback{display:none;align-items:center;gap:12px;background:rgba(201,86,106,.08);border:1px solid rgba(201,86,106,.22);border-radius:12px;padding:13px 16px;margin-top:14px;cursor:pointer;transition:all .3s;width:100%;text-align:left}
 .lm-play-fallback:hover{background:rgba(201,86,106,.16);border-color:var(--rose)}
