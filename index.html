@@ -44,26 +44,34 @@ section.active{display:flex;}
 #date-inp{background:rgba(255,255,255,.07);border:1px solid var(--gold-soft);border-radius:7px;padding:6px 10px;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:11px;outline:none;}
 
 /* HISTÓRIA */
-#historia{background:linear-gradient(160deg,#0d0a0b 0%,#1a0d14 50%,#0d0a0b 100%);justify-content:flex-start;padding-top:80px;padding-bottom:50px;padding-left:0;padding-right:0;}
-.hist-header{text-align:center;margin-bottom:16px;width:100%;padding:0 12px;}
+#historia{
+  background:linear-gradient(160deg,#0d0a0b 0%,#1a0d14 50%,#0d0a0b 100%);
+  justify-content:flex-start;
+  align-items:center;
+  padding-top:76px;
+  padding-bottom:40px;
+  padding-left:0;
+  padding-right:0;
+  min-height:100vh;
+  height:auto; /* não força 100vh cheio */
+}
+.hist-header{text-align:center;margin-bottom:14px;width:100%;padding:0 12px;}
 .hist-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);opacity:.65;margin-bottom:6px;}
-.hist-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,8vw,64px);font-weight:300;color:var(--cream);line-height:.9;}
+.hist-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,7vw,64px);font-weight:300;color:var(--cream);line-height:.9;}
 .hist-title em{color:var(--rose);font-style:italic;}
 
 .book-outer{width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0;}
 
-/* Setas ficam DENTRO do wrapper, sobrepostas sobre o canvas */
 .book-canvas-wrap{
   width:100%;
   position:relative;
-  display:block; /* não flex — canvas ocupa 100% */
+  display:block;
 }
 #book-canvas{
   display:block;
   cursor:default;
   width:100%;
   height:auto;
-  border-radius:0; /* sem border-radius no mobile — usa a largura total */
   box-shadow:0 12px 40px rgba(0,0,0,.6);
 }
 @media(min-width:600px){
@@ -71,7 +79,6 @@ section.active{display:flex;}
   .book-outer{padding:0 12px;}
 }
 
-/* Setas sobrepostas DENTRO do canvas, nos cantos verticalmente centrados */
 .book-arrow{
   position:absolute;
   top:50%;
@@ -463,10 +470,11 @@ function goTo(id){
   document.querySelectorAll('nav button').forEach(function(b,i){b.classList.toggle('active',map[i]===id);});
   window.scrollTo(0,0);
   if(id==='historia'){
-    requestAnimationFrame(function(){
+    // Espera o DOM renderizar para medir corretamente
+    setTimeout(function(){
       resizeBookCanvas();
       bookNeedsRender=true;
-    });
+    },50);
   }
 }
 function carregarConfigs(){
@@ -544,23 +552,32 @@ function initBookCanvas(){
   bookCanvas=document.getElementById('book-canvas');
   bookCtx=bookCanvas.getContext('2d');
   resizeBookCanvas();
-  window.addEventListener('resize',function(){resizeBookCanvas();bookRender();});
+  window.addEventListener('resize',function(){
+    bookCtx.setTransform(1,0,0,1,0,0); // reset transform before resize
+    resizeBookCanvas();
+    bookNeedsRender=true;
+  });
   setupBookEvents();
   bookLoop();
 }
 
 function resizeBookCanvas(){
-  // Sempre usa a largura da viewport — funciona em qualquer estado
-  var vw=window.innerWidth;
-  var maxW=Math.min(vw,860);
-  bookW=Math.max(Math.floor(maxW),200);
-  // Mais alto no mobile para texto e foto terem espaço
-  var ratio=vw<600?0.75:0.62;
-  bookH=Math.round(bookW*ratio);
+  var wrap=document.querySelector('.book-canvas-wrap');
+  // Pega a largura real do wrapper no DOM
+  var wrapW=wrap?wrap.getBoundingClientRect().width:window.innerWidth;
+  if(wrapW<10)wrapW=window.innerWidth;
+  bookW=Math.floor(wrapW);
+  var isMobile=window.innerWidth<600;
+  // Proporção: no mobile mais alto para caber título + foto
+  bookH=Math.round(bookW*(isMobile?0.72:0.62));
   bookPW=Math.floor(bookW/2);
-  bookCanvas.width=bookW;
-  bookCanvas.height=bookH;
-  // CSS width:100% cuida do responsive — canvas interno tem resolução full
+  // Usa devicePixelRatio para tela nítida no celular
+  var dpr=window.devicePixelRatio||1;
+  bookCanvas.width=bookW*dpr;
+  bookCanvas.height=bookH*dpr;
+  bookCanvas.style.width=bookW+'px';
+  bookCanvas.style.height=bookH+'px';
+  bookCtx.scale(dpr,dpr);
   bookPageCache={};
 }
 
