@@ -280,8 +280,15 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
     <div class="ce-field"><label>Título</label><input class="ce-inp" id="ce-title-inp" placeholder="Primeiro Encontro"></div>
     <div class="ce-field"><label>Frase especial</label><input class="ce-inp" id="ce-quote" placeholder="Edite para contar a história..."></div>
     <div class="ce-field">
-      <label>📸 Foto</label>
-      <img class="ce-prev" id="ce-prev" src="" alt="">
+      <label>📸 Foto — arraste para reposicionar</label>
+      <div id="ce-crop-wrap" style="display:none;margin-bottom:8px;position:relative;">
+        <canvas id="ce-crop-canvas" style="width:100%;border-radius:8px;cursor:grab;display:block;touch-action:none;border:1px solid rgba(255,255,255,.1);"></canvas>
+        <div style="position:absolute;bottom:8px;right:8px;display:flex;gap:5px;">
+          <button onclick="ceCropZoom(0.12)" style="background:rgba(13,10,11,.8);border:1px solid rgba(255,255,255,.25);color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;">+</button>
+          <button onclick="ceCropZoom(-0.12)" style="background:rgba(13,10,11,.8);border:1px solid rgba(255,255,255,.25);color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;">−</button>
+        </div>
+      </div>
+      <p style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(253,246,240,.25);text-align:center;margin-bottom:8px;" id="ce-crop-hint" style="display:none;">Arraste · + / − para zoom</p>
       <input type="file" id="ce-photo-file" accept="image/*" style="display:none" onchange="handleCEPhoto(event)">
       <button class="ce-upload-btn" id="ce-photo-btn" onclick="document.getElementById('ce-photo-file').click()">+ Escolher foto</button>
       <p class="ce-hint" id="ce-photo-hint"></p>
@@ -894,23 +901,38 @@ function renderPageToCtx(c,pgIdx,w,h,side){
 
   if(ch.photoUrl&&bookImgCache[ch.photoUrl]){
     var img=bookImgCache[ch.photoUrl];
-    // Cobre toda a área disponível (object-fit: cover)
-    var ir=img.width/img.height;
-    var drawW=photoPW,drawH=photoAreaH;
-    var sx=0,sy=0,sw=img.width,sh=img.height;
-    if(ir>drawW/drawH){// imagem mais larga: corta laterais
-      sw=img.height*(drawW/drawH);sx=(img.width-sw)/2;
-    } else {// imagem mais alta: corta topo/base
-      sh=img.width/(drawW/drawH);sy=(img.height-sh)/2;
-    }
-    var ix=side==='right'?photoPadX:(w-photoPadX-drawW);
+    var offset=ch.photoOffset;
+    var ix=side==='right'?photoPadX:(w-photoPadX-photoPW);
+
     c.save();
-    roundRect(c,ix,photoAreaTop,drawW,drawH,7);
+    roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);
     c.clip();
-    c.drawImage(img,sx,sy,sw,sh,ix,photoAreaTop,drawW,drawH);
+
+    if(offset&&offset.scale){
+      // Usa posição/zoom salvo pelo crop
+      // O crop foi feito em um canvas com largura ~wrapW e mesma proporção
+      // Precisamos escalar o offset para as dimensões atuais da página
+      var cropW=offset.canvasW||photoPW;
+      var cropH=offset.canvasH||photoAreaH;
+      var scaleX2=photoPW/cropW;
+      var scaleY2=photoAreaH/cropH;
+      var imgW=img.width*(offset.scale*scaleX2);
+      var imgH=img.height*(offset.scale*scaleY2);
+      var imgX=ix+offset.x*scaleX2;
+      var imgY=photoAreaTop+offset.y*scaleY2;
+      c.drawImage(img,imgX,imgY,imgW,imgH);
+    } else {
+      // Sem crop: cover padrão
+      var ir=img.width/img.height;
+      var dw=photoPW,dh=photoAreaH;
+      var sx=0,sy=0,sw=img.width,sh=img.height;
+      if(ir>dw/dh){sw=img.height*(dw/dh);sx=(img.width-sw)/2;}
+      else{sh=img.width/(dw/dh);sy=(img.height-sh)/2;}
+      c.drawImage(img,sx,sy,sw,sh,ix,photoAreaTop,dw,dh);
+    }
     c.restore();
     c.strokeStyle='rgba(201,130,100,.2)';c.lineWidth=1;
-    roundRect(c,ix,photoAreaTop,drawW,drawH,7);c.stroke();
+    roundRect(c,ix,photoAreaTop,photoPW,photoAreaH,7);c.stroke();
     // Frase sobre a foto (overlay escuro no rodapé da foto)
     var quoteStr=ch.quote&&ch.quote!=='undefined'?('"'+ch.quote+'"'):'';
     if(quoteStr){
@@ -1166,7 +1188,9 @@ function updateBookUI(){
     :'Capítulo '+(r)+' de '+tot;
 }
 
-/* ── Editor de capítulo (admin) ── */
+/* ── Editor de capítulo com crop interativo ── */
+var ceCrop={img:null,x:0,y:0,scale:1,dragging:false,lastX:0,lastY:0,canvasW:0,canvasH:0};
+
 function openChapterEditor(chIdx){
   if(!isAdmin)return;
   ceEditIdx=chIdx;cePendingPhoto=null;
@@ -1177,24 +1201,142 @@ function openChapterEditor(chIdx){
   document.getElementById('ce-date').value=ch.date||'';
   document.getElementById('ce-title-inp').value=ch.title||'';
   document.getElementById('ce-quote').value=ch.quote||'';
-  var prev=document.getElementById('ce-prev');
-  if(ch.photoUrl){prev.src=ch.photoUrl;prev.classList.add('show');}
-  else{prev.src='';prev.classList.remove('show');}
-  document.getElementById('ce-photo-hint').textContent=ch.photoUrl?'✓ Foto atual':'';
+  document.getElementById('ce-photo-hint').textContent='';
   document.getElementById('ce-photo-btn').textContent=ch.photoUrl?'+ Trocar foto':'+ Adicionar foto';
+
+  // Se já tem foto, carrega no crop
+  if(ch.photoUrl){
+    var img=bookImgCache[ch.photoUrl];
+    if(img){
+      initCropCanvas(img,ch.photoOffset||null);
+    } else {
+      var i=new Image();i.crossOrigin='anonymous';
+      i.onload=function(){bookImgCache[ch.photoUrl]=i;initCropCanvas(i,ch.photoOffset||null);};
+      i.src=ch.photoUrl;
+    }
+  } else {
+    document.getElementById('ce-crop-wrap').style.display='none';
+    document.getElementById('ce-crop-hint').style.display='none';
+  }
+
   document.getElementById('chapter-editor').classList.add('open');
   document.body.style.overflow='hidden';
 }
-function closeChapterEditor(){document.getElementById('chapter-editor').classList.remove('open');document.body.style.overflow='';}
+
+function initCropCanvas(img,savedOffset){
+  var wrap=document.getElementById('ce-crop-wrap');
+  var canvas=document.getElementById('ce-crop-canvas');
+  wrap.style.display='block';
+  document.getElementById('ce-crop-hint').style.display='block';
+
+  // Aspect ratio igual ao da página no livro (aproximado: largura x 0.45 de altura)
+  var wrapW=wrap.clientWidth||300;
+  var canvasH=Math.round(wrapW*0.52);
+  canvas.width=wrapW;canvas.height=canvasH;
+  ceCrop.canvasW=wrapW;ceCrop.canvasH=canvasH;
+  ceCrop.img=img;
+
+  if(savedOffset&&savedOffset.scale){
+    ceCrop.scale=savedOffset.scale;
+    ceCrop.x=savedOffset.x;
+    ceCrop.y=savedOffset.y;
+  } else {
+    // Escala padrão: preenche o canvas (cover)
+    var scaleX=wrapW/img.width;
+    var scaleY=canvasH/img.height;
+    ceCrop.scale=Math.max(scaleX,scaleY)*1.0;
+    ceCrop.x=(wrapW-img.width*ceCrop.scale)/2;
+    ceCrop.y=(canvasH-img.height*ceCrop.scale)/2;
+  }
+
+  drawCropCanvas();
+  setupCropEvents(canvas);
+}
+
+function drawCropCanvas(){
+  var canvas=document.getElementById('ce-crop-canvas');
+  if(!canvas||!ceCrop.img)return;
+  var c=canvas.getContext('2d');
+  var w=ceCrop.canvasW,h=ceCrop.canvasH;
+  c.clearRect(0,0,w,h);
+  // Fundo
+  c.fillStyle='#1c0f15';c.fillRect(0,0,w,h);
+  // Foto posicionada
+  c.save();
+  c.beginPath();c.rect(0,0,w,h);c.clip();
+  c.drawImage(ceCrop.img,ceCrop.x,ceCrop.y,ceCrop.img.width*ceCrop.scale,ceCrop.img.height*ceCrop.scale);
+  c.restore();
+  // Grade de terços (guia composição)
+  c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=.8;
+  c.beginPath();c.moveTo(w/3,0);c.lineTo(w/3,h);c.stroke();
+  c.beginPath();c.moveTo(w*2/3,0);c.lineTo(w*2/3,h);c.stroke();
+  c.beginPath();c.moveTo(0,h/3);c.lineTo(w,h/3);c.stroke();
+  c.beginPath();c.moveTo(0,h*2/3);c.lineTo(w,h*2/3);c.stroke();
+}
+
+function ceCropZoom(delta){
+  if(!ceCrop.img)return;
+  var oldScale=ceCrop.scale;
+  var newScale=Math.max(0.3,Math.min(4,ceCrop.scale+delta));
+  // Zoom centrado no canvas
+  var cx=ceCrop.canvasW/2,cy=ceCrop.canvasH/2;
+  ceCrop.x=cx-(cx-ceCrop.x)*(newScale/oldScale);
+  ceCrop.y=cy-(cy-ceCrop.y)*(newScale/oldScale);
+  ceCrop.scale=newScale;
+  drawCropCanvas();
+}
+
+function setupCropEvents(canvas){
+  // Remove eventos antigos clonando o canvas
+  var newCanvas=canvas.cloneNode(true);
+  canvas.parentNode.replaceChild(newCanvas,canvas);
+  var c=newCanvas;
+
+  function startDragCrop(cx,cy){
+    ceCrop.dragging=true;ceCrop.lastX=cx;ceCrop.lastY=cy;
+    c.style.cursor='grabbing';
+  }
+  function moveDragCrop(cx,cy){
+    if(!ceCrop.dragging)return;
+    ceCrop.x+=cx-ceCrop.lastX;
+    ceCrop.y+=cy-ceCrop.lastY;
+    ceCrop.lastX=cx;ceCrop.lastY=cy;
+    drawCropCanvas();
+  }
+  function endDragCrop(){ceCrop.dragging=false;c.style.cursor='grab';}
+
+  c.addEventListener('mousedown',function(e){e.preventDefault();startDragCrop(e.offsetX,e.offsetY);});
+  window.addEventListener('mousemove',function(e){if(ceCrop.dragging){var r=c.getBoundingClientRect();moveDragCrop(e.clientX-r.left,e.clientY-r.top);}});
+  window.addEventListener('mouseup',endDragCrop);
+  c.addEventListener('touchstart',function(e){var r=c.getBoundingClientRect();startDragCrop(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);},{passive:true});
+  c.addEventListener('touchmove',function(e){e.preventDefault();var r=c.getBoundingClientRect();moveDragCrop(e.touches[0].clientX-r.left,e.touches[0].clientY-r.top);},{passive:false});
+  c.addEventListener('touchend',endDragCrop,{passive:true});
+}
+
+function closeChapterEditor(){document.getElementById('chapter-editor').classList.remove('open');document.body.style.overflow='';ceCrop.img=null;}
+
 function handleCEPhoto(e){
   var file=e.target.files[0];if(!file)return;
   cePendingPhoto=file;
-  var prev=document.getElementById('ce-prev');
-  prev.src=URL.createObjectURL(file);prev.classList.add('show');
-  document.getElementById('ce-photo-hint').textContent='✓ '+file.name;
+  document.getElementById('ce-photo-hint').textContent='✓ '+file.name+' — será salva ao confirmar';
   document.getElementById('ce-photo-hint').className='ce-hint ok';
+  document.getElementById('ce-photo-btn').textContent='+ Trocar foto';
+  // Mostra preview no crop imediatamente
+  var url=URL.createObjectURL(file);
+  var img=new Image();
+  img.onload=function(){
+    ceCrop.img=img;
+    initCropCanvas(img,null);
+  };
+  img.src=url;
   e.target.value='';
 }
+
+function getCropOffset(){
+  if(!ceCrop.img)return null;
+  return{x:ceCrop.x,y:ceCrop.y,scale:ceCrop.scale,canvasW:ceCrop.canvasW,canvasH:ceCrop.canvasH};
+}
+
 function saveChapterEditor(){
   var chIdx=parseInt(document.getElementById('ce-idx').value);
   if(isNaN(chIdx)||!chapters_db[chIdx])return;
@@ -1202,18 +1344,26 @@ function saveChapterEditor(){
   chapters_db[chIdx].date=document.getElementById('ce-date').value||'';
   chapters_db[chIdx].title=document.getElementById('ce-title-inp').value||'';
   chapters_db[chIdx].quote=document.getElementById('ce-quote').value||'';
+  // Salva offset do crop
+  var offset=getCropOffset();
+  if(offset)chapters_db[chIdx].photoOffset=offset;
+
   if(cePendingPhoto){
     showLoad('Enviando foto...');
     uploadCloudinary(cePendingPhoto,null).then(function(url){
       chapters_db[chIdx].photoUrl=url;
+      // Carrega imagem no cache com novo URL
+      var img=new Image();img.crossOrigin='anonymous';
+      img.onload=function(){bookImgCache[url]=img;};img.src=url;
       hideLoad();invalidatePageCache(chIdx+1);bookPageCache={};bookNeedsRender=true;
       closeChapterEditor();showToast('📸 Foto salva! Clique em Salvar história.');
     }).catch(function(){hideLoad();showToast('Erro ao enviar foto.');});
   } else {
     invalidatePageCache(chIdx+1);bookPageCache={};bookNeedsRender=true;
-    closeChapterEditor();showToast('✓ Capítulo atualizado! Clique em Salvar história.');
+    closeChapterEditor();showToast('✓ Atualizado! Clique em Salvar história.');
   }
 }
+
 function deleteChapterFromEditor(){
   var chIdx=parseInt(document.getElementById('ce-idx').value);
   if(!confirm('Remover capítulo '+(chIdx+1)+'?'))return;
