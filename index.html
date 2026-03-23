@@ -43,7 +43,7 @@ section.active{display:flex;}
 #date-ed label{font-size:9px;letter-spacing:2px;color:var(--gold);display:block;margin-bottom:4px;opacity:.7;}
 #date-inp{background:rgba(255,255,255,.07);border:1px solid var(--gold-soft);border-radius:7px;padding:6px 10px;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:11px;outline:none;}
 
-/* HISTÓRIA — HTML flip book */
+/* HISTÓRIA */
 #historia{
   background:linear-gradient(160deg,#0d0a0b 0%,#1a0d14 50%,#0d0a0b 100%);
   justify-content:flex-start;align-items:center;
@@ -57,21 +57,7 @@ section.active{display:flex;}
 
 .book-scene{width:100%;max-width:480px;padding:0 12px;display:flex;flex-direction:column;align-items:center;gap:14px;}
 .book-stage{width:100%;perspective:1200px;perspective-origin:50% 40%;position:relative;min-height:420px;}
-
-.book-page{
-  width:100%;
-  background:linear-gradient(145deg,#2a1520,#1e0f18);
-  border-radius:4px 12px 12px 4px;
-  box-shadow:4px 6px 32px rgba(0,0,0,.7),inset 3px 0 12px rgba(0,0,0,.3);
-  overflow:hidden;
-  position:relative;
-  transform-origin:left center;
-  transform-style:preserve-3d;
-  transition:transform .55s cubic-bezier(.645,.045,.355,1), opacity .35s ease;
-  background-image:
-    linear-gradient(145deg,#2a1520,#1e0f18),
-    repeating-linear-gradient(to bottom,transparent,transparent 31px,rgba(201,166,110,.04) 31px,rgba(201,166,110,.04) 32px);
-}
+.book-page{width:100%;background:linear-gradient(145deg,#2a1520,#1e0f18);border-radius:4px 12px 12px 4px;box-shadow:4px 6px 32px rgba(0,0,0,.7),inset 3px 0 12px rgba(0,0,0,.3);overflow:hidden;position:relative;transform-origin:left center;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.645,.045,.355,1), opacity .35s ease;}
 .book-page::before{content:'';position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(to right,#0d0408,#1a0810,#0d0408);z-index:2;}
 .book-page::after{content:'';position:absolute;left:26px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,rgba(201,86,106,.08),transparent);z-index:2;}
 
@@ -124,7 +110,7 @@ section.active{display:flex;}
 .pg-edit-btn{display:none;position:absolute;top:8px;right:8px;background:rgba(201,86,106,.15);border:1px solid rgba(201,86,106,.35);color:var(--rose);padding:4px 10px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;z-index:20;}
 .admin-mode .pg-edit-btn{display:block;}
 
-.add-ch-btn{display:none;align-items:center;justify-content:center;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;width:100%;transition:all .3s;}
+.add-ch-btn{display:none;align-items:center;justify-content:center;background:rgba(201,86,106,.08);border:2px dashed var(--rose);color:var(--rose);border-radius:10px;padding:9px 20px;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;width:100%;transition:all .3s;max-width:480px;}
 .add-ch-btn:hover{background:rgba(201,86,106,.14);}
 .admin-mode .add-ch-btn{display:flex;}
 
@@ -136,6 +122,17 @@ section.active{display:flex;}
 .pg-lock-timer{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);opacity:.7;}
 .pg-lock-timer-lbl{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.2);text-transform:uppercase;}
 .pg-lock-admin-badge{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,86,106,.5);border:1px dashed rgba(201,86,106,.3);padding:3px 8px;border-radius:6px;}
+
+/* ── TOGGLE SWITCH ── */
+.ce-toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.ce-toggle-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:.75;}
+.toggle-switch{position:relative;display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+.toggle-switch input{position:absolute;opacity:0;width:0;height:0;pointer-events:none;}
+.toggle-track{width:40px;height:22px;border-radius:11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);transition:background .25s,border-color .25s;flex-shrink:0;position:relative;}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.4);transition:transform .25s,background .25s;}
+.toggle-switch input:checked ~ .toggle-track{background:var(--rose);border-color:var(--rose);}
+.toggle-switch input:checked ~ .toggle-track .toggle-thumb{transform:translateX(18px);background:white;}
+.toggle-txt{font-size:9px;color:rgba(253,246,240,.4);min-width:20px;}
 
 #chapter-editor{display:none;position:fixed;inset:0;background:rgba(13,10,11,.94);z-index:9000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px;backdrop-filter:blur(10px);}
 #chapter-editor.open{display:flex;}
@@ -153,12 +150,6 @@ section.active{display:flex;}
 .ce-actions{display:flex;gap:8px;justify-content:space-between;margin-top:18px;flex-wrap:wrap;}
 #ce-crop-wrap{display:none;margin-bottom:8px;position:relative;}
 #ce-crop-canvas{width:100%;border-radius:8px;display:block;touch-action:none;border:1px solid rgba(255,255,255,.1);cursor:grab;}
-
-/* Toggle switch visual */
-.lock-toggle-wrap{position:relative;width:36px;height:20px;cursor:pointer;}
-.lock-toggle-wrap input[type=checkbox]{opacity:0;position:absolute;inset:0;cursor:pointer;z-index:2;margin:0;width:100%;height:100%;}
-#ce-lock-track{position:absolute;inset:0;border-radius:10px;background:rgba(255,255,255,.1);transition:background .2s;pointer-events:none;}
-#ce-lock-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.4);transition:transform .2s,background .2s;pointer-events:none;}
 
 /* MOMENTOS */
 #momentos{background:var(--bg);padding-top:90px;padding-bottom:80px;}
@@ -192,6 +183,7 @@ section.active{display:flex;}
 .m-add-slot .add-icon{font-size:28px;color:rgba(201,86,106,.5);}
 .m-add-slot .add-txt{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,86,106,.5);}
 
+/* MODAL CARTA */
 #letter-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:flex-end;justify-content:center;background:rgba(13,10,11,.92);backdrop-filter:blur(14px);}
 #letter-modal.open{display:flex;}
 .lm-box{background:var(--cream);border-radius:20px 20px 0 0;max-width:600px;width:100%;max-height:92vh;overflow-y:auto;position:relative;box-shadow:0 -20px 60px rgba(0,0,0,.5);}
@@ -233,6 +225,7 @@ section.active{display:flex;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 
+/* JOGUINHO */
 #jogo{background:linear-gradient(145deg,#0d0a0b 0%,#1c0e16 100%);}
 .s-eyebrow-dark{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:8px;opacity:.65;}
 .s-title-dark{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,8vw,60px);font-weight:300;color:var(--cream);text-align:center;line-height:1;margin-bottom:36px;}
@@ -312,6 +305,9 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--rose-deep);color:white;padding:8px 18px;border-radius:30px;font-size:11px;z-index:9998;transition:transform .4s;pointer-events:none;white-space:nowrap;max-width:85vw;text-align:center;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Seção de bloqueio no editor */
+.lock-section{border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:16px;}
 </style>
 </head>
 <body>
@@ -339,10 +335,12 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
     <button class="ce-close" onclick="closeChapterEditor()">✕</button>
     <h3 class="ce-title" id="ce-title-label">Editar Capítulo</h3>
     <input type="hidden" id="ce-idx">
+
     <div class="ce-field"><label>Emoji</label><input class="ce-inp" id="ce-emoji" placeholder="✨"></div>
     <div class="ce-field"><label>Data / Período</label><input class="ce-inp" id="ce-date" placeholder="O começo..."></div>
     <div class="ce-field"><label>Título</label><input class="ce-inp" id="ce-title-inp" placeholder="Primeiro Encontro"></div>
     <div class="ce-field"><label>Frase especial</label><input class="ce-inp" id="ce-quote" placeholder="Edite para contar a história..."></div>
+
     <div class="ce-field">
       <label>📐 Tamanho da foto</label>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
@@ -353,6 +351,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
       </div>
       <p class="ce-hint" style="margin-top:5px;" id="ce-size-hint">Tamanho atual: Médio</p>
     </div>
+
     <div class="ce-field">
       <label>📸 Foto — arraste para reposicionar</label>
       <div id="ce-crop-wrap">
@@ -362,29 +361,28 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
           <button onclick="ceCropZoom(-0.12)" style="background:rgba(13,10,11,.8);border:1px solid rgba(255,255,255,.25);color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;">−</button>
         </div>
       </div>
-      <p style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(253,246,240,.25);text-align:center;margin-bottom:8px;">Arraste · + / − para zoom</p>
       <input type="file" id="ce-photo-file" accept="image/*" style="display:none" onchange="handleCEPhoto(event)">
       <button class="ce-upload-btn" id="ce-photo-btn" onclick="document.getElementById('ce-photo-file').click()">+ Escolher foto</button>
       <p class="ce-hint" id="ce-photo-hint"></p>
     </div>
 
-    <!-- ✅ SEÇÃO DE BLOQUEIO CORRIGIDA -->
-    <div style="border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <p style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:.75;">🔐 Capítulo bloqueado?</p>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-          <span style="font-size:9px;color:rgba(253,246,240,.4);">Não</span>
-          <!-- ✅ CORREÇÃO: onchange no checkbox, sem onclick no div -->
-          <div class="lock-toggle-wrap">
-            <input type="checkbox" id="ce-locked" onchange="ceToggleLock()">
-            <div id="ce-lock-track"></div>
-            <div id="ce-lock-thumb"></div>
+    <!-- SEÇÃO DE BLOQUEIO — toggle corrigido -->
+    <div class="lock-section">
+      <div class="ce-toggle-row">
+        <span class="ce-toggle-label">🔐 Capítulo bloqueado?</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="ce-locked" onchange="onLockToggle(this)">
+          <div class="toggle-track">
+            <div class="toggle-thumb"></div>
           </div>
-          <span style="font-size:9px;color:rgba(253,246,240,.4);">Sim</span>
         </label>
       </div>
+
       <div id="ce-lock-fields" style="display:none;">
-        <div class="ce-field"><label>Pergunta para desbloquear</label><input class="ce-inp" id="ce-question" placeholder="Qual foi o nome do lugar do nosso primeiro beijo?"></div>
+        <div class="ce-field">
+          <label>Pergunta para desbloquear</label>
+          <input class="ce-inp" id="ce-question" placeholder="Qual foi o nome do lugar do nosso primeiro beijo?">
+        </div>
         <div class="ce-field">
           <label>Opções de resposta (marque a correta)</label>
           <div style="display:flex;flex-direction:column;gap:6px;" id="ce-opts-wrap"></div>
@@ -406,7 +404,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 <!-- MODAL DE DESBLOQUEIO -->
 <div id="unlock-modal" style="display:none;position:fixed;inset:0;background:rgba(13,10,11,.94);z-index:9500;align-items:center;justify-content:center;backdrop-filter:blur(14px);padding:20px;">
   <div style="background:var(--card);border:1px solid rgba(201,166,110,.15);border-radius:20px;padding:36px 28px;max-width:380px;width:100%;text-align:center;position:relative;">
-    <div id="unlock-icon" style="font-size:40px;margin-bottom:12px;">🔐</div>
+    <div style="font-size:40px;margin-bottom:12px;">🔐</div>
     <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--cream);margin-bottom:6px;">Capítulo Bloqueado</h3>
     <p style="font-size:11px;color:rgba(253,246,240,.4);margin-bottom:20px;line-height:1.6;" id="unlock-question-txt">Responda para desbloquear!</p>
     <div id="unlock-state-q">
@@ -534,7 +532,9 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 <div class="toast" id="toast"></div>
 
 <script>
-/* CONFIG & FIREBASE */
+/* ═══════════════════════════════════════
+   CONFIG & FIREBASE
+═══════════════════════════════════════ */
 var ADMIN_PASSWORD="Alex0508.",CLOUDINARY_CLOUD="dnvg9f1pm",CLOUDINARY_PRESET="Nossoamor";
 var FIREBASE_CONFIG={apiKey:"AIzaSyCQ0tifzHR6NB5jYF3-Ylxz9-nA3AM5MhM",authDomain:"nossoamor-9b715.firebaseapp.com",projectId:"nossoamor-9b715",storageBucket:"nossoamor-9b715.firebasestorage.app",messagingSenderId:"384387510581",appId:"1:384387510581:web:d021a79652e12bdd9f5c7c"};
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -552,6 +552,7 @@ function init(){
     .then(function(){hideLoad();atualizarContador();setInterval(atualizarContador,30000);animPetals();renderBook();})
     .catch(function(e){hideLoad();console.error(e);showToast('Erro ao conectar.');atualizarContador();animPetals();renderBook();});
 }
+
 function goTo(id){
   document.querySelectorAll('section').forEach(function(s){s.classList.remove('active');});
   document.getElementById(id).classList.add('active');
@@ -559,6 +560,7 @@ function goTo(id){
   document.querySelectorAll('nav button').forEach(function(b,i){b.classList.toggle('active',map[i]===id);});
   window.scrollTo(0,0);
 }
+
 function carregarConfigs(){
   return db.collection('config').doc('settings').get().then(function(snap){
     if(snap.exists)settings_db=snap.data();
@@ -583,7 +585,9 @@ function atualizarContador(){
   document.getElementById('since-txt').textContent=s.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
 }
 
-/* CAPÍTULOS */
+/* ═══════════════════════════════════════
+   CAPÍTULOS
+═══════════════════════════════════════ */
 function carregarCapitulos(){
   return db.collection('config').doc('chapters').get().then(function(snap){
     chapters_db=snap.exists?(snap.data().list||[]):capitulosDefault();
@@ -608,7 +612,9 @@ function addChapter(){
   showToast('✓ Capítulo adicionado!');
 }
 
-/* BOOK ENGINE */
+/* ═══════════════════════════════════════
+   BOOK HTML ENGINE
+═══════════════════════════════════════ */
 var bookCurrentPage=0;
 var bookIsFlipping=false;
 
@@ -657,7 +663,7 @@ function buildPageHTML(idx){
       if(ch.photoOffset&&ch.photoOffset.objectPosition){pos=ch.photoOffset.objectPosition;}
       photoHtml='<div class="pg-photo-area '+sizeClass+'">'
         +'<img class="pg-photo" src="'+ch.photoUrl+'" style="object-position:'+pos+'">'
-        +(ch.quote?'<div class="pg-quote-overlay">'+ch.quote+'</div>':'')
+        +(ch.quote&&ch.quote!=='undefined'?'<div class="pg-quote-overlay">'+ch.quote+'</div>':'')
         +'</div>';
     } else {
       photoHtml='<div class="pg-photo-area '+sizeClass+'">'
@@ -670,11 +676,11 @@ function buildPageHTML(idx){
 
     if(!isAdmin && ch.locked && !isUnlocked(chIdx)){
       var cd=getCooldown(chIdx);
-      div.style.display='flex';div.style.flexDirection='column';
+      div.style.cssText='display:flex;flex-direction:column;';
       var timerHtml='';
       if(cd>0){
-        var h=Math.floor(cd/3600000),m=Math.floor((cd%3600000)/60000),sec=Math.floor((cd%60000)/1000);
-        var ts=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+        var h=Math.floor(cd/3600000),m=Math.floor((cd%3600000)/60000),s2=Math.floor((cd%60000)/1000);
+        var ts=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s2).padStart(2,'0');
         timerHtml='<div class="pg-lock-timer">'+ts+'</div>'
           +'<div class="pg-lock-timer-lbl">próxima tentativa</div>';
       } else {
@@ -688,10 +694,10 @@ function buildPageHTML(idx){
         +'</div>';
       return div;
     }
+
     var lockBadge=isAdmin&&ch.locked?'<div style="text-align:center;padding:4px 0;"><span class="pg-lock-admin-badge">🔐 bloqueado para ela</span></div>':'';
 
-    div.style.display='flex';
-    div.style.flexDirection='column';
+    div.style.cssText='display:flex;flex-direction:column;';
     div.innerHTML=editBtn+lockBadge
       +'<div class="pg-inner">'
         +'<p class="pg-chapter-num">Capítulo '+(chIdx+1)+'</p>'
@@ -711,6 +717,7 @@ function flipToPage(targetIdx,dir){
 
   var stage=document.getElementById('book-stage');
   var oldPage=stage.querySelector('.book-page');
+
   var newPage=buildPageHTML(targetIdx);
   newPage.style.position='absolute';
   newPage.style.inset='0';
@@ -720,6 +727,7 @@ function flipToPage(targetIdx,dir){
 
   var outClass=dir>0?'flip-out-forward':'flip-out-back';
   var inClass=dir>0?'flip-in-forward':'flip-in-back';
+
   oldPage.classList.add(outClass);
   newPage.classList.add(inClass);
 
@@ -745,11 +753,7 @@ function updateBookControls(){
     for(var i=0;i<total;i++){
       var d=document.createElement('div');
       d.className='b-dot'+(i===bookCurrentPage?' active':'');
-      (function(idx){d.onclick=function(){
-        if(bookIsFlipping)return;
-        var dir=idx>bookCurrentPage?1:-1;
-        tryOpenPage(idx,dir);
-      };})(i);
+      (function(idx){d.onclick=function(){if(bookIsFlipping)return;var dir=idx>bookCurrentPage?1:-1;tryOpenPage(idx,dir);};})(i);
       dots.appendChild(d);
     }
   }
@@ -765,27 +769,31 @@ function updateBookControls(){
   }
 }
 
-/* EDITOR COM CROP */
-var ceCrop={img:null,x:0,y:0,scale:1,dragging:false,lastX:0,lastY:0,canvasW:0,canvasH:0};
-
-/* ✅ CORREÇÃO DO TOGGLE — só atualiza visual, não inverte o checkbox */
-function ceToggleLock(){
-  var cb=document.getElementById('ce-locked');
+/* ═══════════════════════════════════════
+   TOGGLE DE BLOQUEIO — CORRIGIDO
+   Usa onchange no <input> diretamente,
+   sem conflito com evento do div pai
+═══════════════════════════════════════ */
+function onLockToggle(checkbox){
   var fields=document.getElementById('ce-lock-fields');
-  var track=document.getElementById('ce-lock-track');
-  var thumb=document.getElementById('ce-lock-thumb');
-  /* NÃO inverte cb.checked aqui — o checkbox já se marcou sozinho via onchange */
-  fields.style.display=cb.checked?'block':'none';
-  track.style.background=cb.checked?'var(--rose)':'rgba(255,255,255,.1)';
-  thumb.style.transform=cb.checked?'translateX(16px)':'translateX(0)';
-  thumb.style.background=cb.checked?'white':'rgba(255,255,255,.4)';
+  fields.style.display=checkbox.checked?'block':'none';
 }
 
 var ceOpts=[];
-function ceAddOpt(){ceOpts.push({text:'',correct:false});renderCeOpts();}
+var ceCurrentSize='m';
+
+function ceAddOpt(){
+  ceOpts.push({text:'',correct:false});
+  renderCeOpts();
+}
+
 function renderCeOpts(){
   var wrap=document.getElementById('ce-opts-wrap');
   wrap.innerHTML='';
+  if(ceOpts.length===0){
+    wrap.innerHTML='<p style="font-size:9px;color:rgba(253,246,240,.2);text-align:center;padding:8px;">Clique em "+ Adicionar opção" para começar</p>';
+    return;
+  }
   ceOpts.forEach(function(opt,i){
     var row=document.createElement('div');
     row.style.cssText='display:flex;align-items:center;gap:8px;';
@@ -805,12 +813,8 @@ function renderCeOpts(){
     row.appendChild(radio);row.appendChild(inp);row.appendChild(rm);
     wrap.appendChild(row);
   });
-  if(ceOpts.length===0){
-    wrap.innerHTML='<p style="font-size:9px;color:rgba(253,246,240,.2);text-align:center;padding:8px;">Clique em "+ Adicionar opção" para começar</p>';
-  }
 }
 
-var ceCurrentSize='m';
 function ceSetSize(sz){
   ceCurrentSize=sz;
   var labels={s:'Pequeno',m:'Médio',l:'Grande',xl:'Enorme'};
@@ -825,6 +829,9 @@ function ceSetSize(sz){
   });
 }
 
+/* ── Crop interativo ── */
+var ceCrop={img:null,x:0,y:0,scale:1,dragging:false,lastX:0,lastY:0,canvasW:0,canvasH:0};
+
 function openChapterEditor(chIdx){
   if(!isAdmin)return;
   ceEditIdx=chIdx;cePendingPhoto=null;
@@ -837,18 +844,20 @@ function openChapterEditor(chIdx){
   document.getElementById('ce-quote').value=ch.quote||'';
   document.getElementById('ce-photo-hint').textContent='';
   document.getElementById('ce-photo-btn').textContent=ch.photoUrl?'+ Trocar foto':'+ Adicionar foto';
+
   ceCurrentSize=ch.photoSize||'m';
   ceSetSize(ceCurrentSize);
-  ceOpts=ch.options?JSON.parse(JSON.stringify(ch.options)):[];
+
+  // Carrega o checkbox de bloqueio — SEM chamar ceToggleLock, apenas setando o estado
   var locked=!!(ch.locked);
   var cb=document.getElementById('ce-locked');
   cb.checked=locked;
   document.getElementById('ce-lock-fields').style.display=locked?'block':'none';
-  document.getElementById('ce-lock-track').style.background=locked?'var(--rose)':'rgba(255,255,255,.1)';
-  document.getElementById('ce-lock-thumb').style.transform=locked?'translateX(16px)':'translateX(0)';
-  document.getElementById('ce-lock-thumb').style.background=locked?'white':'rgba(255,255,255,.4)';
+
+  ceOpts=ch.options?JSON.parse(JSON.stringify(ch.options)):[];
   document.getElementById('ce-question').value=ch.question||'';
   renderCeOpts();
+
   if(ch.photoUrl){
     var img=new Image();img.crossOrigin='anonymous';
     img.onload=function(){initCropCanvas(img,ch.photoOffset||null);};
@@ -856,6 +865,7 @@ function openChapterEditor(chIdx){
   } else {
     document.getElementById('ce-crop-wrap').style.display='none';
   }
+
   document.getElementById('chapter-editor').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -930,9 +940,8 @@ function getCropOffset(){
   if(!ceCrop.img)return null;
   var imgW=ceCrop.img.width*ceCrop.scale;
   var imgH=ceCrop.img.height*ceCrop.scale;
-  var px=ceCrop.x,py=ceCrop.y;
-  var pctX=imgW>ceCrop.canvasW?(-px/(imgW-ceCrop.canvasW)*100):50;
-  var pctY=imgH>ceCrop.canvasH?(-py/(imgH-ceCrop.canvasH)*100):50;
+  var pctX=imgW>ceCrop.canvasW?(-ceCrop.x/(imgW-ceCrop.canvasW)*100):50;
+  var pctY=imgH>ceCrop.canvasH?(-ceCrop.y/(imgH-ceCrop.canvasH)*100):50;
   pctX=Math.max(0,Math.min(100,pctX));
   pctY=Math.max(0,Math.min(100,pctY));
   return{x:ceCrop.x,y:ceCrop.y,scale:ceCrop.scale,canvasW:ceCrop.canvasW,canvasH:ceCrop.canvasH,
@@ -972,7 +981,9 @@ function deleteChapterFromEditor(){
   renderBook();closeChapterEditor();showToast('Capítulo removido. Salve a história!');
 }
 
-/* SISTEMA DE BLOQUEIO */
+/* ═══════════════════════════════════════
+   SISTEMA DE BLOQUEIO
+═══════════════════════════════════════ */
 var unlockChIdx=-1;
 var unlockTimerInterval=null;
 
@@ -981,8 +992,7 @@ function timerKey(chIdx){return 'lock_timer_'+chIdx+'_'+FIREBASE_CONFIG.projectI
 function isUnlocked(chIdx){return localStorage.getItem(lockKey(chIdx))==='1';}
 function getCooldown(chIdx){
   var until=parseInt(localStorage.getItem(timerKey(chIdx))||'0');
-  var now=Date.now();
-  return until>now?until-now:0;
+  return Date.now()<until?until-Date.now():0;
 }
 
 function tryOpenPage(targetIdx,dir){
@@ -999,6 +1009,7 @@ function openUnlockModal(chIdx,targetIdx,dir){
   document.getElementById('unlock-state-ok').style.display='none';
   document.getElementById('unlock-state-err').style.display='none';
   document.getElementById('unlock-state-q').style.display='block';
+
   var cd=getCooldown(chIdx);
   if(cd>0){
     showUnlockTimer(cd);
@@ -1007,7 +1018,10 @@ function openUnlockModal(chIdx,targetIdx,dir){
     document.getElementById('unlock-question-txt').textContent=ch.question||'Responda para desbloquear este capítulo ♡';
     renderUnlockOpts(ch,targetIdx,dir);
   }
+
   var modal=document.getElementById('unlock-modal');
+  modal.dataset.targetIdx=targetIdx;
+  modal.dataset.dir=dir;
   modal.style.display='flex';
   document.body.style.overflow='hidden';
 }
@@ -1033,8 +1047,6 @@ function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
     localStorage.setItem(lockKey(unlockChIdx),'1');
     document.getElementById('unlock-state-q').style.display='none';
     document.getElementById('unlock-state-ok').style.display='block';
-    document.getElementById('unlock-modal').dataset.targetIdx=targetIdx;
-    document.getElementById('unlock-modal').dataset.dir=dir;
     if(bookCurrentPage===targetIdx)renderBook();
   } else {
     var until=Date.now()+3600000;
@@ -1046,24 +1058,24 @@ function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
 }
 
 function showUnlockTimer(ms){
-  document.getElementById('unlock-state-q').style.display='none';
-  document.getElementById('unlock-state-err').style.display='block';
   if(unlockTimerInterval)clearInterval(unlockTimerInterval);
   function tick(){
     var rem=Math.max(0,getCooldown(unlockChIdx));
     var h=Math.floor(rem/3600000);
     var m=Math.floor((rem%3600000)/60000);
     var s=Math.floor((rem%60000)/1000);
-    document.getElementById('unlock-timer').textContent=
-      String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    var el=document.getElementById('unlock-timer');
+    if(el)el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
     if(rem<=0){
       clearInterval(unlockTimerInterval);
       var ch=chapters_db[unlockChIdx];
+      var modal=document.getElementById('unlock-modal');
       document.getElementById('unlock-state-err').style.display='none';
       document.getElementById('unlock-state-q').style.display='block';
       document.getElementById('unlock-question-txt').textContent=ch.question||'Responda para desbloquear ♡';
-      renderUnlockOpts(ch,parseInt(document.getElementById('unlock-modal').dataset.targetIdx||'0'),
-        parseInt(document.getElementById('unlock-modal').dataset.dir||'1'));
+      renderUnlockOpts(ch,
+        parseInt(modal.dataset.targetIdx||'0'),
+        parseInt(modal.dataset.dir||'1'));
     }
   }
   tick();
@@ -1072,16 +1084,17 @@ function showUnlockTimer(ms){
 
 function closeUnlockModal(goToPage){
   if(unlockTimerInterval)clearInterval(unlockTimerInterval);
-  document.getElementById('unlock-modal').style.display='none';
+  var modal=document.getElementById('unlock-modal');
+  var ti=parseInt(modal.dataset.targetIdx||'0');
+  var di=parseInt(modal.dataset.dir||'1');
+  modal.style.display='none';
   document.body.style.overflow='';
-  if(goToPage){
-    var ti=parseInt(document.getElementById('unlock-modal').dataset.targetIdx||'0');
-    var di=parseInt(document.getElementById('unlock-modal').dataset.dir||'1');
-    flipToPage(ti,di);
-  }
+  if(goToPage)flipToPage(ti,di);
 }
 
-/* MOMENTOS */
+/* ═══════════════════════════════════════
+   MOMENTOS
+═══════════════════════════════════════ */
 function carregarMomentos(){
   return db.collection('momentos').orderBy('ordem').get().then(function(snap){
     momentos_db=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});renderMomentos();
@@ -1108,6 +1121,7 @@ function renderMomentos(){
   add.innerHTML='<span class="add-icon">＋</span><span class="add-txt">Novo momento</span>';
   grid.appendChild(add);
 }
+
 function openLetter(id){
   var m=momentos_db.find(function(x){return x.id===id;});if(!m)return;
   var pw=document.getElementById('lm-photo-wrap');
@@ -1133,6 +1147,7 @@ function openLetter(id){
   document.getElementById('letter-modal').classList.add('open');
   document.body.style.overflow='hidden';
 }
+
 function tocarYoutube(m){
   var yt=(m.songUrl||'').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
   if(yt){
@@ -1145,12 +1160,14 @@ function tocarYoutube(m){
     document.getElementById('now-playing').classList.add('show');
   } else if(m.songUrl){window.open(m.songUrl,'_blank');}
 }
+
 function closeLetter(){
   document.getElementById('letter-modal').classList.remove('open');document.body.style.overflow='';
   var aud=document.getElementById('audio');aud.pause();aud.src='';
   document.getElementById('lm-yt-iframe').src='';
   ['lm-yt-wrap','lm-music-bar','now-playing'].forEach(function(id){document.getElementById(id).classList.remove('show');});
 }
+
 function uploadCloudinary(file,onProgress){
   var rt=file.type.startsWith('image/')?'image':'video';
   var url='https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD+'/'+rt+'/upload';
@@ -1162,6 +1179,7 @@ function uploadCloudinary(file,onProgress){
     xhr.onerror=function(){reject(new Error('Rede'));};xhr.send(fd);
   });
 }
+
 function openMomentModal(id){
   editingId=id;pendingPhoto=null;pendingAudio=null;
   document.getElementById('mm-modal-title').textContent=id?'Editar Momento':'Novo Momento';
@@ -1188,6 +1206,7 @@ function openMomentModal(id){
 function closeMomentModal(){document.getElementById('moment-modal').classList.remove('open');document.body.style.overflow='';}
 function handlePhotoSelect(e){var f=e.target.files[0];if(!f)return;pendingPhoto=f;var p=document.getElementById('mm-prev');p.src=URL.createObjectURL(f);p.classList.add('show');document.getElementById('mm-photo-hint').textContent='✓ '+f.name;document.getElementById('mm-photo-hint').className='mm-hint ok';document.getElementById('mm-photo-btn').textContent='+ Trocar';e.target.value='';}
 function handleAudioSelect(e){var f=e.target.files[0];if(!f)return;pendingAudio=f;document.getElementById('mm-audio-hint').textContent='✓ '+f.name;document.getElementById('mm-audio-hint').className='mm-hint ok';document.getElementById('mm-audio-btn').textContent='+ Trocar';e.target.value='';}
+
 function saveMoment(){
   var btn=document.getElementById('mm-save-btn');btn.disabled=true;btn.textContent='Salvando...';
   var m=editingId?momentos_db.find(function(x){return x.id===editingId;}):null;
@@ -1212,8 +1231,21 @@ function limparTudo(){
   .then(function(){momentos_db=[];chapters_db=capitulosDefault();settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';document.getElementById('date-inp').value='2022-08-05';bookCurrentPage=0;renderBook();renderMomentos();atualizarContador();hideLoad();showToast('🗑 Limpo');});
 }
 
-/* JOGUINHO */
-var PERGUNTAS=[{q:"Qual a cor favorita da sua parceira?",who:"💙 Ele responde",opts:["Azul","Rosa","Roxo","Verde"],ans:0},{q:"Qual o prato favorito do seu parceiro?",who:"🍽️ Ela responde",opts:["Pizza","Churrasco","Macarrão","Sushi"],ans:1},{q:"O que faria num sábado perfeito?",who:"🛋️ Respondam juntos",opts:["Ficar em casa","Sair p/ aventura","Viagem rápida","Parque"],ans:0},{q:"Como foi o primeiro olhar?",who:"👀 Respondam juntos",opts:["Tímido e doce","Intenso e direto","Sem querer","Com um sorriso"],ans:3},{q:"Qual filme assistiriam hoje?",who:"🎬 Respondam juntos",opts:["Comédia romântica","Terror","Animação","Ação"],ans:0},{q:"Onde gostariam de se casar?",who:"💍 Sonhem juntos",opts:["Praia ao pôr do sol","Campo florido","Cidade histórica","Em casa"],ans:1},{q:"Qual qualidade mais ama?",who:"🥰 Cada um responde",opts:["O sorriso","A lealdade","O jeito de cuidar","O humor"],ans:2},{q:"Qual viagem dos sonhos?",who:"✈️ Respondam juntos",opts:["Europa romântica","Ásia exótica","América do Sul","Ilhas tropicais"],ans:0},{q:"Maior defeito (com carinho)?",who:"😄 Com honestidade",opts:["Teimoso(a)","Esquecido(a)","Dramático(a)","Perfeccionista"],ans:0},{q:"Qual frase resume o amor?",who:"💬 Última!",opts:["'Você é meu lar'","'Melhores amigos'","'Para sempre e mais um dia'","'Você me completa'"],ans:2}];
+/* ═══════════════════════════════════════
+   JOGUINHO
+═══════════════════════════════════════ */
+var PERGUNTAS=[
+  {q:"Qual a cor favorita da sua parceira?",who:"💙 Ele responde",opts:["Azul","Rosa","Roxo","Verde"],ans:0},
+  {q:"Qual o prato favorito do seu parceiro?",who:"🍽️ Ela responde",opts:["Pizza","Churrasco","Macarrão","Sushi"],ans:1},
+  {q:"O que faria num sábado perfeito?",who:"🛋️ Respondam juntos",opts:["Ficar em casa","Sair p/ aventura","Viagem rápida","Parque"],ans:0},
+  {q:"Como foi o primeiro olhar?",who:"👀 Respondam juntos",opts:["Tímido e doce","Intenso e direto","Sem querer","Com um sorriso"],ans:3},
+  {q:"Qual filme assistiriam hoje?",who:"🎬 Respondam juntos",opts:["Comédia romântica","Terror","Animação","Ação"],ans:0},
+  {q:"Onde gostariam de se casar?",who:"💍 Sonhem juntos",opts:["Praia ao pôr do sol","Campo florido","Cidade histórica","Em casa"],ans:1},
+  {q:"Qual qualidade mais ama?",who:"🥰 Cada um responde",opts:["O sorriso","A lealdade","O jeito de cuidar","O humor"],ans:2},
+  {q:"Qual viagem dos sonhos?",who:"✈️ Respondam juntos",opts:["Europa romântica","Ásia exótica","América do Sul","Ilhas tropicais"],ans:0},
+  {q:"Maior defeito (com carinho)?",who:"😄 Com honestidade",opts:["Teimoso(a)","Esquecido(a)","Dramático(a)","Perfeccionista"],ans:0},
+  {q:"Qual frase resume o amor?",who:"💬 Última!",opts:["'Você é meu lar'","'Melhores amigos'","'Para sempre e mais um dia'","'Você me completa'"],ans:2}
+];
 var qi=0,score=0,respondido=false;
 function showScreen(id){document.querySelectorAll('.gs').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
 function startGame(){qi=0;score=0;showScreen('gs-q');renderPergunta();}
@@ -1222,7 +1254,9 @@ function responder(idx,btn){if(respondido)return;respondido=true;var q=PERGUNTAS
 function mostrarResultado(){showScreen('gs-res');document.getElementById('r-score').textContent=score+'/'+PERGUNTAS.length;var M=[[0,3,'💔','Hmm, mais conversas!'],[4,6,'😊','Bom começo!'],[7,8,'🥰','Vocês se conhecem muito bem!'],[9,10,'🏆','Perfeitos um para o outro!']];var res=M.find(function(x){return score>=x[0]&&score<=x[1];});document.getElementById('r-icon').textContent=res[2];document.getElementById('r-msg').textContent=res[3];}
 function resetGame(){showScreen('gs-start');}
 
-/* PÉTALAS */
+/* ═══════════════════════════════════════
+   PÉTALAS
+═══════════════════════════════════════ */
 var canvas=document.getElementById('petals'),ctx2=canvas.getContext('2d');
 function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
