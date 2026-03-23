@@ -138,14 +138,20 @@ section.active{display:flex;}
 .pg-date{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);opacity:.8;margin-bottom:6px;}
 .pg-title{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,5.5vw,28px);color:rgba(253,240,230,.9);font-weight:300;line-height:1.15;margin-bottom:0;}
 
-/* Foto ocupa a metade inferior — objeto-fit cover */
+/* Foto — altura controlada por classe de tamanho */
 .pg-photo-area{
   width:100%;
   position:relative;
-  flex:1;
-  min-height:0;
   overflow:hidden;
+  flex-shrink:0;
 }
+/* Tamanhos disponíveis */
+.pg-photo-area.size-s { height:160px; }
+.pg-photo-area.size-m { height:240px; }
+.pg-photo-area.size-l { height:340px; }
+.pg-photo-area.size-xl{ height:440px; }
+/* padrão = médio */
+.pg-photo-area:not([class*="size-"]) { height:240px; }
 .pg-photo{
   width:100%;height:100%;
   object-fit:cover;
@@ -204,7 +210,21 @@ section.active{display:flex;}
 .add-ch-btn:hover{background:rgba(201,86,106,.14);}
 .admin-mode .add-ch-btn{display:flex;}
 
-/* Painel de edição de capítulo (admin) */
+/* Página bloqueada */
+.pg-locked{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:340px;text-align:center;padding:32px 24px;gap:14px;cursor:pointer;
+}
+.pg-lock-icon{font-size:44px;filter:drop-shadow(0 2px 12px rgba(201,86,106,.4));}
+.pg-lock-chnum{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,166,110,.35);}
+.pg-lock-title{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,5vw,26px);color:rgba(253,240,230,.5);font-weight:300;}
+.pg-lock-hint{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,86,106,.45);animation:pulseHint 2s ease-in-out infinite;}
+.pg-lock-timer{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);opacity:.7;}
+.pg-lock-timer-lbl{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.2);text-transform:uppercase;}
+/* Admin badge em cap bloqueado */
+.pg-lock-admin-badge{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,86,106,.5);border:1px dashed rgba(201,86,106,.3);padding:3px 8px;border-radius:6px;}
+
+
 #chapter-editor{display:none;position:fixed;inset:0;background:rgba(13,10,11,.94);z-index:9000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px;backdrop-filter:blur(10px);}
 #chapter-editor.open{display:flex;}
 .ce-box{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px 20px;max-width:520px;width:100%;margin:auto;position:relative;}
@@ -409,6 +429,16 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
     <div class="ce-field"><label>Título</label><input class="ce-inp" id="ce-title-inp" placeholder="Primeiro Encontro"></div>
     <div class="ce-field"><label>Frase especial</label><input class="ce-inp" id="ce-quote" placeholder="Edite para contar a história..."></div>
     <div class="ce-field">
+      <label>📐 Tamanho da foto</label>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+        <button onclick="ceSetSize('s')" id="ce-size-s" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Pequena</button>
+        <button onclick="ceSetSize('m')" id="ce-size-m" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Média</button>
+        <button onclick="ceSetSize('l')" id="ce-size-l" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Grande</button>
+        <button onclick="ceSetSize('xl')" id="ce-size-xl" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Enorme</button>
+      </div>
+      <p class="ce-hint" style="margin-top:5px;" id="ce-size-hint">Tamanho atual: Médio</p>
+    </div>
+    <div class="ce-field">
       <label>📸 Foto — arraste para reposicionar</label>
       <div id="ce-crop-wrap" style="display:none;margin-bottom:8px;position:relative;">
         <canvas id="ce-crop-canvas" style="width:100%;border-radius:8px;cursor:grab;display:block;touch-action:none;border:1px solid rgba(255,255,255,.1);"></canvas>
@@ -422,6 +452,32 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
       <button class="ce-upload-btn" id="ce-photo-btn" onclick="document.getElementById('ce-photo-file').click()">+ Escolher foto</button>
       <p class="ce-hint" id="ce-photo-hint"></p>
     </div>
+    <!-- Seção de bloqueio -->
+    <div style="border-top:1px solid rgba(255,255,255,.07);margin-top:8px;padding-top:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <p style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:.75;">🔐 Capítulo bloqueado?</p>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <span style="font-size:9px;color:rgba(253,246,240,.4);">Não</span>
+          <div style="position:relative;width:36px;height:20px;" onclick="ceToggleLock()">
+            <input type="checkbox" id="ce-locked" style="opacity:0;position:absolute;inset:0;cursor:pointer;z-index:2;margin:0;">
+            <div id="ce-lock-track" style="position:absolute;inset:0;border-radius:10px;background:rgba(255,255,255,.1);transition:background .2s;"></div>
+            <div id="ce-lock-thumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.4);transition:transform .2s,background .2s;"></div>
+          </div>
+          <span style="font-size:9px;color:rgba(253,246,240,.4);">Sim</span>
+        </label>
+      </div>
+      <div id="ce-lock-fields" style="display:none;">
+        <div class="ce-field"><label>Pergunta para desbloquear</label><input class="ce-inp" id="ce-question" placeholder="Qual foi o nome do lugar do nosso primeiro beijo?"></div>
+        <div class="ce-field">
+          <label>Opções de resposta (marque a correta)</label>
+          <div style="display:flex;flex-direction:column;gap:6px;" id="ce-opts-wrap">
+            <!-- geradas dinamicamente -->
+          </div>
+          <button onclick="ceAddOpt()" style="margin-top:6px;background:none;border:1px dashed rgba(201,166,110,.3);color:rgba(201,166,110,.5);width:100%;padding:7px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;">＋ Adicionar opção</button>
+        </div>
+      </div>
+    </div>
+
     <div class="ce-actions">
       <button class="btn-ghost" style="color:var(--rose);border-color:rgba(201,86,106,.3)" onclick="deleteChapterFromEditor()">✕ Remover</button>
       <div style="display:flex;gap:8px">
@@ -429,6 +485,32 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
         <button class="btn-rose" onclick="saveChapterEditor()">Salvar ♡</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MODAL DE DESBLOQUEIO -->
+<div id="unlock-modal" style="display:none;position:fixed;inset:0;background:rgba(13,10,11,.94);z-index:9500;align-items:center;justify-content:center;backdrop-filter:blur(14px);padding:20px;">
+  <div style="background:var(--card);border:1px solid rgba(201,166,110,.15);border-radius:20px;padding:36px 28px;max-width:380px;width:100%;text-align:center;position:relative;">
+    <div id="unlock-icon" style="font-size:40px;margin-bottom:12px;">🔐</div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--cream);margin-bottom:6px;">Capítulo Bloqueado</h3>
+    <p style="font-size:11px;color:rgba(253,246,240,.4);margin-bottom:20px;line-height:1.6;" id="unlock-question-txt">Responda para desbloquear!</p>
+    <div id="unlock-state-q">
+      <div id="unlock-opts" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
+    </div>
+    <div id="unlock-state-err" style="display:none;">
+      <div style="font-size:36px;margin-bottom:10px;">💔</div>
+      <p style="font-size:13px;color:var(--rose);margin-bottom:6px;">Resposta errada!</p>
+      <p style="font-size:11px;color:rgba(253,246,240,.35);margin-bottom:16px;">Próxima tentativa em:</p>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);" id="unlock-timer">01:00:00</div>
+      <p style="font-size:9px;letter-spacing:2px;color:rgba(253,246,240,.2);margin-top:6px;text-transform:uppercase;">horas · minutos · segundos</p>
+    </div>
+    <div id="unlock-state-ok" style="display:none;">
+      <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);margin-bottom:6px;">Capítulo desbloqueado!</p>
+      <p style="font-size:11px;color:rgba(253,246,240,.35);margin-bottom:18px;">Você acertou ♡</p>
+      <button class="btn-rose" onclick="closeUnlockModal(true)">Ler agora →</button>
+    </div>
+    <button onclick="closeUnlockModal(false)" style="position:absolute;top:12px;right:12px;background:none;border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.4);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;">✕</button>
   </div>
 </div>
 
@@ -668,28 +750,57 @@ function buildPageHTML(idx){
     if(!ch)return div;
 
     var photoHtml='';
+    var sizeClass='size-'+(ch.photoSize||'m');
     if(ch.photoUrl){
       var pos='center center';
       if(ch.photoOffset&&ch.photoOffset.objectPosition){pos=ch.photoOffset.objectPosition;}
-      photoHtml='<img class="pg-photo" src="'+ch.photoUrl+'" style="object-position:'+pos+'">'
-        +(ch.quote?'<div class="pg-quote-overlay">'+ch.quote+'</div>':'');
+      photoHtml='<div class="pg-photo-area '+sizeClass+'">'
+        +'<img class="pg-photo" src="'+ch.photoUrl+'" style="object-position:'+pos+'">'
+        +(ch.quote?'<div class="pg-quote-overlay">'+ch.quote+'</div>':'')
+        +'</div>';
     } else {
-      photoHtml='<div class="pg-photo-placeholder">📷</div>'
-        +(ch.quote&&ch.quote!=='undefined'?'<div class="pg-quote-overlay">'+ch.quote+'</div>':'');
+      photoHtml='<div class="pg-photo-area '+sizeClass+'">'
+        +'<div class="pg-photo-placeholder">📷</div>'
+        +(ch.quote&&ch.quote!=='undefined'?'<div class="pg-quote-overlay">'+ch.quote+'</div>':'')
+        +'</div>';
     }
 
     var editBtn=isAdmin?'<button class="pg-edit-btn" onclick="openChapterEditor('+chIdx+')">✎ editar</button>':'';
 
+    // Verifica bloqueio (não admin)
+    if(!isAdmin && ch.locked && !isUnlocked(chIdx)){
+      var cd=getCooldown(chIdx);
+      div.style.display='flex';div.style.flexDirection='column';
+      var timerHtml='';
+      if(cd>0){
+        var h=Math.floor(cd/3600000),m=Math.floor((cd%3600000)/60000),s=Math.floor((cd%60000)/1000);
+        var ts=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+        timerHtml='<div class="pg-lock-timer">'+ts+'</div>'
+          +'<div class="pg-lock-timer-lbl">próxima tentativa</div>';
+      } else {
+        timerHtml='<div class="pg-lock-hint">Toque para responder ›</div>';
+      }
+      div.innerHTML='<div class="pg-locked" onclick="tryOpenPage('+(chIdx+1)+',1)">'
+        +'<div class="pg-lock-chnum">Capítulo '+(chIdx+1)+'</div>'
+        +'<div class="pg-lock-icon">🔐</div>'
+        +'<div class="pg-lock-title">'+ch.title+'</div>'
+        +timerHtml
+        +'</div>';
+      return div;
+    }
+    // Admin vê badge de bloqueado mas acessa normal
+    var lockBadge=isAdmin&&ch.locked?'<div style="text-align:center;padding:4px 0;"><span class="pg-lock-admin-badge">🔐 bloqueado para ela</span></div>':'';
+
     div.style.display='flex';
     div.style.flexDirection='column';
-    div.innerHTML=editBtn
+    div.innerHTML=editBtn+lockBadge
       +'<div class="pg-inner">'
         +'<p class="pg-chapter-num">Capítulo '+(chIdx+1)+'</p>'
         +'<span class="pg-emoji">'+ch.emoji+'</span>'
         +'<p class="pg-date">'+(ch.date||'').toUpperCase()+'</p>'
         +'<h3 class="pg-title">'+ch.title+'</h3>'
       +'</div>'
-      +'<div class="pg-photo-area">'+photoHtml+'</div>';
+      +photoHtml;
   }
   return div;
 }
@@ -729,10 +840,10 @@ function flipToPage(targetIdx,dir){
 }
 
 function bookNext(){
-  if(bookCurrentPage<bookTotalPages()-1)flipToPage(bookCurrentPage+1,1);
+  if(bookCurrentPage<bookTotalPages()-1)tryOpenPage(bookCurrentPage+1,1);
 }
 function bookPrev(){
-  if(bookCurrentPage>0)flipToPage(bookCurrentPage-1,-1);
+  if(bookCurrentPage>0)tryOpenPage(bookCurrentPage-1,-1);
 }
 
 function updateBookControls(){
@@ -747,7 +858,7 @@ function updateBookControls(){
       (function(idx){d.onclick=function(){
         if(bookIsFlipping)return;
         var dir=idx>bookCurrentPage?1:-1;
-        flipToPage(idx,dir);
+        tryOpenPage(idx,dir);
       };})(i);
       dots.appendChild(d);
     }
@@ -770,6 +881,210 @@ function updateBookControls(){
 var ceCrop={img:null,x:0,y:0,scale:1,dragging:false,lastX:0,lastY:0,canvasW:0,canvasH:0};
 var cePendingPhoto=null,ceEditIdx=-1;
 
+/* ═══════════════════════════════════════
+   SISTEMA DE BLOQUEIO POR PERGUNTA
+═══════════════════════════════════════ */
+var unlockChIdx=-1;       // qual capítulo está tentando desbloquear
+var unlockTimerInterval=null;
+
+// Chave no localStorage por dispositivo (para ela — não admin)
+function lockKey(chIdx){return 'lock_ch_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
+function timerKey(chIdx){return 'lock_timer_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
+
+// Verifica se capítulo está desbloqueado no localStorage
+function isUnlocked(chIdx){
+  return localStorage.getItem(lockKey(chIdx))==='1';
+}
+
+// Verifica se ainda está em cooldown (retorna ms restantes ou 0)
+function getCooldown(chIdx){
+  var until=parseInt(localStorage.getItem(timerKey(chIdx))||'0');
+  var now=Date.now();
+  return until>now?until-now:0;
+}
+
+function tryOpenPage(targetIdx,dir){
+  if(isAdmin){
+    // Admin vê tudo — vai direto
+    flipToPage(targetIdx,dir);
+    return;
+  }
+  var chIdx=targetIdx-1;
+  var ch=chapters_db[chIdx];
+  if(!ch||!ch.locked||isUnlocked(chIdx)){
+    flipToPage(targetIdx,dir);
+    return;
+  }
+  // Capítulo bloqueado — abre modal
+  openUnlockModal(chIdx,targetIdx,dir);
+}
+
+function openUnlockModal(chIdx,targetIdx,dir){
+  unlockChIdx=chIdx;
+  var ch=chapters_db[chIdx];
+  // Estado inicial
+  document.getElementById('unlock-state-ok').style.display='none';
+  document.getElementById('unlock-state-err').style.display='none';
+  document.getElementById('unlock-state-q').style.display='block';
+
+  // Verifica cooldown ativo
+  var cd=getCooldown(chIdx);
+  if(cd>0){
+    showUnlockTimer(cd);
+    document.getElementById('unlock-question-txt').textContent='Aguarde para tentar novamente...';
+  } else {
+    document.getElementById('unlock-question-txt').textContent=ch.question||'Responda para desbloquear este capítulo ♡';
+    renderUnlockOpts(ch,targetIdx,dir);
+  }
+
+  var modal=document.getElementById('unlock-modal');
+  modal.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function renderUnlockOpts(ch,targetIdx,dir){
+  var wrap=document.getElementById('unlock-opts');
+  wrap.innerHTML='';
+  var opts=ch.options||[];
+  opts.forEach(function(opt,i){
+    var btn=document.createElement('button');
+    btn.textContent=opt.text;
+    btn.style.cssText='background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;font-family:\'Josefin Sans\',sans-serif;font-size:11px;color:rgba(253,246,240,.75);cursor:pointer;transition:all .25s;text-align:center;width:100%;';
+    btn.onclick=function(){checkUnlockAnswer(i,ch,targetIdx,dir);};
+    btn.onmouseover=function(){btn.style.borderColor='var(--rose)';btn.style.color='var(--rose)';};
+    btn.onmouseout=function(){btn.style.borderColor='rgba(255,255,255,.1)';btn.style.color='rgba(253,246,240,.75)';};
+    wrap.appendChild(btn);
+  });
+}
+
+function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
+  var correct=ch.options&&ch.options[optIdx]&&ch.options[optIdx].correct;
+  if(correct){
+    // Acertou — salva desbloqueio permanente
+    localStorage.setItem(lockKey(unlockChIdx),'1');
+    document.getElementById('unlock-state-q').style.display='none';
+    document.getElementById('unlock-state-ok').style.display='block';
+    // Guarda targetIdx/dir para quando fechar
+    document.getElementById('unlock-modal').dataset.targetIdx=targetIdx;
+    document.getElementById('unlock-modal').dataset.dir=dir;
+    // Re-renderiza a página para mostrar desbloqueada
+    if(bookCurrentPage===targetIdx)renderBook();
+  } else {
+    // Errou — inicia cooldown de 1hr
+    var until=Date.now()+3600000;
+    localStorage.setItem(timerKey(unlockChIdx),until);
+    document.getElementById('unlock-state-q').style.display='none';
+    document.getElementById('unlock-state-err').style.display='block';
+    showUnlockTimer(3600000);
+  }
+}
+
+function showUnlockTimer(ms){
+  document.getElementById('unlock-state-q').style.display='none';
+  document.getElementById('unlock-state-err').style.display='block';
+  if(unlockTimerInterval)clearInterval(unlockTimerInterval);
+  function tick(){
+    var rem=Math.max(0,getCooldown(unlockChIdx));
+    var h=Math.floor(rem/3600000);
+    var m=Math.floor((rem%3600000)/60000);
+    var s=Math.floor((rem%60000)/1000);
+    document.getElementById('unlock-timer').textContent=
+      String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    if(rem<=0){
+      clearInterval(unlockTimerInterval);
+      // Cooldown acabou — mostra pergunta de novo
+      var ch=chapters_db[unlockChIdx];
+      document.getElementById('unlock-state-err').style.display='none';
+      document.getElementById('unlock-state-q').style.display='block';
+      document.getElementById('unlock-question-txt').textContent=ch.question||'Responda para desbloquear ♡';
+      renderUnlockOpts(ch,parseInt(document.getElementById('unlock-modal').dataset.targetIdx||'0'),
+        parseInt(document.getElementById('unlock-modal').dataset.dir||'1'));
+    }
+  }
+  tick();
+  unlockTimerInterval=setInterval(tick,1000);
+}
+
+function closeUnlockModal(goToPage){
+  if(unlockTimerInterval)clearInterval(unlockTimerInterval);
+  document.getElementById('unlock-modal').style.display='none';
+  document.body.style.overflow='';
+  if(goToPage){
+    var ti=parseInt(document.getElementById('unlock-modal').dataset.targetIdx||'0');
+    var di=parseInt(document.getElementById('unlock-modal').dataset.dir||'1');
+    flipToPage(ti,di);
+  }
+}
+
+/* ═══════════════════════════════════════
+   EDITOR — toggles de bloqueio
+═══════════════════════════════════════ */
+var ceOpts=[]; // [{text:'',correct:false}]
+
+function ceToggleLock(){
+  var cb=document.getElementById('ce-locked');
+  var fields=document.getElementById('ce-lock-fields');
+  var track=document.getElementById('ce-lock-track');
+  var thumb=document.getElementById('ce-lock-thumb');
+  cb.checked=!cb.checked;
+  fields.style.display=cb.checked?'block':'none';
+  track.style.background=cb.checked?'var(--rose)':'rgba(255,255,255,.1)';
+  thumb.style.transform=cb.checked?'translateX(16px)':'translateX(0)';
+  thumb.style.background=cb.checked?'white':'rgba(255,255,255,.4)';
+}
+
+function ceAddOpt(){
+  ceOpts.push({text:'',correct:false});
+  renderCeOpts();
+}
+
+function renderCeOpts(){
+  var wrap=document.getElementById('ce-opts-wrap');
+  wrap.innerHTML='';
+  ceOpts.forEach(function(opt,i){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;';
+    // Radio correto
+    var radio=document.createElement('input');
+    radio.type='radio';radio.name='ce-correct';
+    radio.checked=opt.correct;
+    radio.style.cssText='width:16px;height:16px;accent-color:var(--rose);flex-shrink:0;cursor:pointer;';
+    radio.onchange=function(){ceOpts.forEach(function(o,j){ceOpts[j].correct=(j===i);});};
+    // Input texto
+    var inp=document.createElement('input');
+    inp.className='ce-inp';inp.value=opt.text;inp.placeholder='Opção '+(i+1);
+    inp.style.flex='1';
+    inp.oninput=function(){ceOpts[i].text=inp.value;};
+    // Remover
+    var rm=document.createElement('button');
+    rm.textContent='✕';
+    rm.style.cssText='background:none;border:none;color:rgba(201,86,106,.5);cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;';
+    rm.onclick=function(){ceOpts.splice(i,1);renderCeOpts();};
+    row.appendChild(radio);row.appendChild(inp);row.appendChild(rm);
+    wrap.appendChild(row);
+  });
+  if(ceOpts.length===0){
+    wrap.innerHTML='<p style="font-size:9px;color:rgba(253,246,240,.2);text-align:center;padding:8px;">Clique em "+ Adicionar opção" para começar</p>';
+  }
+}
+
+var ceCurrentSize='m';
+
+function ceSetSize(sz){
+  ceCurrentSize=sz;
+  var labels={s:'Pequeno',m:'Médio',l:'Grande',xl:'Enorme'};
+  var hint=document.getElementById('ce-size-hint');
+  if(hint)hint.textContent='Tamanho atual: '+labels[sz];
+  // Highlight botão ativo
+  ['s','m','l','xl'].forEach(function(s){
+    var btn=document.getElementById('ce-size-'+s);
+    if(!btn)return;
+    btn.style.borderColor=s===sz?'var(--rose)':'rgba(255,255,255,.1)';
+    btn.style.color=s===sz?'var(--rose)':'rgba(253,246,240,.6)';
+    btn.style.background=s===sz?'var(--rose-soft)':'rgba(255,255,255,.05)';
+  });
+}
+
 function openChapterEditor(chIdx){
   if(!isAdmin)return;
   ceEditIdx=chIdx;cePendingPhoto=null;
@@ -782,6 +1097,20 @@ function openChapterEditor(chIdx){
   document.getElementById('ce-quote').value=ch.quote||'';
   document.getElementById('ce-photo-hint').textContent='';
   document.getElementById('ce-photo-btn').textContent=ch.photoUrl?'+ Trocar foto':'+ Adicionar foto';
+  // Carrega tamanho salvo
+  ceCurrentSize=ch.photoSize||'m';
+  ceSetSize(ceCurrentSize);
+  // Carrega dados de bloqueio
+  ceOpts=ch.options?JSON.parse(JSON.stringify(ch.options)):[];
+  var locked=!!(ch.locked);
+  var cb=document.getElementById('ce-locked');
+  cb.checked=locked;
+  document.getElementById('ce-lock-fields').style.display=locked?'block':'none';
+  document.getElementById('ce-lock-track').style.background=locked?'var(--rose)':'rgba(255,255,255,.1)';
+  document.getElementById('ce-lock-thumb').style.transform=locked?'translateX(16px)':'translateX(0)';
+  document.getElementById('ce-lock-thumb').style.background=locked?'white':'rgba(255,255,255,.4)';
+  document.getElementById('ce-question').value=ch.question||'';
+  renderCeOpts();
   if(ch.photoUrl){
     var img=new Image();img.crossOrigin='anonymous';
     img.onload=function(){initCropCanvas(img,ch.photoOffset||null);};
@@ -880,6 +1209,11 @@ function saveChapterEditor(){
   chapters_db[chIdx].date=document.getElementById('ce-date').value||'';
   chapters_db[chIdx].title=document.getElementById('ce-title-inp').value||'';
   chapters_db[chIdx].quote=document.getElementById('ce-quote').value||'';
+  chapters_db[chIdx].photoSize=ceCurrentSize;
+  // Salva dados de bloqueio
+  chapters_db[chIdx].locked=document.getElementById('ce-locked').checked;
+  chapters_db[chIdx].question=document.getElementById('ce-question').value||'';
+  chapters_db[chIdx].options=ceOpts.filter(function(o){return o.text.trim();});
   var offset=getCropOffset();if(offset)chapters_db[chIdx].photoOffset=offset;
   if(cePendingPhoto){
     showLoad('Enviando foto...');
