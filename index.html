@@ -366,7 +366,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
       <p class="ce-hint" id="ce-photo-hint"></p>
     </div>
 
-    <!-- SEÇÃO DE BLOQUEIO — toggle corrigido -->
+    <!-- SEÇÃO DE BLOQUEIO -->
     <div class="lock-section">
       <div class="ce-toggle-row">
         <span class="ce-toggle-label">🔐 Capítulo bloqueado?</span>
@@ -414,7 +414,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
       <div style="font-size:36px;margin-bottom:10px;">💔</div>
       <p style="font-size:13px;color:var(--rose);margin-bottom:6px;">Resposta errada!</p>
       <p style="font-size:11px;color:rgba(253,246,240,.35);margin-bottom:16px;">Próxima tentativa em:</p>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);" id="unlock-timer">01:00:00</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);" id="unlock-timer">00:03:00</div>
       <p style="font-size:9px;letter-spacing:2px;color:rgba(253,246,240,.2);margin-top:6px;text-transform:uppercase;">horas · minutos · segundos</p>
     </div>
     <div id="unlock-state-ok" style="display:none;">
@@ -541,6 +541,9 @@ firebase.initializeApp(FIREBASE_CONFIG);
 var db=firebase.firestore();
 var isAdmin=false,momentos_db=[],chapters_db=[],settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};
 var pendingPhoto=null,pendingAudio=null,editingId=null,cePendingPhoto=null,ceEditIdx=-1;
+
+/* ─── TEMPO DE BLOQUEIO: 3 minutos = 180000ms ─── */
+var LOCK_COOLDOWN_MS = 180000;
 
 function showLoad(t){document.getElementById('load-txt').textContent=t||'Carregando...';document.getElementById('loading').classList.add('show');}
 function hideLoad(){document.getElementById('loading').classList.remove('show');}
@@ -770,9 +773,7 @@ function updateBookControls(){
 }
 
 /* ═══════════════════════════════════════
-   TOGGLE DE BLOQUEIO — CORRIGIDO
-   Usa onchange no <input> diretamente,
-   sem conflito com evento do div pai
+   TOGGLE DE BLOQUEIO
 ═══════════════════════════════════════ */
 function onLockToggle(checkbox){
   var fields=document.getElementById('ce-lock-fields');
@@ -848,7 +849,6 @@ function openChapterEditor(chIdx){
   ceCurrentSize=ch.photoSize||'m';
   ceSetSize(ceCurrentSize);
 
-  // Carrega o checkbox de bloqueio — SEM chamar ceToggleLock, apenas setando o estado
   var locked=!!(ch.locked);
   var cb=document.getElementById('ce-locked');
   cb.checked=locked;
@@ -983,6 +983,7 @@ function deleteChapterFromEditor(){
 
 /* ═══════════════════════════════════════
    SISTEMA DE BLOQUEIO
+   Cooldown: 3 minutos (LOCK_COOLDOWN_MS)
 ═══════════════════════════════════════ */
 var unlockChIdx=-1;
 var unlockTimerInterval=null;
@@ -1049,11 +1050,12 @@ function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
     document.getElementById('unlock-state-ok').style.display='block';
     if(bookCurrentPage===targetIdx)renderBook();
   } else {
-    var until=Date.now()+3600000;
+    /* ── ALTERADO: 3 minutos = 180000ms (era 3600000 = 1 hora) ── */
+    var until=Date.now()+LOCK_COOLDOWN_MS;
     localStorage.setItem(timerKey(unlockChIdx),until);
     document.getElementById('unlock-state-q').style.display='none';
     document.getElementById('unlock-state-err').style.display='block';
-    showUnlockTimer(3600000);
+    showUnlockTimer(LOCK_COOLDOWN_MS);
   }
 }
 
