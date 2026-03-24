@@ -17,7 +17,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow-x:hidden;}
 body{font-family:'Josefin Sans',sans-serif;background:var(--bg);color:var(--white);}
-#petals{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.25;}
+#petals{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:2px;padding:10px 12px;background:rgba(13,10,11,.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,166,110,.14);}
 nav button{background:none;border:none;cursor:pointer;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(253,246,240,.38);padding:7px 10px;border-radius:20px;transition:all .3s;white-space:nowrap;}
@@ -610,16 +610,12 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
   <!-- PAINEL 2: COMPATIBILIDADE -->
   <div class="game-panel" id="panel-compat">
     <div class="game-wrap">
-
-      <!-- Início -->
       <div class="mem-gs active" id="cp-start">
         <div class="g-icon">💞</div>
         <h3 class="g-ttl">Compatibilidade</h3>
         <p class="g-desc">Cada um responde as mesmas perguntas separado. No final vocês descobrem o % de compatibilidade!</p>
         <button class="btn-rose" onclick="cpStart('p1')">Começar ♡</button>
       </div>
-
-      <!-- Tela de perguntas -->
       <div class="mem-gs" id="cp-q">
         <div id="cp-player-badge" class="compat-player-badge">👤 Jogador 1</div>
         <p class="q-prog" id="cp-prog">1 / 8</p>
@@ -628,8 +624,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
         <div class="cp-opts" id="cp-opts"></div>
         <button class="btn-rose cp-next-btn" id="cp-next-btn" onclick="cpNext()" style="display:none">Próxima →</button>
       </div>
-
-      <!-- Aguardando P2 -->
       <div class="mem-gs" id="cp-wait">
         <div class="compat-waiting">
           <div class="compat-wait-icon">⏳</div>
@@ -638,8 +632,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
         </div>
         <button class="btn-rose" onclick="cpStart('p2')">Estou pronto ♡</button>
       </div>
-
-      <!-- Resultado -->
       <div class="mem-gs" id="cp-result">
         <div class="compat-meter-wrap">
           <div class="compat-meter"><div class="compat-meter-fill" id="cp-meter-fill"></div></div>
@@ -650,15 +642,12 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
         <div class="compat-compare" id="cp-compare"></div>
         <button class="btn-rose" onclick="cpReset()">Jogar de novo 🔄</button>
       </div>
-
     </div>
   </div>
 
   <!-- PAINEL 3: MEMÓRIA -->
   <div class="game-panel" id="panel-memo">
     <div class="memory-wrap">
-
-      <!-- Início -->
       <div class="mem-gs active" id="mem-start">
         <div class="g-icon">🃏</div>
         <h3 class="g-ttl">Jogo da Memória</h3>
@@ -670,8 +659,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
         </div>
         <button class="btn-rose" onclick="memStart()">Jogar ♡</button>
       </div>
-
-      <!-- Jogo -->
       <div class="mem-gs" id="mem-game">
         <div class="mem-stats">
           <div class="mem-stat"><div class="mem-stat-n" id="mem-moves">0</div><div class="mem-stat-l">Jogadas</div></div>
@@ -680,8 +667,6 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
         </div>
         <div class="memory-grid" id="memory-grid"></div>
       </div>
-
-      <!-- Vitória -->
       <div class="mem-gs" id="mem-win">
         <div class="g-icon">🎉</div>
         <h3 class="g-ttl">Vocês venceram!</h3>
@@ -692,10 +677,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
         <p class="r-msg" id="mem-win-msg"></p>
         <button class="btn-rose" onclick="memReset()">Jogar de novo 🔄</button>
       </div>
-
     </div>
-
-    <!-- Painel admin de fotos -->
     <div class="mem-admin-panel">
       <p class="mem-admin-label">📸 Fotos do Jogo da Memória</p>
       <div class="mem-admin-grid" id="mem-admin-grid"></div>
@@ -736,8 +718,8 @@ function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.c
 function init(){
   showLoad('Carregando...');
   Promise.all([carregarConfigs(),carregarMomentos(),carregarCapitulos(),carregarMemPhotos()])
-    .then(function(){hideLoad();atualizarContador();setInterval(atualizarContador,30000);animPetals();renderBook();})
-    .catch(function(e){hideLoad();console.error(e);showToast('Erro ao conectar.');atualizarContador();animPetals();renderBook();});
+    .then(function(){hideLoad();atualizarContador();setInterval(atualizarContador,30000);renderBook();})
+    .catch(function(e){hideLoad();console.error(e);showToast('Erro ao conectar.');atualizarContador();renderBook();});
 }
 
 function goTo(id){
@@ -1197,7 +1179,6 @@ function openUnlockModal(chIdx,targetIdx,dir){
 
   var cd=getCooldown(chIdx);
   if(cd>0){
-    /* Já existe cooldown ativo: mostra tela de erro com o timer contando */
     document.getElementById('unlock-state-q').style.display='none';
     document.getElementById('unlock-state-err').style.display='block';
     document.getElementById('unlock-question-txt').textContent='Aguarde para tentar novamente...';
@@ -1237,7 +1218,6 @@ function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
     document.getElementById('unlock-state-ok').style.display='block';
     if(bookCurrentPage===targetIdx)renderBook();
   } else {
-    /* ── ALTERADO: 3 minutos = 180000ms (era 3600000 = 1 hora) ── */
     var until=Date.now()+LOCK_COOLDOWN_MS;
     localStorage.setItem(timerKey(unlockChIdx),until);
     document.getElementById('unlock-state-q').style.display='none';
@@ -1420,7 +1400,6 @@ function limparTudo(){
   .then(function(){momentos_db=[];chapters_db=capitulosDefault();settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';document.getElementById('date-inp').value='2022-08-05';bookCurrentPage=0;renderBook();renderMomentos();atualizarContador();hideLoad();showToast('🗑 Limpo');});
 }
 
-
 /* ═══════════════════════════════════════
    ABAS DOS JOGOS
 ═══════════════════════════════════════ */
@@ -1433,7 +1412,7 @@ function switchGameTab(tab){
 }
 
 /* ═══════════════════════════════════════
-   QUIZ (original mantido)
+   QUIZ
 ═══════════════════════════════════════ */
 var PERGUNTAS=[
   {q:"Qual a cor favorita da sua parceira?",who:"💙 Ele responde",opts:["Azul","Rosa","Roxo","Verde"],ans:0},
@@ -1534,14 +1513,12 @@ function cpShowResult(){
     if(cpAnswersP1[i]===cpAnswersP2[i])matches++;
   }
   var pct=Math.round((matches/CP_QUESTIONS.length)*100);
-  // Exibe percentual com animação
   document.getElementById('cp-meter-fill').style.width='0%';
   document.getElementById('cp-pct').textContent='0%';
   setTimeout(function(){
     document.getElementById('cp-meter-fill').style.width=pct+'%';
     animateNumber('cp-pct',0,pct,'%',1200);
   },200);
-  // Veredicto
   var verdicts=[
     [0,30,'💔','Vocês são bem diferentes... mas os opostos se atraem!'],
     [31,55,'😊','Têm bastante a descobrir um sobre o outro. Que aventura!'],
@@ -1550,8 +1527,7 @@ function cpShowResult(){
     [91,100,'🏆','Almas gêmeas! Compatibilidade quase perfeita. ♡']
   ];
   var v=verdicts.find(function(x){return pct>=x[0]&&pct<=x[1];});
-  document.getElementById('cp-verdict').textContent=v[0]==='💔'?v[3]:v[2]+' '+v[3];
-  // Comparação
+  document.getElementById('cp-verdict').textContent=v[2]+' '+v[3];
   var cmp=document.getElementById('cp-compare');
   cmp.innerHTML='';
   CP_QUESTIONS.forEach(function(q,i){
@@ -1594,7 +1570,7 @@ function cpReset(){
 /* ═══════════════════════════════════════
    JOGO DA MEMÓRIA
 ═══════════════════════════════════════ */
-var memPhotos_db=[];   // fotos salvas no Firebase
+var memPhotos_db=[];
 var memDiff='easy';
 var memCards=[];
 var memFlipped=[];
@@ -1603,11 +1579,8 @@ var memMoves=0;
 var memTimerInterval=null;
 var memSeconds=0;
 var memLocked=false;
-var memPendingAdminSlot=null;
 
 var MEM_DIFF_MAP={easy:3,medium:5,hard:8};
-
-// Emojis fallback quando não há fotos suficientes
 var MEM_EMOJIS=['💕','🌹','✨','💌','🎉','🥂','🌙','⭐','🦋','💫','🌸','❤️','🎶','🌺','💎','🏖️'];
 
 function carregarMemPhotos(){
@@ -1628,7 +1601,6 @@ function renderMemAdminGrid(){
       +'<button class="mem-slot-rm" onclick="memAdminRemove('+i+',event)">✕</button>';
     grid.appendChild(slot);
   });
-  // Slot para adicionar
   var add=document.createElement('div');
   add.className='mem-admin-slot';
   add.innerHTML='<span class="mem-slot-add">＋</span>';
@@ -1674,10 +1646,8 @@ function memShowScreen(id){
 
 function memStart(){
   var pairs=MEM_DIFF_MAP[memDiff]||3;
-  // Montar deck de pares
   var pool=[];
   if(memPhotos_db.length>0){
-    // Embaralha fotos disponíveis
     var shuffledPhotos=memPhotos_db.slice().sort(function(){return Math.random()-.5;});
     for(var i=0;i<pairs;i++){
       var url=shuffledPhotos[i%shuffledPhotos.length];
@@ -1685,14 +1655,12 @@ function memStart(){
       pool.push({type:'photo',value:url,id:i});
     }
   } else {
-    // Fallback com emojis
     for(var i=0;i<pairs;i++){
       var emoji=MEM_EMOJIS[i%MEM_EMOJIS.length];
       pool.push({type:'emoji',value:emoji,id:i});
       pool.push({type:'emoji',value:emoji,id:i});
     }
   }
-  // Embaralha deck
   pool.sort(function(){return Math.random()-.5;});
   memCards=pool;
   memFlipped=[];
@@ -1702,7 +1670,6 @@ function memStart(){
   memLocked=false;
   if(memTimerInterval)clearInterval(memTimerInterval);
 
-  // Define colunas conforme dificuldade
   var cols={easy:3,medium:4,hard:4};
   var grid=document.getElementById('memory-grid');
   grid.style.gridTemplateColumns='repeat('+cols[memDiff]+',1fr)';
@@ -1752,7 +1719,6 @@ function memFlipCard(idx,el){
     document.getElementById('mem-moves').textContent=memMoves;
     var a=memFlipped[0],b=memFlipped[1];
     if(memCards[a.idx].id===memCards[b.idx].id){
-      // Par encontrado!
       setTimeout(function(){
         a.el.classList.add('matched');
         b.el.classList.add('matched');
@@ -1765,7 +1731,6 @@ function memFlipCard(idx,el){
         if(memMatchedCount===pairs)memWin();
       },500);
     } else {
-      // Erro
       setTimeout(function(){
         a.el.classList.add('shake');b.el.classList.add('shake');
         setTimeout(function(){
@@ -1799,6 +1764,7 @@ function memWin(){
 }
 
 function memReset(){memShowScreen('mem-start');}
+
 /* ═══════════════════════════════════════
    PÉTALAS
 ═══════════════════════════════════════ */
@@ -1806,9 +1772,11 @@ var canvas=document.getElementById('petals'),ctx2=canvas.getContext('2d');
 function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
 function Petal(){this.reset=function(){this.x=Math.random()*canvas.width;this.y=-20;this.sz=Math.random()*7+3;this.sp=Math.random()*.8+0.3;this.dr=Math.random()*.5-.25;this.al=Math.random()*.3+0.1;this.rot=Math.random()*Math.PI*2;this.rs=Math.random()*.02-.01;this.col=['#f7dde6','#e8b4c0','#c9566a','#f2c4d0'][Math.floor(Math.random()*4)];};this.reset();this.y=Math.random()*canvas.height;this.update=function(){this.y+=this.sp;this.x+=this.dr;this.rot+=this.rs;if(this.y>canvas.height+30)this.reset();};this.draw=function(){ctx2.save();ctx2.translate(this.x,this.y);ctx2.rotate(this.rot);ctx2.globalAlpha=this.al;ctx2.fillStyle=this.col;ctx2.beginPath();ctx2.ellipse(0,0,this.sz*.55,this.sz,0,0,Math.PI*2);ctx2.fill();ctx2.restore();};}
-var petalArr=[];for(var i=0;i<20;i++)petalArr.push(new Petal());
+var petalArr=[];for(var i=0;i<40;i++)petalArr.push(new Petal());
 function animPetals(){ctx2.clearRect(0,0,canvas.width,canvas.height);petalArr.forEach(function(p){p.update();p.draw();});requestAnimationFrame(animPetals);}
 
+/* start petals immediately — independent of Firebase */
+animPetals();
 init();
 </script>
 </body>
