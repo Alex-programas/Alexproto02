@@ -124,11 +124,7 @@ section.active{display:flex;}
 .pg-lock-timer-lbl{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.2);text-transform:uppercase;}
 .pg-lock-admin-badge{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,86,106,.5);border:1px dashed rgba(201,86,106,.3);padding:3px 8px;border-radius:6px;}
 
-/* ── RE-LOCK COUNTDOWN na página do livro ── */
-.pg-relock-box{margin-top:6px;background:rgba(201,86,106,.06);border:1px solid rgba(201,86,106,.18);border-radius:12px;padding:10px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.pg-relock-lbl{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(201,166,110,.5);}
-.pg-relock-time{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);letter-spacing:2px;line-height:1;}
-.pg-relock-sub{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(253,246,240,.18);}
+
 
 /* ── TOGGLE SWITCH ── */
 .ce-toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
@@ -737,15 +733,8 @@ var db=firebase.firestore();
 var isAdmin=false,momentos_db=[],chapters_db=[],settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};
 var pendingPhoto=null,pendingAudio=null,editingId=null,cePendingPhoto=null,ceEditIdx=-1;
 
-/* ─── TEMPOS DE BLOQUEIO ───────────────────────────────────────
-   LOCK_COOLDOWN_MS : cooldown após erro       → 3 min
-   RELOCK_MS        : re-bloqueia após acerto  → 5 min  ← ALTERADO
-──────────────────────────────────────────────────────────────── */
-var LOCK_COOLDOWN_MS = 180000;   // 3 minutos de penalidade por erro
-var RELOCK_MS        = 300000;   // 5 minutos até re-bloquear ← era 1800000 (30min)
-
-/* ─── Intervalo global para atualizar contador na página do livro ─── */
-var bookRelockInterval = null;
+/* ─── COOLDOWN de erro: 3 minutos ─── */
+var LOCK_COOLDOWN_MS = 180000;
 
 function showLoad(t){document.getElementById('load-txt').textContent=t||'Carregando...';document.getElementById('loading').classList.add('show');}
 function hideLoad(){document.getElementById('loading').classList.remove('show');}
@@ -833,15 +822,14 @@ function renderBook(){
   stage.appendChild(pg);
   updateBookControls();
 
-  /* ── Inicia/reinicia o ticker do contador de re-lock na página ── */
-  if(bookRelockInterval)clearInterval(bookRelockInterval);
-  bookRelockInterval=setInterval(function(){
+  /* Ticker para atualizar o cooldown de erro na página do livro */
+  if(window._bookCdInterval)clearInterval(window._bookCdInterval);
+  window._bookCdInterval=setInterval(function(){
     var chIdx=bookCurrentPage-1;
     if(chIdx<0||!chapters_db[chIdx])return;
     var ch=chapters_db[chIdx];
     if(!ch.locked||isAdmin)return;
 
-    /* Atualiza o display do cooldown de erro */
     var errEl=document.getElementById('book-cd-err-'+chIdx);
     if(errEl){
       var cd=getCooldown(chIdx);
@@ -849,22 +837,7 @@ function renderBook(){
         var h=Math.floor(cd/3600000),m=Math.floor((cd%3600000)/60000),s=Math.floor((cd%60000)/1000);
         errEl.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
       } else {
-        /* Cooldown de erro acabou → re-renderiza a página para mostrar as opções */
-        clearInterval(bookRelockInterval);
-        renderBook();
-      }
-    }
-
-    /* Atualiza o display do contador de re-lock */
-    var relEl=document.getElementById('book-relock-'+chIdx);
-    if(relEl){
-      var rem=getRelockCountdown(chIdx);
-      if(rem>0){
-        var rm=Math.floor(rem/60000),rs=Math.floor((rem%60000)/1000);
-        relEl.textContent=String(rm).padStart(2,'0')+':'+String(rs).padStart(2,'0');
-      } else {
-        /* Re-lock expirou → re-renderiza para mostrar cadeado novamente */
-        clearInterval(bookRelockInterval);
+        clearInterval(window._bookCdInterval);
         renderBook();
       }
     }
@@ -926,20 +899,8 @@ function buildPageHTML(idx){
       return div;
     }
 
-    /* ── Capítulo DESBLOQUEADO mas com re-lock ativo ── */
-    /* Mostramos o conteúdo + caixinha com contagem regressiva do re-lock */
-    var relockRem=getRelockCountdown(chIdx);
+    /* ── Capítulo DESBLOQUEADO: mostra conteúdo normalmente ── */
     var relockBarHtml='';
-    if(!isAdmin && ch.locked && relockRem>0){
-      var rm=Math.floor(relockRem/60000),rs=Math.floor((relockRem%60000)/1000);
-      relockBarHtml='<div class="pg-relock-box" style="margin:0 16px 12px;">'
-        +'<div class="pg-relock-lbl">🔓 capítulo desbloqueado · re-bloqueia em</div>'
-        +'<div class="pg-relock-time" id="book-relock-'+chIdx+'">'
-          +String(rm).padStart(2,'0')+':'+String(rs).padStart(2,'0')
-        +'</div>'
-        +'<div class="pg-relock-sub">minutos · segundos</div>'
-        +'</div>';
-    }
 
     var photoHtml='';
     var sizeClass='size-'+(ch.photoSize||'m');
@@ -1243,35 +1204,21 @@ function deleteChapterFromEditor(){
 
 /* ═══════════════════════════════════════
    SISTEMA DE BLOQUEIO
-   Cooldown erro : 3 min  (LOCK_COOLDOWN_MS)
-   Re-lock       : 5 min  (RELOCK_MS)
+   - Cooldown de 3 min após erro
+   - Após acerto: capítulo fica aberto permanentemente
 ═══════════════════════════════════════ */
 var unlockChIdx=-1;
 var unlockTimerInterval=null;
 
 function lockKey(chIdx){return 'lock_ch_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
 function timerKey(chIdx){return 'lock_timer_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
-function relockKey(chIdx){return 'relock_ch_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
 
 function isUnlocked(chIdx){
-  var unlocked=localStorage.getItem(lockKey(chIdx))==='1';
-  if(!unlocked)return false;
-  /* Verifica se o re-lock expirou */
-  var relockUntil=parseInt(localStorage.getItem(relockKey(chIdx))||'0');
-  if(relockUntil>0 && Date.now()>relockUntil){
-    localStorage.removeItem(lockKey(chIdx));
-    localStorage.removeItem(relockKey(chIdx));
-    return false;
-  }
-  return true;
+  return localStorage.getItem(lockKey(chIdx))==='1';
 }
 function getCooldown(chIdx){
   var until=parseInt(localStorage.getItem(timerKey(chIdx))||'0');
   return Date.now()<until?until-Date.now():0;
-}
-function getRelockCountdown(chIdx){
-  var until=parseInt(localStorage.getItem(relockKey(chIdx))||'0');
-  return until>0&&Date.now()<until?until-Date.now():0;
 }
 
 function tryOpenPage(targetIdx,dir){
@@ -1326,34 +1273,12 @@ function renderUnlockOpts(ch,targetIdx,dir){
 function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
   var correct=ch.options&&ch.options[optIdx]&&ch.options[optIdx].correct;
   if(correct){
+    /* Desbloqueio permanente — fica aberto para sempre */
     localStorage.setItem(lockKey(unlockChIdx),'1');
-    /* Agenda re-bloqueio em RELOCK_MS (5 min) */
-    var relockUntil=Date.now()+RELOCK_MS;
-    localStorage.setItem(relockKey(unlockChIdx),relockUntil);
 
     document.getElementById('unlock-state-q').style.display='none';
-    var okEl=document.getElementById('unlock-state-ok');
-    okEl.style.display='block';
+    document.getElementById('unlock-state-ok').style.display='block';
 
-    /* Mostra contagem regressiva do re-lock dentro do modal de sucesso */
-    var relockInfo=document.getElementById('unlock-relock-info');
-    if(!relockInfo){
-      relockInfo=document.createElement('p');
-      relockInfo.id='unlock-relock-info';
-      relockInfo.style.cssText='font-size:9px;color:rgba(253,246,240,.25);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;';
-      okEl.insertBefore(relockInfo,okEl.querySelector('.btn-rose'));
-    }
-    function tickRelock(){
-      var rem=getRelockCountdown(unlockChIdx);
-      if(rem<=0){relockInfo.textContent='Re-bloqueia em breve';return;}
-      var m=Math.floor(rem/60000),s=Math.floor((rem%60000)/1000);
-      relockInfo.textContent='🔒 Re-bloqueia em '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    }
-    tickRelock();
-    if(window._relockInfoInterval)clearInterval(window._relockInfoInterval);
-    window._relockInfoInterval=setInterval(tickRelock,1000);
-
-    /* Força re-render da página do livro para mostrar a barra de re-lock */
     if(bookCurrentPage===targetIdx)renderBook();
 
   } else {
