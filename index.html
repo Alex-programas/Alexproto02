@@ -114,7 +114,8 @@ section.active{display:flex;}
 .add-ch-btn:hover{background:rgba(201,86,106,.14);}
 .admin-mode .add-ch-btn{display:flex;}
 
-.pg-locked{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;text-align:center;padding:32px 24px;gap:14px;cursor:pointer;}
+/* ── LOCKED PAGE STYLES ── */
+.pg-locked{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;text-align:center;padding:32px 24px;gap:10px;cursor:pointer;}
 .pg-lock-icon{font-size:44px;filter:drop-shadow(0 2px 12px rgba(201,86,106,.4));}
 .pg-lock-chnum{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,166,110,.35);}
 .pg-lock-title{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,5vw,26px);color:rgba(253,240,230,.5);font-weight:300;}
@@ -122,6 +123,12 @@ section.active{display:flex;}
 .pg-lock-timer{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);opacity:.7;}
 .pg-lock-timer-lbl{font-size:8px;letter-spacing:2px;color:rgba(253,246,240,.2);text-transform:uppercase;}
 .pg-lock-admin-badge{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,86,106,.5);border:1px dashed rgba(201,86,106,.3);padding:3px 8px;border-radius:6px;}
+
+/* ── RE-LOCK COUNTDOWN na página do livro ── */
+.pg-relock-box{margin-top:6px;background:rgba(201,86,106,.06);border:1px solid rgba(201,86,106,.18);border-radius:12px;padding:10px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.pg-relock-lbl{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(201,166,110,.5);}
+.pg-relock-time{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);letter-spacing:2px;line-height:1;}
+.pg-relock-sub{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(253,246,240,.18);}
 
 /* ── TOGGLE SWITCH ── */
 .ce-toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
@@ -730,9 +737,15 @@ var db=firebase.firestore();
 var isAdmin=false,momentos_db=[],chapters_db=[],settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};
 var pendingPhoto=null,pendingAudio=null,editingId=null,cePendingPhoto=null,ceEditIdx=-1;
 
-/* ─── TEMPO DE BLOQUEIO: 30 minutos = 1800000ms ─── */
-var LOCK_COOLDOWN_MS = 180000; // cooldown de erro (3 min)
-var RELOCK_MS = 1800000;       // re-bloqueio após acerto (30 min)
+/* ─── TEMPOS DE BLOQUEIO ───────────────────────────────────────
+   LOCK_COOLDOWN_MS : cooldown após erro       → 3 min
+   RELOCK_MS        : re-bloqueia após acerto  → 5 min  ← ALTERADO
+──────────────────────────────────────────────────────────────── */
+var LOCK_COOLDOWN_MS = 180000;   // 3 minutos de penalidade por erro
+var RELOCK_MS        = 300000;   // 5 minutos até re-bloquear ← era 1800000 (30min)
+
+/* ─── Intervalo global para atualizar contador na página do livro ─── */
+var bookRelockInterval = null;
 
 function showLoad(t){document.getElementById('load-txt').textContent=t||'Carregando...';document.getElementById('loading').classList.add('show');}
 function hideLoad(){document.getElementById('loading').classList.remove('show');}
@@ -819,6 +832,43 @@ function renderBook(){
   stage.innerHTML='';
   stage.appendChild(pg);
   updateBookControls();
+
+  /* ── Inicia/reinicia o ticker do contador de re-lock na página ── */
+  if(bookRelockInterval)clearInterval(bookRelockInterval);
+  bookRelockInterval=setInterval(function(){
+    var chIdx=bookCurrentPage-1;
+    if(chIdx<0||!chapters_db[chIdx])return;
+    var ch=chapters_db[chIdx];
+    if(!ch.locked||isAdmin)return;
+
+    /* Atualiza o display do cooldown de erro */
+    var errEl=document.getElementById('book-cd-err-'+chIdx);
+    if(errEl){
+      var cd=getCooldown(chIdx);
+      if(cd>0){
+        var h=Math.floor(cd/3600000),m=Math.floor((cd%3600000)/60000),s=Math.floor((cd%60000)/1000);
+        errEl.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+      } else {
+        /* Cooldown de erro acabou → re-renderiza a página para mostrar as opções */
+        clearInterval(bookRelockInterval);
+        renderBook();
+      }
+    }
+
+    /* Atualiza o display do contador de re-lock */
+    var relEl=document.getElementById('book-relock-'+chIdx);
+    if(relEl){
+      var rem=getRelockCountdown(chIdx);
+      if(rem>0){
+        var rm=Math.floor(rem/60000),rs=Math.floor((rem%60000)/1000);
+        relEl.textContent=String(rm).padStart(2,'0')+':'+String(rs).padStart(2,'0');
+      } else {
+        /* Re-lock expirou → re-renderiza para mostrar cadeado novamente */
+        clearInterval(bookRelockInterval);
+        renderBook();
+      }
+    }
+  },1000);
 }
 
 function buildPageHTML(idx){
@@ -848,6 +898,49 @@ function buildPageHTML(idx){
     var ch=chapters_db[chIdx];
     if(!ch)return div;
 
+    /* ── Capítulo BLOQUEADO (não-admin) ── */
+    if(!isAdmin && ch.locked && !isUnlocked(chIdx)){
+      div.style.cssText='display:flex;flex-direction:column;';
+      var cd=getCooldown(chIdx);
+
+      if(cd>0){
+        /* Ainda em cooldown de erro: mostra timer de penalidade */
+        var h=Math.floor(cd/3600000),m=Math.floor((cd%3600000)/60000),s2=Math.floor((cd%60000)/1000);
+        var ts=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s2).padStart(2,'0');
+        div.innerHTML='<div class="pg-locked">'
+          +'<div class="pg-lock-chnum">Capítulo '+(chIdx+1)+'</div>'
+          +'<div class="pg-lock-icon">💔</div>'
+          +'<div class="pg-lock-title">'+ch.title+'</div>'
+          +'<div class="pg-lock-timer-lbl">Próxima tentativa em</div>'
+          +'<div class="pg-lock-timer" id="book-cd-err-'+chIdx+'">'+ts+'</div>'
+          +'</div>';
+      } else {
+        /* Disponível para tentar → mostra cadeado + botão */
+        div.innerHTML='<div class="pg-locked" onclick="tryOpenPage('+(chIdx+1)+',1)">'
+          +'<div class="pg-lock-chnum">Capítulo '+(chIdx+1)+'</div>'
+          +'<div class="pg-lock-icon">🔐</div>'
+          +'<div class="pg-lock-title">'+ch.title+'</div>'
+          +'<div class="pg-lock-hint">Toque para responder ›</div>'
+          +'</div>';
+      }
+      return div;
+    }
+
+    /* ── Capítulo DESBLOQUEADO mas com re-lock ativo ── */
+    /* Mostramos o conteúdo + caixinha com contagem regressiva do re-lock */
+    var relockRem=getRelockCountdown(chIdx);
+    var relockBarHtml='';
+    if(!isAdmin && ch.locked && relockRem>0){
+      var rm=Math.floor(relockRem/60000),rs=Math.floor((relockRem%60000)/1000);
+      relockBarHtml='<div class="pg-relock-box" style="margin:0 16px 12px;">'
+        +'<div class="pg-relock-lbl">🔓 capítulo desbloqueado · re-bloqueia em</div>'
+        +'<div class="pg-relock-time" id="book-relock-'+chIdx+'">'
+          +String(rm).padStart(2,'0')+':'+String(rs).padStart(2,'0')
+        +'</div>'
+        +'<div class="pg-relock-sub">minutos · segundos</div>'
+        +'</div>';
+    }
+
     var photoHtml='';
     var sizeClass='size-'+(ch.photoSize||'m');
     if(ch.photoUrl){
@@ -865,32 +958,11 @@ function buildPageHTML(idx){
     }
 
     var editBtn=isAdmin?'<button class="pg-edit-btn" onclick="openChapterEditor('+chIdx+')">✎ editar</button>':'';
-
-    if(!isAdmin && ch.locked && !isUnlocked(chIdx)){
-      var cd=getCooldown(chIdx);
-      div.style.cssText='display:flex;flex-direction:column;';
-      var timerHtml='';
-      if(cd>0){
-        var h=Math.floor(cd/3600000),m=Math.floor((cd%3600000)/60000),s2=Math.floor((cd%60000)/1000);
-        var ts=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s2).padStart(2,'0');
-        timerHtml='<div class="pg-lock-timer">'+ts+'</div>'
-          +'<div class="pg-lock-timer-lbl">próxima tentativa</div>';
-      } else {
-        timerHtml='<div class="pg-lock-hint">Toque para responder ›</div>';
-      }
-      div.innerHTML='<div class="pg-locked" onclick="tryOpenPage('+(chIdx+1)+',1)">'
-        +'<div class="pg-lock-chnum">Capítulo '+(chIdx+1)+'</div>'
-        +'<div class="pg-lock-icon">🔐</div>'
-        +'<div class="pg-lock-title">'+ch.title+'</div>'
-        +timerHtml
-        +'</div>';
-      return div;
-    }
-
     var lockBadge=isAdmin&&ch.locked?'<div style="text-align:center;padding:4px 0;"><span class="pg-lock-admin-badge">🔐 bloqueado para ela</span></div>':'';
 
     div.style.cssText='display:flex;flex-direction:column;';
     div.innerHTML=editBtn+lockBadge
+      +relockBarHtml
       +'<div class="pg-inner">'
         +'<p class="pg-chapter-num">Capítulo '+(chIdx+1)+'</p>'
         +'<span class="pg-emoji">'+ch.emoji+'</span>'
@@ -927,10 +999,9 @@ function flipToPage(targetIdx,dir){
     bookCurrentPage=targetIdx;
     stage.innerHTML='';
     stage.style.position='';
-    var finalPage=buildPageHTML(targetIdx);
-    stage.appendChild(finalPage);
+    /* renderBook já reinicia o ticker */
+    renderBook();
     bookIsFlipping=false;
-    updateBookControls();
   },560);
 }
 
@@ -962,7 +1033,7 @@ function updateBookControls(){
 }
 
 /* ═══════════════════════════════════════
-   TOGGLE DE BLOQUEIO
+   TOGGLE DE BLOQUEIO (editor)
 ═══════════════════════════════════════ */
 function onLockToggle(checkbox){
   var fields=document.getElementById('ce-lock-fields');
@@ -1172,7 +1243,8 @@ function deleteChapterFromEditor(){
 
 /* ═══════════════════════════════════════
    SISTEMA DE BLOQUEIO
-   Cooldown: 3 minutos (LOCK_COOLDOWN_MS)
+   Cooldown erro : 3 min  (LOCK_COOLDOWN_MS)
+   Re-lock       : 5 min  (RELOCK_MS)
 ═══════════════════════════════════════ */
 var unlockChIdx=-1;
 var unlockTimerInterval=null;
@@ -1180,13 +1252,13 @@ var unlockTimerInterval=null;
 function lockKey(chIdx){return 'lock_ch_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
 function timerKey(chIdx){return 'lock_timer_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
 function relockKey(chIdx){return 'relock_ch_'+chIdx+'_'+FIREBASE_CONFIG.projectId;}
+
 function isUnlocked(chIdx){
   var unlocked=localStorage.getItem(lockKey(chIdx))==='1';
   if(!unlocked)return false;
-  // Verifica se o re-lock expirou
+  /* Verifica se o re-lock expirou */
   var relockUntil=parseInt(localStorage.getItem(relockKey(chIdx))||'0');
   if(relockUntil>0 && Date.now()>relockUntil){
-    // Re-lock expirou → bloqueado novamente
     localStorage.removeItem(lockKey(chIdx));
     localStorage.removeItem(relockKey(chIdx));
     return false;
@@ -1239,7 +1311,6 @@ function renderUnlockOpts(ch,targetIdx,dir){
   var wrap=document.getElementById('unlock-opts');
   wrap.innerHTML='';
   var opts=(ch.options||[]).slice();
-  // Embaralha as opções
   var shuffled=opts.map(function(o,i){return{opt:o,origIdx:i};}).sort(function(){return Math.random()-.5;});
   shuffled.forEach(function(item){
     var btn=document.createElement('button');
@@ -1256,14 +1327,15 @@ function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
   var correct=ch.options&&ch.options[optIdx]&&ch.options[optIdx].correct;
   if(correct){
     localStorage.setItem(lockKey(unlockChIdx),'1');
-    // Agenda re-bloqueio em 30 minutos
+    /* Agenda re-bloqueio em RELOCK_MS (5 min) */
     var relockUntil=Date.now()+RELOCK_MS;
     localStorage.setItem(relockKey(unlockChIdx),relockUntil);
+
     document.getElementById('unlock-state-q').style.display='none';
-    // Mostra mensagem de sucesso com contagem regressiva do re-lock
     var okEl=document.getElementById('unlock-state-ok');
     okEl.style.display='block';
-    // Adiciona info do re-lock na tela de sucesso
+
+    /* Mostra contagem regressiva do re-lock dentro do modal de sucesso */
     var relockInfo=document.getElementById('unlock-relock-info');
     if(!relockInfo){
       relockInfo=document.createElement('p');
@@ -1280,7 +1352,10 @@ function checkUnlockAnswer(optIdx,ch,targetIdx,dir){
     tickRelock();
     if(window._relockInfoInterval)clearInterval(window._relockInfoInterval);
     window._relockInfoInterval=setInterval(tickRelock,1000);
+
+    /* Força re-render da página do livro para mostrar a barra de re-lock */
     if(bookCurrentPage===targetIdx)renderBook();
+
   } else {
     var until=Date.now()+LOCK_COOLDOWN_MS;
     localStorage.setItem(timerKey(unlockChIdx),until);
@@ -1527,7 +1602,7 @@ function mostrarResultado(){
 function resetGame(){showScreen('gs-start');}
 
 /* ═══════════════════════════════════════
-   MEDIDOR DE COMPATIBILIDADE — embaralhado + editável
+   MEDIDOR DE COMPATIBILIDADE
 ═══════════════════════════════════════ */
 var CP_QUESTIONS=[
   {q:"Qual seria o fim de semana perfeito?",opts:["Viagem de surpresa","Ficando em casa juntos","Aventura ao ar livre","Jantar especial e filme"]},
@@ -1903,7 +1978,7 @@ function Petal(){this.reset=function(){this.x=Math.random()*canvas.width;this.y=
 var petalArr=[];for(var i=0;i<40;i++)petalArr.push(new Petal());
 function animPetals(){ctx2.clearRect(0,0,canvas.width,canvas.height);petalArr.forEach(function(p){p.update();p.draw();});requestAnimationFrame(animPetals);}
 
-/* start petals immediately — independent of Firebase */
+/* start */
 animPetals();
 init();
 </script>
