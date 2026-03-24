@@ -226,11 +226,20 @@ section.active{display:flex;}
 audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 
 /* JOGUINHO */
-#jogo{background:linear-gradient(145deg,#0d0a0b 0%,#1c0e16 100%);}
+#jogo{background:linear-gradient(145deg,#0d0a0b 0%,#1c0e16 100%);justify-content:flex-start;padding-top:80px;padding-bottom:60px;}
 .s-eyebrow-dark{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:8px;opacity:.65;}
-.s-title-dark{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,8vw,60px);font-weight:300;color:var(--cream);text-align:center;line-height:1;margin-bottom:36px;}
+.s-title-dark{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,6vw,50px);font-weight:300;color:var(--cream);text-align:center;line-height:1;margin-bottom:20px;}
 .s-title-dark em{font-style:italic;color:var(--rose);}
-.game-wrap{max-width:460px;width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:28px 20px;text-align:center;}
+
+/* ABAS */
+.game-tabs{display:flex;gap:5px;max-width:480px;width:100%;margin-bottom:18px;background:rgba(255,255,255,.04);border-radius:14px;padding:5px;}
+.game-tab{flex:1;background:none;border:none;padding:9px 4px;border-radius:10px;font-family:'Josefin Sans',sans-serif;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(253,246,240,.32);cursor:pointer;transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.game-tab .tab-icon{font-size:15px;}
+.game-tab.active{background:var(--rose-soft);color:var(--rose);border:1px solid rgba(201,86,106,.3);}
+.game-panel{display:none;max-width:480px;width:100%;}
+.game-panel.active{display:block;}
+
+.game-wrap{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:26px 18px;text-align:center;}
 .gs{display:none;}.gs.active{display:block;}
 .g-icon{font-size:44px;margin-bottom:10px;}
 .g-ttl{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--cream);margin-bottom:8px;}
@@ -250,6 +259,67 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 .r-score{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--rose);line-height:1;}
 .r-lbl{font-size:8px;letter-spacing:2px;color:var(--gold);margin:4px 0;opacity:.7;}
 .r-msg{font-size:11px;color:rgba(253,246,240,.42);margin:6px 0 18px;line-height:1.7;}
+
+/* ── COMPATIBILIDADE ── */
+.compat-player-badge{display:inline-block;background:var(--rose-soft);border:1px solid rgba(201,86,106,.4);border-radius:20px;padding:5px 16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:14px;}
+.cp-q-text{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--cream);margin-bottom:16px;line-height:1.35;}
+.cp-opts{display:flex;flex-direction:column;gap:7px;margin-bottom:0;}
+.cp-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;font-family:'Josefin Sans',sans-serif;font-size:11px;color:rgba(253,246,240,.7);cursor:pointer;transition:all .25s;text-align:center;width:100%;}
+.cp-btn.selected{background:var(--rose-soft);border-color:var(--rose);color:var(--rose);}
+.cp-next-btn{margin-top:14px;}
+.compat-meter-wrap{margin:10px 0 6px;}
+.compat-meter{width:100%;height:14px;background:rgba(255,255,255,.07);border-radius:30px;overflow:hidden;}
+.compat-meter-fill{height:100%;border-radius:30px;background:linear-gradient(90deg,#8b2e42,var(--rose),#f4a3b0);transition:width 1.4s cubic-bezier(.34,1.56,.64,1);width:0%;}
+.compat-pct{font-family:'Cormorant Garamond',serif;font-size:56px;color:var(--rose);line-height:1;font-weight:300;}
+.compat-verdict{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(253,246,240,.5);line-height:1.55;margin:8px 0 18px;}
+.compat-compare{display:flex;flex-direction:column;gap:8px;text-align:left;margin:14px 0 18px;max-height:240px;overflow-y:auto;}
+.compat-cmp-row{background:rgba(255,255,255,.03);border-radius:10px;padding:9px 12px;}
+.compat-cmp-q{font-size:8px;color:rgba(253,246,240,.28);letter-spacing:1px;margin-bottom:5px;text-transform:uppercase;}
+.compat-cmp-pair{display:flex;gap:6px;}
+.compat-cmp-a{flex:1;font-size:9px;padding:5px 8px;border-radius:6px;min-width:0;line-height:1.4;}
+.compat-cmp-a.match{background:rgba(76,175,80,.1);color:#81c784;border:1px solid rgba(76,175,80,.2);}
+.compat-cmp-a.diff{background:rgba(201,86,106,.1);color:#f4a3b0;border:1px solid rgba(201,86,106,.15);}
+.compat-cmp-lbl{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;opacity:.55;display:block;margin-bottom:2px;}
+.compat-waiting{padding:28px 0;text-align:center;}
+.compat-wait-icon{font-size:40px;margin-bottom:10px;}
+.compat-wait-txt{font-family:'Cormorant Garamond',serif;font-size:17px;color:rgba(253,246,240,.5);margin-bottom:6px;font-style:italic;}
+.compat-wait-sub{font-size:9px;color:rgba(253,246,240,.25);letter-spacing:1.5px;text-transform:uppercase;}
+
+/* ── MEMÓRIA ── */
+.memory-wrap{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:22px 14px;text-align:center;}
+.mem-gs{display:none;}.mem-gs.active{display:block;}
+.mem-stats{display:flex;gap:8px;justify-content:center;margin-bottom:14px;}
+.mem-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:8px 14px;text-align:center;}
+.mem-stat-n{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--rose);}
+.mem-stat-l{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(253,246,240,.28);}
+.memory-grid{display:grid;gap:7px;width:100%;margin:0 auto;}
+.mem-card{aspect-ratio:1;border-radius:10px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .42s cubic-bezier(.645,.045,.355,1);}
+.mem-card.flipped,.mem-card.matched{transform:rotateY(180deg);}
+.mem-card.matched .mem-back{border-color:rgba(76,175,80,.45);box-shadow:0 0 10px rgba(76,175,80,.18);}
+.mem-card.shake{animation:memShake .32s ease;}
+@keyframes memShake{0%,100%{transform:rotateY(180deg) translateX(0)}30%{transform:rotateY(180deg) translateX(-6px)}70%{transform:rotateY(180deg) translateX(6px)}}
+.mem-front,.mem-back{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.mem-front{background:linear-gradient(135deg,#2a1520,#1a0f16);border:1px solid rgba(201,86,106,.18);}
+.mem-front-icon{font-size:clamp(16px,5vw,24px);opacity:.35;}
+.mem-back{transform:rotateY(180deg);border:1px solid rgba(201,166,110,.2);background:#1c1214;}
+.mem-back img{width:100%;height:100%;object-fit:cover;border-radius:9px;}
+.mem-back-emoji{font-size:clamp(18px,5vw,26px);}
+.mem-win-pct{font-family:'Cormorant Garamond',serif;font-size:40px;color:var(--rose);line-height:1;}
+.mem-win-time{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);margin:4px 0 18px;}
+.mem-diff-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.mem-diff-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:9px 14px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(253,246,240,.55);cursor:pointer;transition:all .25s;}
+.mem-diff-btn:active,.mem-diff-btn.active{background:var(--rose-soft);border-color:var(--rose);color:var(--rose);}
+
+/* Admin painel memória */
+.mem-admin-panel{display:none;background:rgba(255,255,255,.03);border:1px dashed rgba(201,86,106,.28);border-radius:14px;padding:14px;margin-top:14px;}
+.admin-mode .mem-admin-panel{display:block;}
+.mem-admin-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:10px;}
+.mem-admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px;}
+.mem-admin-slot{aspect-ratio:1;border-radius:8px;overflow:hidden;position:relative;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.mem-admin-slot img{width:100%;height:100%;object-fit:cover;}
+.mem-admin-slot .mem-slot-add{font-size:20px;color:rgba(201,86,106,.38);}
+.mem-admin-slot .mem-slot-rm{display:none;position:absolute;top:2px;right:2px;background:rgba(13,10,11,.9);border:none;color:var(--rose);width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:9px;align-items:center;justify-content:center;line-height:1;}
+.mem-admin-slot:hover .mem-slot-rm,.mem-admin-slot:active .mem-slot-rm{display:flex;}
 
 .modal-bg{position:fixed;inset:0;background:rgba(13,10,11,.92);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);}
 .modal-bg.hidden{display:none;}
@@ -512,15 +582,129 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 </section>
 
 <section id="jogo">
-  <p class="s-eyebrow-dark">✦ Quanto vocês se conhecem? ✦</p>
-  <h2 class="s-title-dark">O <em>Joguinho</em></h2>
-  <div class="game-wrap">
-    <div class="gs active" id="gs-start"><div class="g-icon">💑</div><h3 class="g-ttl">Quem conhece mais?</h3><p class="g-desc">Respondam juntos e descubram o quanto vocês sabem um sobre o outro.</p><button class="btn-rose" onclick="startGame()">Começar o Quiz ♡</button></div>
-    <div class="gs" id="gs-q"><p class="q-prog" id="q-prog">1/10</p><div class="q-track"><div class="q-fill" id="q-fill" style="width:10%"></div></div><p class="q-who" id="q-who"></p><p class="q-text" id="q-text"></p><div class="q-opts" id="q-opts"></div></div>
-    <div class="gs" id="gs-res"><div class="r-icon" id="r-icon">🥰</div><div class="r-score" id="r-score">0/10</div><p class="r-lbl">PONTOS</p><p class="r-msg" id="r-msg"></p><button class="btn-rose" onclick="resetGame()">Jogar de novo 🔄</button></div>
-  </div>
-</section>
+  <p class="s-eyebrow-dark">✦ Brincadeiras do casal ✦</p>
+  <h2 class="s-title-dark">Os <em>Joguinhos</em></h2>
 
+  <!-- ABAS -->
+  <div class="game-tabs">
+    <button class="game-tab active" onclick="switchGameTab('quiz')" id="tab-quiz">
+      <span class="tab-icon">🧠</span>Quiz
+    </button>
+    <button class="game-tab" onclick="switchGameTab('compat')" id="tab-compat">
+      <span class="tab-icon">💞</span>Compat.
+    </button>
+    <button class="game-tab" onclick="switchGameTab('memo')" id="tab-memo">
+      <span class="tab-icon">🃏</span>Memória
+    </button>
+  </div>
+
+  <!-- PAINEL 1: QUIZ -->
+  <div class="game-panel active" id="panel-quiz">
+    <div class="game-wrap">
+      <div class="gs active" id="gs-start"><div class="g-icon">💑</div><h3 class="g-ttl">Quem conhece mais?</h3><p class="g-desc">Respondam juntos e descubram o quanto vocês sabem um sobre o outro.</p><button class="btn-rose" onclick="startGame()">Começar o Quiz ♡</button></div>
+      <div class="gs" id="gs-q"><p class="q-prog" id="q-prog">1/10</p><div class="q-track"><div class="q-fill" id="q-fill" style="width:10%"></div></div><p class="q-who" id="q-who"></p><p class="q-text" id="q-text"></p><div class="q-opts" id="q-opts"></div></div>
+      <div class="gs" id="gs-res"><div class="r-icon" id="r-icon">🥰</div><div class="r-score" id="r-score">0/10</div><p class="r-lbl">PONTOS</p><p class="r-msg" id="r-msg"></p><button class="btn-rose" onclick="resetGame()">Jogar de novo 🔄</button></div>
+    </div>
+  </div>
+
+  <!-- PAINEL 2: COMPATIBILIDADE -->
+  <div class="game-panel" id="panel-compat">
+    <div class="game-wrap">
+
+      <!-- Início -->
+      <div class="mem-gs active" id="cp-start">
+        <div class="g-icon">💞</div>
+        <h3 class="g-ttl">Compatibilidade</h3>
+        <p class="g-desc">Cada um responde as mesmas perguntas separado. No final vocês descobrem o % de compatibilidade!</p>
+        <button class="btn-rose" onclick="cpStart('p1')">Começar ♡</button>
+      </div>
+
+      <!-- Tela de perguntas -->
+      <div class="mem-gs" id="cp-q">
+        <div id="cp-player-badge" class="compat-player-badge">👤 Jogador 1</div>
+        <p class="q-prog" id="cp-prog">1 / 8</p>
+        <div class="q-track"><div class="q-fill" id="cp-fill" style="width:12%"></div></div>
+        <p class="cp-q-text" id="cp-q-text"></p>
+        <div class="cp-opts" id="cp-opts"></div>
+        <button class="btn-rose cp-next-btn" id="cp-next-btn" onclick="cpNext()" style="display:none">Próxima →</button>
+      </div>
+
+      <!-- Aguardando P2 -->
+      <div class="mem-gs" id="cp-wait">
+        <div class="compat-waiting">
+          <div class="compat-wait-icon">⏳</div>
+          <p class="compat-wait-txt">Jogador 1 terminou!</p>
+          <p class="compat-wait-sub">Passe o celular para o Jogador 2</p>
+        </div>
+        <button class="btn-rose" onclick="cpStart('p2')">Estou pronto ♡</button>
+      </div>
+
+      <!-- Resultado -->
+      <div class="mem-gs" id="cp-result">
+        <div class="compat-meter-wrap">
+          <div class="compat-meter"><div class="compat-meter-fill" id="cp-meter-fill"></div></div>
+        </div>
+        <div class="compat-pct" id="cp-pct">0%</div>
+        <p class="r-lbl">DE COMPATIBILIDADE</p>
+        <p class="compat-verdict" id="cp-verdict"></p>
+        <div class="compat-compare" id="cp-compare"></div>
+        <button class="btn-rose" onclick="cpReset()">Jogar de novo 🔄</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAINEL 3: MEMÓRIA -->
+  <div class="game-panel" id="panel-memo">
+    <div class="memory-wrap">
+
+      <!-- Início -->
+      <div class="mem-gs active" id="mem-start">
+        <div class="g-icon">🃏</div>
+        <h3 class="g-ttl">Jogo da Memória</h3>
+        <p class="g-desc">Encontre os pares das fotos de vocês! Quanto mais fotos o admin adicionar, mais difícil fica.</p>
+        <div class="mem-diff-row">
+          <button class="mem-diff-btn active" onclick="memSetDiff(this,'easy')">Fácil · 3 pares</button>
+          <button class="mem-diff-btn" onclick="memSetDiff(this,'medium')">Médio · 5 pares</button>
+          <button class="mem-diff-btn" onclick="memSetDiff(this,'hard')">Difícil · 8 pares</button>
+        </div>
+        <button class="btn-rose" onclick="memStart()">Jogar ♡</button>
+      </div>
+
+      <!-- Jogo -->
+      <div class="mem-gs" id="mem-game">
+        <div class="mem-stats">
+          <div class="mem-stat"><div class="mem-stat-n" id="mem-moves">0</div><div class="mem-stat-l">Jogadas</div></div>
+          <div class="mem-stat"><div class="mem-stat-n" id="mem-pairs">0</div><div class="mem-stat-l">Pares</div></div>
+          <div class="mem-stat"><div class="mem-stat-n" id="mem-timer">0:00</div><div class="mem-stat-l">Tempo</div></div>
+        </div>
+        <div class="memory-grid" id="memory-grid"></div>
+      </div>
+
+      <!-- Vitória -->
+      <div class="mem-gs" id="mem-win">
+        <div class="g-icon">🎉</div>
+        <h3 class="g-ttl">Vocês venceram!</h3>
+        <div class="mem-win-time" id="mem-win-time">0:00</div>
+        <p class="r-lbl">TEMPO FINAL</p>
+        <div class="mem-win-pct" id="mem-win-moves">0</div>
+        <p class="r-lbl">JOGADAS</p>
+        <p class="r-msg" id="mem-win-msg"></p>
+        <button class="btn-rose" onclick="memReset()">Jogar de novo 🔄</button>
+      </div>
+
+    </div>
+
+    <!-- Painel admin de fotos -->
+    <div class="mem-admin-panel">
+      <p class="mem-admin-label">📸 Fotos do Jogo da Memória</p>
+      <div class="mem-admin-grid" id="mem-admin-grid"></div>
+      <input type="file" id="mem-photo-input" accept="image/*" style="display:none" onchange="memAdminAddPhoto(event)">
+      <button class="btn-rose" style="width:100%;margin-top:4px;font-size:9px;padding:9px" onclick="memSavePhotos()">💾 Salvar fotos</button>
+    </div>
+  </div>
+
+</section>
 <div id="admin-bar">
   <span class="a-lbl">⚙ Admin</span>
   <button class="a-btn" onclick="salvarHistoria()">💾 Salvar história</button>
@@ -551,7 +735,7 @@ function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.c
 
 function init(){
   showLoad('Carregando...');
-  Promise.all([carregarConfigs(),carregarMomentos(),carregarCapitulos()])
+  Promise.all([carregarConfigs(),carregarMomentos(),carregarCapitulos(),carregarMemPhotos()])
     .then(function(){hideLoad();atualizarContador();setInterval(atualizarContador,30000);animPetals();renderBook();})
     .catch(function(e){hideLoad();console.error(e);showToast('Erro ao conectar.');atualizarContador();animPetals();renderBook();});
 }
@@ -1236,8 +1420,20 @@ function limparTudo(){
   .then(function(){momentos_db=[];chapters_db=capitulosDefault();settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';document.getElementById('date-inp').value='2022-08-05';bookCurrentPage=0;renderBook();renderMomentos();atualizarContador();hideLoad();showToast('🗑 Limpo');});
 }
 
+
 /* ═══════════════════════════════════════
-   JOGUINHO
+   ABAS DOS JOGOS
+═══════════════════════════════════════ */
+function switchGameTab(tab){
+  ['quiz','compat','memo'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='memo')renderMemAdminGrid();
+}
+
+/* ═══════════════════════════════════════
+   QUIZ (original mantido)
 ═══════════════════════════════════════ */
 var PERGUNTAS=[
   {q:"Qual a cor favorita da sua parceira?",who:"💙 Ele responde",opts:["Azul","Rosa","Roxo","Verde"],ans:0},
@@ -1259,6 +1455,350 @@ function responder(idx,btn){if(respondido)return;respondido=true;var q=PERGUNTAS
 function mostrarResultado(){showScreen('gs-res');document.getElementById('r-score').textContent=score+'/'+PERGUNTAS.length;var M=[[0,3,'💔','Hmm, mais conversas!'],[4,6,'😊','Bom começo!'],[7,8,'🥰','Vocês se conhecem muito bem!'],[9,10,'🏆','Perfeitos um para o outro!']];var res=M.find(function(x){return score>=x[0]&&score<=x[1];});document.getElementById('r-icon').textContent=res[2];document.getElementById('r-msg').textContent=res[3];}
 function resetGame(){showScreen('gs-start');}
 
+/* ═══════════════════════════════════════
+   MEDIDOR DE COMPATIBILIDADE
+═══════════════════════════════════════ */
+var CP_QUESTIONS=[
+  {q:"Qual seria o fim de semana perfeito?",opts:["Viagem de surpresa","Ficando em casa juntos","Aventura ao ar livre","Jantar especial e filme"]},
+  {q:"Qual o maior valor no relacionamento?",opts:["Confiança total","Carinho no dia a dia","Diversão e leveza","Crescer juntos"]},
+  {q:"Como você demonstra amor?",opts:["Palavras e elogios","Presença e atenção","Presentes e gestos","Toque e abraços"]},
+  {q:"O que nunca pode faltar entre vocês?",opts:["Honestidade","Humor e risadas","Cumplicidade","Respeito mútuo"]},
+  {q:"Qual o destino dos sonhos?",opts:["Europa clássica","Praias paradisíacas","Ásia misteriosa","América do Sul"]},
+  {q:"Como é o lar ideal?",opts:["Aconchegante e quieto","Cheio de vida e amigos","Moderno e organizado","Perto da natureza"]},
+  {q:"Qual filme assistiriam juntos?",opts:["Romance emocionante","Comédia pra rir muito","Terror pra se abraçar","Aventura épica"]},
+  {q:"Como vocês resolvem desentendimentos?",opts:["Conversa calma na hora","Esperar e repensar","Com humor e leveza","Abraço antes de tudo"]}
+];
+var cpAnswersP1=[],cpAnswersP2=[],cpCurrentPlayer='p1',cpCurrentQ=0,cpSelected=-1;
+
+function cpShowScreen(id){
+  ['cp-start','cp-q','cp-wait','cp-result'].forEach(function(s){
+    var el=document.getElementById(s);
+    if(el)el.classList.toggle('active',s===id);
+  });
+}
+
+function cpStart(player){
+  cpCurrentPlayer=player;
+  cpCurrentQ=0;
+  cpSelected=-1;
+  if(player==='p1')cpAnswersP1=[];
+  else cpAnswersP2=[];
+  document.getElementById('cp-player-badge').textContent=player==='p1'?'👤 Jogador 1 — responda sozinho(a)':'👤 Jogador 2 — agora é sua vez!';
+  cpShowScreen('cp-q');
+  cpRenderQ();
+}
+
+function cpRenderQ(){
+  var q=CP_QUESTIONS[cpCurrentQ];
+  document.getElementById('cp-prog').textContent=(cpCurrentQ+1)+' / '+CP_QUESTIONS.length;
+  document.getElementById('cp-fill').style.width=(((cpCurrentQ+1)/CP_QUESTIONS.length)*100)+'%';
+  document.getElementById('cp-q-text').textContent=q.q;
+  cpSelected=-1;
+  document.getElementById('cp-next-btn').style.display='none';
+  var opts=document.getElementById('cp-opts');
+  opts.innerHTML='';
+  q.opts.forEach(function(opt,i){
+    var b=document.createElement('button');
+    b.className='cp-btn';
+    b.textContent=opt;
+    b.onclick=function(){
+      cpSelected=i;
+      document.querySelectorAll('.cp-btn').forEach(function(x){x.classList.remove('selected');});
+      b.classList.add('selected');
+      document.getElementById('cp-next-btn').style.display='block';
+    };
+    opts.appendChild(b);
+  });
+}
+
+function cpNext(){
+  if(cpSelected<0)return;
+  if(cpCurrentPlayer==='p1')cpAnswersP1.push(cpSelected);
+  else cpAnswersP2.push(cpSelected);
+  cpCurrentQ++;
+  if(cpCurrentQ<CP_QUESTIONS.length){
+    cpRenderQ();
+  } else {
+    if(cpCurrentPlayer==='p1'){
+      cpShowScreen('cp-wait');
+    } else {
+      cpShowResult();
+    }
+  }
+}
+
+function cpShowResult(){
+  cpShowScreen('cp-result');
+  var matches=0;
+  for(var i=0;i<CP_QUESTIONS.length;i++){
+    if(cpAnswersP1[i]===cpAnswersP2[i])matches++;
+  }
+  var pct=Math.round((matches/CP_QUESTIONS.length)*100);
+  // Exibe percentual com animação
+  document.getElementById('cp-meter-fill').style.width='0%';
+  document.getElementById('cp-pct').textContent='0%';
+  setTimeout(function(){
+    document.getElementById('cp-meter-fill').style.width=pct+'%';
+    animateNumber('cp-pct',0,pct,'%',1200);
+  },200);
+  // Veredicto
+  var verdicts=[
+    [0,30,'💔','Vocês são bem diferentes... mas os opostos se atraem!'],
+    [31,55,'😊','Têm bastante a descobrir um sobre o outro. Que aventura!'],
+    [56,75,'🥰','Boa sintonia! Vocês se entendem de verdade.'],
+    [76,90,'😍','Vocês combinam muito! Uma dupla incrível.'],
+    [91,100,'🏆','Almas gêmeas! Compatibilidade quase perfeita. ♡']
+  ];
+  var v=verdicts.find(function(x){return pct>=x[0]&&pct<=x[1];});
+  document.getElementById('cp-verdict').textContent=v[0]==='💔'?v[3]:v[2]+' '+v[3];
+  // Comparação
+  var cmp=document.getElementById('cp-compare');
+  cmp.innerHTML='';
+  CP_QUESTIONS.forEach(function(q,i){
+    var same=cpAnswersP1[i]===cpAnswersP2[i];
+    var row=document.createElement('div');
+    row.className='compat-cmp-row';
+    row.innerHTML='<div class="compat-cmp-q">'+q.q+'</div>'
+      +'<div class="compat-cmp-pair">'
+        +'<div class="compat-cmp-a '+(same?'match':'diff')+'">'
+          +'<span class="compat-cmp-lbl">Jogador 1</span>'
+          +q.opts[cpAnswersP1[i]]
+        +'</div>'
+        +'<div class="compat-cmp-a '+(same?'match':'diff')+'">'
+          +'<span class="compat-cmp-lbl">Jogador 2</span>'
+          +q.opts[cpAnswersP2[i]]
+        +'</div>'
+      +'</div>';
+    cmp.appendChild(row);
+  });
+}
+
+function animateNumber(elId,from,to,suffix,dur){
+  var el=document.getElementById(elId);
+  var start=null;
+  function step(ts){
+    if(!start)start=ts;
+    var prog=Math.min((ts-start)/dur,1);
+    var ease=1-Math.pow(1-prog,3);
+    el.textContent=Math.round(from+(to-from)*ease)+suffix;
+    if(prog<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function cpReset(){
+  cpAnswersP1=[];cpAnswersP2=[];cpCurrentQ=0;cpSelected=-1;
+  cpShowScreen('cp-start');
+}
+
+/* ═══════════════════════════════════════
+   JOGO DA MEMÓRIA
+═══════════════════════════════════════ */
+var memPhotos_db=[];   // fotos salvas no Firebase
+var memDiff='easy';
+var memCards=[];
+var memFlipped=[];
+var memMatchedCount=0;
+var memMoves=0;
+var memTimerInterval=null;
+var memSeconds=0;
+var memLocked=false;
+var memPendingAdminSlot=null;
+
+var MEM_DIFF_MAP={easy:3,medium:5,hard:8};
+
+// Emojis fallback quando não há fotos suficientes
+var MEM_EMOJIS=['💕','🌹','✨','💌','🎉','🥂','🌙','⭐','🦋','💫','🌸','❤️','🎶','🌺','💎','🏖️'];
+
+function carregarMemPhotos(){
+  return db.collection('config').doc('memPhotos').get().then(function(snap){
+    memPhotos_db=snap.exists?(snap.data().list||[]):[];
+    renderMemAdminGrid();
+  }).catch(function(){memPhotos_db=[];});
+}
+
+function renderMemAdminGrid(){
+  var grid=document.getElementById('mem-admin-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  memPhotos_db.forEach(function(url,i){
+    var slot=document.createElement('div');
+    slot.className='mem-admin-slot';
+    slot.innerHTML='<img src="'+url+'" alt="">'
+      +'<button class="mem-slot-rm" onclick="memAdminRemove('+i+',event)">✕</button>';
+    grid.appendChild(slot);
+  });
+  // Slot para adicionar
+  var add=document.createElement('div');
+  add.className='mem-admin-slot';
+  add.innerHTML='<span class="mem-slot-add">＋</span>';
+  add.onclick=function(){document.getElementById('mem-photo-input').click();};
+  grid.appendChild(add);
+}
+
+function memAdminAddPhoto(e){
+  var file=e.target.files[0];if(!file)return;
+  showLoad('Enviando foto...');
+  uploadCloudinary(file,null).then(function(url){
+    memPhotos_db.push(url);
+    hideLoad();
+    renderMemAdminGrid();
+    showToast('📸 Foto adicionada! Clique em Salvar fotos.');
+  }).catch(function(){hideLoad();showToast('Erro ao enviar foto.');});
+  e.target.value='';
+}
+
+function memAdminRemove(i,e){
+  e.stopPropagation();
+  memPhotos_db.splice(i,1);
+  renderMemAdminGrid();
+  showToast('Foto removida. Clique em Salvar fotos.');
+}
+
+function memSavePhotos(){
+  db.collection('config').doc('memPhotos').set({list:memPhotos_db}).then(function(){showToast('💾 Fotos salvas!');});
+}
+
+function memSetDiff(btn,diff){
+  document.querySelectorAll('.mem-diff-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  memDiff=diff;
+}
+
+function memShowScreen(id){
+  ['mem-start','mem-game','mem-win'].forEach(function(s){
+    var el=document.getElementById(s);
+    if(el)el.classList.toggle('active',s===id);
+  });
+}
+
+function memStart(){
+  var pairs=MEM_DIFF_MAP[memDiff]||3;
+  // Montar deck de pares
+  var pool=[];
+  if(memPhotos_db.length>0){
+    // Embaralha fotos disponíveis
+    var shuffledPhotos=memPhotos_db.slice().sort(function(){return Math.random()-.5;});
+    for(var i=0;i<pairs;i++){
+      var url=shuffledPhotos[i%shuffledPhotos.length];
+      pool.push({type:'photo',value:url,id:i});
+      pool.push({type:'photo',value:url,id:i});
+    }
+  } else {
+    // Fallback com emojis
+    for(var i=0;i<pairs;i++){
+      var emoji=MEM_EMOJIS[i%MEM_EMOJIS.length];
+      pool.push({type:'emoji',value:emoji,id:i});
+      pool.push({type:'emoji',value:emoji,id:i});
+    }
+  }
+  // Embaralha deck
+  pool.sort(function(){return Math.random()-.5;});
+  memCards=pool;
+  memFlipped=[];
+  memMatchedCount=0;
+  memMoves=0;
+  memSeconds=0;
+  memLocked=false;
+  if(memTimerInterval)clearInterval(memTimerInterval);
+
+  // Define colunas conforme dificuldade
+  var cols={easy:3,medium:4,hard:4};
+  var grid=document.getElementById('memory-grid');
+  grid.style.gridTemplateColumns='repeat('+cols[memDiff]+',1fr)';
+
+  memShowScreen('mem-game');
+  renderMemGrid();
+
+  document.getElementById('mem-moves').textContent='0';
+  document.getElementById('mem-pairs').textContent='0/'+pairs;
+  document.getElementById('mem-timer').textContent='0:00';
+
+  memTimerInterval=setInterval(function(){
+    memSeconds++;
+    var m=Math.floor(memSeconds/60),s=memSeconds%60;
+    document.getElementById('mem-timer').textContent=m+':'+(s<10?'0':'')+s;
+  },1000);
+}
+
+function renderMemGrid(){
+  var grid=document.getElementById('memory-grid');
+  grid.innerHTML='';
+  memCards.forEach(function(card,idx){
+    var div=document.createElement('div');
+    div.className='mem-card';
+    div.dataset.idx=idx;
+    var front='<div class="mem-front"><span class="mem-front-icon">♡</span></div>';
+    var back='';
+    if(card.type==='photo'){
+      back='<div class="mem-back"><img src="'+card.value+'" alt=""></div>';
+    } else {
+      back='<div class="mem-back"><span class="mem-back-emoji">'+card.value+'</span></div>';
+    }
+    div.innerHTML=front+back;
+    div.onclick=function(){memFlipCard(idx,div);};
+    grid.appendChild(div);
+  });
+}
+
+function memFlipCard(idx,el){
+  if(memLocked)return;
+  if(el.classList.contains('flipped')||el.classList.contains('matched'))return;
+  el.classList.add('flipped');
+  memFlipped.push({idx:idx,el:el});
+  if(memFlipped.length===2){
+    memLocked=true;
+    memMoves++;
+    document.getElementById('mem-moves').textContent=memMoves;
+    var a=memFlipped[0],b=memFlipped[1];
+    if(memCards[a.idx].id===memCards[b.idx].id){
+      // Par encontrado!
+      setTimeout(function(){
+        a.el.classList.add('matched');
+        b.el.classList.add('matched');
+        memMatchedCount++;
+        var pairs=MEM_DIFF_MAP[memDiff];
+        document.getElementById('mem-pairs').textContent=memMatchedCount+'/'+pairs;
+        showToast('💕 Par encontrado!');
+        memFlipped=[];
+        memLocked=false;
+        if(memMatchedCount===pairs)memWin();
+      },500);
+    } else {
+      // Erro
+      setTimeout(function(){
+        a.el.classList.add('shake');b.el.classList.add('shake');
+        setTimeout(function(){
+          a.el.classList.remove('flipped','shake');
+          b.el.classList.remove('flipped','shake');
+          memFlipped=[];
+          memLocked=false;
+        },350);
+      },700);
+    }
+  }
+}
+
+function memWin(){
+  clearInterval(memTimerInterval);
+  var m=Math.floor(memSeconds/60),s=memSeconds%60;
+  var timeStr=m+':'+(s<10?'0':'')+s;
+  var msgs=[
+    [0,15,'🏆 Incríveis! Memória afiada de casal!'],
+    [16,30,'🥰 Muito bem! Vocês se lembram de tudo!'],
+    [31,60,'😊 Bom jogo! Cada par, uma memória.'],
+    [61,999,'💕 Valeu a tentativa! O amor não desiste.']
+  ];
+  var msg=msgs.find(function(x){return memSeconds>=x[0]&&memSeconds<=x[1];});
+  setTimeout(function(){
+    document.getElementById('mem-win-time').textContent=timeStr;
+    document.getElementById('mem-win-moves').textContent=memMoves;
+    document.getElementById('mem-win-msg').textContent=msg[2];
+    memShowScreen('mem-win');
+  },600);
+}
+
+function memReset(){memShowScreen('mem-start');}
 /* ═══════════════════════════════════════
    PÉTALAS
 ═══════════════════════════════════════ */
