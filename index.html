@@ -1013,8 +1013,11 @@ function openUnlockModal(chIdx,targetIdx,dir){
 
   var cd=getCooldown(chIdx);
   if(cd>0){
-    showUnlockTimer(cd);
+    /* Já existe cooldown ativo: mostra tela de erro com o timer contando */
+    document.getElementById('unlock-state-q').style.display='none';
+    document.getElementById('unlock-state-err').style.display='block';
     document.getElementById('unlock-question-txt').textContent='Aguarde para tentar novamente...';
+    showUnlockTimer(cd);
   } else {
     document.getElementById('unlock-question-txt').textContent=ch.question||'Responda para desbloquear este capítulo ♡';
     renderUnlockOpts(ch,targetIdx,dir);
