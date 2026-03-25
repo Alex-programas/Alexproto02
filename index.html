@@ -164,6 +164,19 @@ section.active{display:flex;}
 @media(max-width:400px){.cards-grid{grid-template-columns:1fr;}}
 .m-card{background:var(--card);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;border:1px solid rgba(255,255,255,.05);position:relative;}
 .m-card:active{transform:scale(.97);}
+
+/* ── Blur progressivo ── */
+.m-card.blurred{cursor:pointer;}
+.m-card.blurred .m-card-photo,
+.m-card.blurred .m-card-placeholder{filter:blur(12px);transform:scale(1.06);transition:filter .6s ease,transform .6s ease;}
+.m-card.blurred .m-card-body{filter:blur(6px);transition:filter .6s ease;user-select:none;}
+.m-card.unblurring .m-card-photo,
+.m-card.unblurring .m-card-placeholder{filter:blur(0px);transform:scale(1);transition:filter .7s ease,transform .7s ease;}
+.m-card.unblurring .m-card-body{filter:blur(0px);transition:filter .7s ease;}
+.m-blur-overlay{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(13,5,10,.35);backdrop-filter:blur(2px);border-radius:14px;transition:opacity .5s ease;}
+.m-blur-overlay .blur-icon{font-size:32px;filter:drop-shadow(0 2px 8px rgba(201,86,106,.5));}
+.m-blur-overlay .blur-hint{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(253,246,240,.6);animation:pulseHint 2s ease-in-out infinite;}
+.m-card.unblurring .m-blur-overlay{opacity:0;pointer-events:none;}
 .m-card-photo{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
 .m-card-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(160deg,#2a1020,#1a0f14);display:flex;align-items:center;justify-content:center;font-size:30px;color:rgba(201,166,110,.2);}
 .m-card-body{padding:14px 14px 16px;}
@@ -191,7 +204,11 @@ section.active{display:flex;}
 #letter-modal.open{display:flex;}
 .lm-box{background:var(--cream);border-radius:20px 20px 0 0;max-width:600px;width:100%;max-height:92vh;overflow-y:auto;position:relative;box-shadow:0 -20px 60px rgba(0,0,0,.5);}
 @media(min-width:600px){#letter-modal{align-items:center;padding:20px;}.lm-box{border-radius:20px;max-height:90vh;}}
-.lm-photo{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:20px 20px 0 0;display:block;}
+.lm-photo{width:100%;object-fit:cover;border-radius:20px 20px 0 0;display:block;}
+.lm-photo.lm-size-s{height:160px;}
+.lm-photo.lm-size-m{aspect-ratio:16/9;}
+.lm-photo.lm-size-l{height:340px;}
+.lm-photo.lm-size-xl{height:480px;}
 .lm-placeholder{width:100%;aspect-ratio:16/9;background:linear-gradient(160deg,#2a1020,#3d1a26);border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:center;font-size:44px;}
 .lm-close{position:absolute;top:12px;right:12px;background:rgba(13,10,11,.7);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;z-index:10;}
 .lm-body{padding:22px 22px 28px;color:var(--text);}
@@ -506,6 +523,16 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
     <h3 class="mm-title" id="mm-modal-title">Novo Momento</h3>
     <input type="hidden" id="mm-edit-id">
     <div class="mm-field"><label>📸 Foto</label><img class="mm-prev" id="mm-prev" src="" alt=""><input type="file" id="mm-photo-file" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)"><button class="mm-upload-btn" id="mm-photo-btn" onclick="document.getElementById('mm-photo-file').click()">+ Escolher foto</button><p class="mm-hint" id="mm-photo-hint"></p></div>
+    <div class="mm-field">
+      <label>📐 Tamanho da foto no modal</label>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+        <button onclick="mmSetSize('s')" id="mm-size-s" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Pequena</button>
+        <button onclick="mmSetSize('m')" id="mm-size-m" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Média</button>
+        <button onclick="mmSetSize('l')" id="mm-size-l" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Grande</button>
+        <button onclick="mmSetSize('xl')" id="mm-size-xl" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(253,246,240,.6);padding:8px 4px;border-radius:8px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;">Enorme</button>
+      </div>
+      <p class="mm-hint" style="margin-top:5px;" id="mm-size-hint">Tamanho atual: Médio</p>
+    </div>
     <div class="mm-row"><div class="mm-field"><label>Categoria</label><input class="mm-inp" id="mm-cat" placeholder="AMOR"></div><div class="mm-field"><label>Sub-tag</label><input class="mm-inp" id="mm-sub" placeholder="SAUDADE"></div></div>
     <div class="mm-field"><label>Título</label><input class="mm-inp" id="mm-title" placeholder="Quando a distância aperta..."></div>
     <div class="mm-field"><label>Frase curta</label><input class="mm-inp" id="mm-quote" placeholder="Às vezes a saudade chega..."></div>
@@ -548,7 +575,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 <section id="hero" class="active">
   <p class="hero-eyebrow">✦ Para sempre ✦</p>
   <h1 class="hero-title">Nós<br><em>Dois</em></h1>
-  <p class="hero-names" id="hero-names" contenteditable="false">Alex &amp; Seu Amor ♡</p>
+  <p class="hero-names" id="hero-names" contenteditable="false">Alex &amp; Cintia ♡</p>
   <div class="hero-line"></div>
   <div class="counter-box">
     <div class="c-item"><div class="c-num" id="cy">0</div><div class="c-lbl">Anos</div></div>
@@ -579,8 +606,7 @@ audio{position:fixed;width:0;height:0;opacity:0;pointer-events:none;}
 </section>
 
 <section id="momentos">
-  <p class="m-eyebrow">✦ Escolha seu momento ✦</p>
-  <h2 class="m-heading">O que seu coração<br>está <span>sentindo</span> agora?</h2>
+
   <div class="cards-grid" id="cards-grid"></div>
 </section>
 
@@ -730,8 +756,9 @@ var ADMIN_PASSWORD="Alex0508.",CLOUDINARY_CLOUD="dnvg9f1pm",CLOUDINARY_PRESET="N
 var FIREBASE_CONFIG={apiKey:"AIzaSyCQ0tifzHR6NB5jYF3-Ylxz9-nA3AM5MhM",authDomain:"nossoamor-9b715.firebaseapp.com",projectId:"nossoamor-9b715",storageBucket:"nossoamor-9b715.firebasestorage.app",messagingSenderId:"384387510581",appId:"1:384387510581:web:d021a79652e12bdd9f5c7c"};
 firebase.initializeApp(FIREBASE_CONFIG);
 var db=firebase.firestore();
-var isAdmin=false,momentos_db=[],chapters_db=[],settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};
+var isAdmin=false,momentos_db=[],chapters_db=[],settings_db={names:'Alex & Cintia ♡',startDate:'2022-08-05'};
 var pendingPhoto=null,pendingAudio=null,editingId=null,cePendingPhoto=null,ceEditIdx=-1;
+var mmCurrentSize='m';
 
 /* ─── COOLDOWN de erro: 3 minutos ─── */
 var LOCK_COOLDOWN_MS = 180000;
@@ -758,7 +785,7 @@ function goTo(id){
 function carregarConfigs(){
   return db.collection('config').doc('settings').get().then(function(snap){
     if(snap.exists)settings_db=snap.data();
-    document.getElementById('hero-names').textContent=settings_db.names||'Alex & Seu Amor ♡';
+    document.getElementById('hero-names').textContent=settings_db.names||'Alex & Cintia ♡';
     document.getElementById('date-inp').value=settings_db.startDate||'2022-08-05';
   });
 }
@@ -1337,28 +1364,93 @@ function carregarMomentos(){
     });
   });
 }
+/* ── Chave localStorage por momento ── */
+function momentoAberto(id){return localStorage.getItem('momento_aberto_'+id+'_'+FIREBASE_CONFIG.projectId)==='1';}
+function marcarMomentoAberto(id){localStorage.setItem('momento_aberto_'+id+'_'+FIREBASE_CONFIG.projectId,'1');}
+
+/* ── Retorna o índice do próximo momento ainda não aberto ── */
+function proximoBloqueado(){
+  for(var i=0;i<momentos_db.length;i++){
+    if(!momentoAberto(momentos_db[i].id))return i;
+  }
+  return -1; // todos abertos
+}
+
 function renderMomentos(){
   var grid=document.getElementById('cards-grid');grid.innerHTML='';
-  momentos_db.forEach(function(m){
-    var card=document.createElement('div');card.className='m-card';
+  var proximoIdx=isAdmin?-1:proximoBloqueado(); // admin vê tudo desbloqueado
+
+  momentos_db.forEach(function(m,idx){
+    var aberto=isAdmin||momentoAberto(m.id);
+    var ehProximo=(!isAdmin && idx===proximoIdx);
+    var bloqueado=!aberto&&!ehProximo; // já passou do próximo — totalmente bloqueado
+
+    var card=document.createElement('div');
+    card.className='m-card'+(aberto?'':' blurred');
+    card.dataset.id=m.id;
+
     var ph=m.photoUrl?'<img class="m-card-photo" src="'+m.photoUrl+'" alt="">':'<div class="m-card-placeholder">💕</div>';
     var songHtml=m.songName?'<div class="m-card-song"><div class="m-song-icon">♪</div><div style="min-width:0"><div class="m-song-name">'+m.songName+'</div><div class="m-song-artist">'+(m.songArtist||'')+'</div></div></div>':'';
     var subTag=m.subcategory?'<span class="m-sub-tag">'+m.subcategory+'</span>':'';
+
+    /* Overlay de blur — só nos não abertos */
+    var overlayHtml='';
+    if(!aberto){
+      if(ehProximo){
+        overlayHtml='<div class="m-blur-overlay"><span class="blur-icon">💌</span><span class="blur-hint">Toque para revelar</span></div>';
+      } else {
+        overlayHtml='<div class="m-blur-overlay"><span class="blur-icon">🔒</span><span class="blur-hint">Revele o anterior primeiro</span></div>';
+      }
+    }
+
     card.innerHTML='<div class="m-card-admin"><button onclick="openMomentModal(\''+m.id+'\')" title="Editar">✎</button><button onclick="deleteMoment(\''+m.id+'\')" title="Excluir">✕</button></div>'
-      +ph+'<div class="m-card-body"><div class="m-card-tags"><span class="m-cat">'+(m.category||'AMOR')+'</span>'+subTag+'</div>'
+      +overlayHtml
+      +ph
+      +'<div class="m-card-body"><div class="m-card-tags"><span class="m-cat">'+(m.category||'AMOR')+'</span>'+subTag+'</div>'
       +'<h3 class="m-card-title">'+(m.title||'')+'</h3><p class="m-card-quote">'+(m.quote||'')+'</p>'+songHtml
       +'<button class="m-read-btn" onclick="openLetter(\''+m.id+'\')">Ler a carta →</button></div>';
+
+    /* Clique no card: se for o próximo, desborra e abre; se bloqueado, avisa */
+    if(!aberto){
+      card.onclick=function(e){
+        if(e.target.closest('.m-card-admin'))return;
+        if(ehProximo){
+          revelarMomento(m.id,card,function(){openLetter(m.id);});
+        } else {
+          showToast('💕 Revele o momento anterior primeiro!');
+        }
+      };
+    }
+
     grid.appendChild(card);
   });
+
   var add=document.createElement('div');add.className='m-add-slot';add.onclick=function(){openMomentModal(null);};
   add.innerHTML='<span class="add-icon">＋</span><span class="add-txt">Novo momento</span>';
   grid.appendChild(add);
 }
 
+function revelarMomento(id,card,callback){
+  marcarMomentoAberto(id);
+  card.classList.add('unblurring');
+  setTimeout(function(){
+    card.classList.remove('blurred','unblurring');
+    /* Atualiza o próximo card para mostrar "Toque para revelar" */
+    renderMomentos();
+    if(callback)callback();
+  },700);
+}
+
 function openLetter(id){
   var m=momentos_db.find(function(x){return x.id===id;});if(!m)return;
+  /* Marca como aberto e atualiza o grid se necessário */
+  if(!isAdmin&&!momentoAberto(id)){
+    marcarMomentoAberto(id);
+    setTimeout(renderMomentos,100);
+  }
   var pw=document.getElementById('lm-photo-wrap');
-  pw.innerHTML=m.photoUrl?'<img class="lm-photo" src="'+m.photoUrl+'">':'<div class="lm-placeholder">💕</div>';
+  var sizeClass='lm-size-'+(m.photoSize||'m');
+  pw.innerHTML=m.photoUrl?'<img class="lm-photo '+sizeClass+'" src="'+m.photoUrl+'">':'<div class="lm-placeholder">💕</div>';
   document.getElementById('lm-tags').textContent=[m.category,m.subcategory].filter(Boolean).join(' · ');
   document.getElementById('lm-title').textContent=m.title||'';
   document.getElementById('lm-sign').textContent=m.signature||'';
@@ -1424,6 +1516,7 @@ function openMomentModal(id){
   document.getElementById('mm-audio-btn').textContent='+ Escolher MP3';
   document.getElementById('mm-prog-wrap').classList.remove('show');
   document.getElementById('mm-save-btn').disabled=false;document.getElementById('mm-save-btn').textContent='Salvar ♡';
+  mmSetSize('m');
   if(id){
     var m=momentos_db.find(function(x){return x.id===id;});if(!m)return;
     document.getElementById('mm-cat').value=m.category||'';document.getElementById('mm-sub').value=m.subcategory||'';
@@ -1431,10 +1524,24 @@ function openMomentModal(id){
     document.getElementById('mm-letter').value=m.letter||'';document.getElementById('mm-sign').value=m.signature||'';
     document.getElementById('mm-song').value=m.songName||'';document.getElementById('mm-artist').value=m.songArtist||'';
     document.getElementById('mm-url').value=m.songUrl||'';
+    mmSetSize(m.photoSize||'m');
     if(m.photoUrl){prev.src=m.photoUrl;prev.classList.add('show');document.getElementById('mm-photo-hint').textContent='✓ Foto atual';document.getElementById('mm-photo-hint').className='mm-hint ok';}
     if(m.audioUrl){document.getElementById('mm-audio-hint').textContent='✓ Áudio na nuvem';document.getElementById('mm-audio-hint').className='mm-hint ok';document.getElementById('mm-audio-btn').textContent='+ Trocar';}
   }
   document.getElementById('moment-modal').classList.add('open');document.body.style.overflow='hidden';
+}
+function mmSetSize(sz){
+  mmCurrentSize=sz;
+  var labels={s:'Pequeno',m:'Médio',l:'Grande',xl:'Enorme'};
+  var hint=document.getElementById('mm-size-hint');
+  if(hint)hint.textContent='Tamanho atual: '+labels[sz];
+  ['s','m','l','xl'].forEach(function(s){
+    var btn=document.getElementById('mm-size-'+s);
+    if(!btn)return;
+    btn.style.borderColor=s===sz?'var(--rose)':'rgba(255,255,255,.1)';
+    btn.style.color=s===sz?'var(--rose)':'rgba(253,246,240,.6)';
+    btn.style.background=s===sz?'var(--rose-soft)':'rgba(255,255,255,.05)';
+  });
 }
 function closeMomentModal(){document.getElementById('moment-modal').classList.remove('open');document.body.style.overflow='';}
 function handlePhotoSelect(e){var f=e.target.files[0];if(!f)return;pendingPhoto=f;var p=document.getElementById('mm-prev');p.src=URL.createObjectURL(f);p.classList.add('show');document.getElementById('mm-photo-hint').textContent='✓ '+f.name;document.getElementById('mm-photo-hint').className='mm-hint ok';document.getElementById('mm-photo-btn').textContent='+ Trocar';e.target.value='';}
@@ -1443,7 +1550,7 @@ function handleAudioSelect(e){var f=e.target.files[0];if(!f)return;pendingAudio=
 function saveMoment(){
   var btn=document.getElementById('mm-save-btn');btn.disabled=true;btn.textContent='Salvando...';
   var m=editingId?momentos_db.find(function(x){return x.id===editingId;}):null;
-  var data={category:document.getElementById('mm-cat').value||'AMOR',subcategory:document.getElementById('mm-sub').value||'',title:document.getElementById('mm-title').value||'Sem título',quote:document.getElementById('mm-quote').value||'',letter:document.getElementById('mm-letter').value||'',signature:document.getElementById('mm-sign').value||'',songName:document.getElementById('mm-song').value||'',songArtist:document.getElementById('mm-artist').value||'',songUrl:document.getElementById('mm-url').value||'',ordem:m?(m.ordem||0):momentos_db.length,photoUrl:m?(m.photoUrl||''):'',audioUrl:m?(m.audioUrl||''):''};
+  var data={category:document.getElementById('mm-cat').value||'AMOR',subcategory:document.getElementById('mm-sub').value||'',title:document.getElementById('mm-title').value||'Sem título',quote:document.getElementById('mm-quote').value||'',letter:document.getElementById('mm-letter').value||'',signature:document.getElementById('mm-sign').value||'',songName:document.getElementById('mm-song').value||'',songArtist:document.getElementById('mm-artist').value||'',songUrl:document.getElementById('mm-url').value||'',photoSize:mmCurrentSize,ordem:m?(m.ordem||0):momentos_db.length,photoUrl:m?(m.photoUrl||''):'',audioUrl:m?(m.audioUrl||''):''};
   var chain=Promise.resolve();
   if(pendingPhoto){chain=chain.then(function(){showLoad('Enviando foto...');return uploadCloudinary(pendingPhoto,function(p){document.getElementById('load-txt').textContent='Foto... '+p+'%';});}).then(function(url){data.photoUrl=url;hideLoad();});}
   if(pendingAudio){chain=chain.then(function(){showLoad('Enviando áudio...');document.getElementById('mm-prog-wrap').classList.add('show');return uploadCloudinary(pendingAudio,function(p){document.getElementById('mm-prog-fill').style.width=p+'%';document.getElementById('load-txt').textContent='Áudio... '+p+'%';});}).then(function(url){data.audioUrl=url;hideLoad();});}
@@ -1459,9 +1566,9 @@ function sairAdmin(){isAdmin=false;document.body.classList.remove('admin-mode');
 function limparTudo(){
   showLoad('Apagando...');
   db.collection('momentos').get().then(function(snap){return Promise.all(snap.docs.map(function(d){return d.ref.delete();}));})
-  .then(function(){return db.collection('config').doc('settings').set({names:'Alex & Seu Amor ♡',startDate:'2022-08-05'});})
+  .then(function(){return db.collection('config').doc('settings').set({names:'Alex & Cintia ♡',startDate:'2022-08-05'});})
   .then(function(){return db.collection('config').doc('chapters').set({list:capitulosDefault()});})
-  .then(function(){momentos_db=[];chapters_db=capitulosDefault();settings_db={names:'Alex & Seu Amor ♡',startDate:'2022-08-05'};document.getElementById('hero-names').textContent='Alex & Seu Amor ♡';document.getElementById('date-inp').value='2022-08-05';bookCurrentPage=0;renderBook();renderMomentos();atualizarContador();hideLoad();showToast('🗑 Limpo');});
+  .then(function(){momentos_db=[];chapters_db=capitulosDefault();settings_db={names:'Alex & Cintia ♡',startDate:'2022-08-05'};document.getElementById('hero-names').textContent='Alex & Cintia ♡';document.getElementById('date-inp').value='2022-08-05';bookCurrentPage=0;renderBook();renderMomentos();atualizarContador();hideLoad();showToast('🗑 Limpo');});
 }
 
 /* ═══════════════════════════════════════
